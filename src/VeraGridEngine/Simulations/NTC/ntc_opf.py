@@ -1970,6 +1970,16 @@ def add_linear_vsc_formulation(t_idx: int,
                     name=join("vsc_flow_", [t_idx, m], "_")
                 )
 
+            elif (vsc_data_t.control1[m] == ConverterControlType.Pdc and
+                  vsc_data_t.control2[m] == ConverterControlType.Vm_ac):
+
+                # declare the flow var
+                vsc_vars.flows[t_idx, m] = prob.add_var(
+                    lb=-vsc_data_t.rates[m] / Sbase,
+                    ub=vsc_data_t.rates[m] / Sbase,
+                    name=join("vsc_flow_", [t_idx, m], "_")
+                )
+
             elif (vsc_data_t.control1[m] == ConverterControlType.Pac and
                   vsc_data_t.control2[m] == ConverterControlType.Vm_dc):
 
@@ -1986,6 +1996,16 @@ def add_linear_vsc_formulation(t_idx: int,
                     ub=vsc_data_t.rates[m] / Sbase,
                     name=join("vsc_flow_", [t_idx, m], "_")
                 )
+
+            elif (vsc_data_t.control1[m] == ConverterControlType.Vm_dc and
+                  vsc_data_t.control2[m] == ConverterControlType.Vm_ac):
+
+                # set the DC slack
+                val = vsc_data_t.control1_val[m]
+                if val == 0:
+                    val = 1
+                prob.set_var_bounds(var=bus_vars.Vm[t_idx, fr], lb=val, ub=val)
+                any_dc_slack = True
 
             elif (vsc_data_t.control1[m] == ConverterControlType.Vm_dc and
                   vsc_data_t.control2[m] == ConverterControlType.Pdc):
