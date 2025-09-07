@@ -100,12 +100,14 @@ def set_bus_control_voltage(i: int,
     if not use_stored_guess:
         if not bus_voltage_used[i]:
             if remote_control and j > -1 and j != i:
-                # initialize the remote bus voltage to the control value
-                bus_data.Vbus[j] = complex(candidate_Vm, 0)
+                # initialize the remote bus voltage to the control value but preserve angle while updating magnitude
+                existing_angle = np.angle(bus_data.Vbus[j])
+                bus_data.Vbus[j] = complex(candidate_Vm, 0) * np.exp(1j * existing_angle)
                 bus_voltage_used[j] = True
             else:
-                # initialize the local bus voltage to the control value
-                bus_data.Vbus[i] = complex(candidate_Vm, 0)
+                # initialize the local bus voltage to the control value but preserve angle while updating magnitude
+                existing_angle = np.angle(bus_data.Vbus[i])
+                bus_data.Vbus[i] = complex(candidate_Vm, 0) * np.exp(1j * existing_angle)
                 bus_voltage_used[i] = True
 
         elif candidate_Vm != bus_data.Vbus[i]:
@@ -158,12 +160,14 @@ def set_bus_control_voltage_vsc(i: int,
     if not use_stored_guess:
         if not bus_voltage_used[i]:
             if remote_control and j > -1 and j != i:
-                # initialize the remote bus voltage to the control value
-                bus_data.Vbus[j] = complex(candidate_Vm, 0)
+                # initialize the remote bus voltage to the control value but preserve angle while updating magnitude
+                existing_angle = np.angle(bus_data.Vbus[j])
+                bus_data.Vbus[j] = complex(candidate_Vm, 0) * np.exp(1j * existing_angle)
                 bus_voltage_used[j] = True
             else:
-                # initialize the local bus voltage to the control value
-                bus_data.Vbus[i] = complex(candidate_Vm, 0)
+                # initialize the local bus voltage to the control value but preserve angle while updating magnitude
+                existing_angle = np.angle(bus_data.Vbus[i])
+                bus_data.Vbus[i] = complex(candidate_Vm, 0) * np.exp(1j * existing_angle)
                 bus_voltage_used[i] = True
 
         elif candidate_Vm != bus_data.Vbus[i]:
@@ -172,6 +176,67 @@ def set_bus_control_voltage_vsc(i: int,
                              value=candidate_Vm,
                              expected_value=bus_data.Vbus[i])
 
+def set_bus_control_angle_vsc(i: int,
+                                j: int,
+                                remote_control: bool,
+                                bus_name: str,
+                                bus_angle_used: BoolVec,
+                                bus_data: BusData,
+                                candidate_Va: float,
+                                use_stored_guess: bool,
+                                logger: Logger) -> None:
+    """
+    Set the bus control angle
+    :param i: Bus index
+    :param j: Remote Bus index
+    :param remote_control: Using remote control?
+    :param bus_name: Bus name
+    :param bus_angle_used: Array of flags indicating if a bus angle has been modified before
+    :param bus_data: BusData
+    :param candidate_Va: Angle set point that you want to set in degrees
+    :param use_stored_guess: Use the stored seed values?
+    :param logger: Logger
+    """
+    if bus_data.bus_types[i] != BusMode.Slack_tpe.value:  # if it is not Slack
+        if remote_control and j > -1 and j != i:
+            # delete angle control
+            # bus_data.bus_types[j] = BusMode.PQV_tpe.value  # remote bus to PQV type
+            # bus_data.set_bus_mode(j, BusMode.PQV_tpe)
+            bus_data.is_p_controlled[j] = True
+            bus_data.is_q_controlled[j] = True
+            bus_data.is_va_controlled[j] = True
+
+            # bus_data.bus_types[i] = BusMode.P_tpe.value  # local bus to P type
+            # bus_data.set_bus_mode(i, BusMode.P_tpe)
+            bus_data.is_p_controlled[i] = True
+        else:
+            # local angle control controlling q as well
+            # bus_data.bus_types[i] = BusMode.PV_tpe.value  # set as PV
+            # bus_data.set_bus_mode(i, BusMode.PV_tpe)
+            bus_data.is_q_controlled[i] = True
+            bus_data.is_va_controlled[i] = True
+
+    if not use_stored_guess:
+        if not bus_angle_used[i]:
+            if remote_control and j > -1 and j != i:
+                # initialize the remote bus angle to the control value but preserve magnitude while updating angle
+                existing_magnitude = np.abs(bus_data.Vbus[j])
+                bus_data.Vbus[j] = existing_magnitude * np.exp(1j * candidate_Va * np.pi / 180)
+                bus_angle_used[j] = True
+
+            else:
+                # initialize the local bus angle to the control value but preserve magnitude while updating angle
+                existing_magnitude = np.abs(bus_data.Vbus[i])
+                bus_data.Vbus[i] = existing_magnitude * np.exp(1j * candidate_Va * np.pi / 180)
+                bus_angle_used[i] = True
+
+        else:
+            existing_angle = np.angle(bus_data.Vbus[i])
+            if not np.isclose(candidate_Va, existing_angle):
+                logger.add_error(msg='Different control angle set points',
+                                 device=bus_name,
+                                 value=candidate_Va,
+                                 expected_value=existing_angle)
 
 def set_bus_control_voltage_hvdc(i: int,
                                  j: int,
@@ -1757,6 +1822,7 @@ def set_control_dev(k: int,
                     bus_dict: Dict[Bus, int],
                     bus_data: BusData,
                     bus_voltage_used: BoolVec,
+                    bus_angle_used: BoolVec,
                     use_stored_guess: bool,
                     logger: Logger):
     """
@@ -1772,6 +1838,7 @@ def set_control_dev(k: int,
     :param bus_dict: dictionary to be filled in
     :param bus_data: bus data
     :param bus_voltage_used: used bus voltage
+    :param bus_angle_used: used bus angle
     :param use_stored_guess:
     :param logger:
     """
@@ -1806,6 +1873,17 @@ def set_control_dev(k: int,
                                             use_stored_guess=use_stored_guess,
                                             logger=logger)
 
+            elif control == ConverterControlType.Va_ac:
+                set_bus_control_angle_vsc(i=bus_idx,
+                                            j=-1,
+                                            remote_control=False,
+                                            bus_name=str(bus_data.names[bus_idx]),
+                                            bus_angle_used=bus_angle_used,
+                                            bus_data=bus_data,
+                                            candidate_Va=control_val,
+                                            use_stored_guess=use_stored_guess,
+                                            logger=logger)
+
         else:
             # TODO: the formulation does not allow for VSC remote control yet
             # control_branch_idx[k] = branch_dict[control_dev]
@@ -1837,6 +1915,18 @@ def set_control_dev(k: int,
                                         candidate_Vm=control_val,
                                         use_stored_guess=use_stored_guess,
                                         logger=logger)
+        elif control == ConverterControlType.Va_ac:
+            control_bus_idx[k] = t
+
+            set_bus_control_angle_vsc(i=t,
+                                      j=-1,
+                                      remote_control=False,
+                                      bus_name=str(bus_data.names[t]),
+                                      bus_angle_used=bus_angle_used,
+                                      bus_data=bus_data,
+                                      candidate_Va=control_val,
+                                      use_stored_guess=use_stored_guess,
+                                      logger=logger)
 
         else:
             # control_branch_idx[k] = len(branch_dict) + k  # TODO: why?
@@ -1873,7 +1963,7 @@ def get_vsc_data(
     :param logger: Logger
     :return: VscData
     """
-
+    bus_angle_used = bus_data.bus_types == BusMode.Slack_tpe.value
     ii = 0
 
     # VSC
@@ -1914,6 +2004,7 @@ def get_vsc_data(
                             bus_dict=bus_dict,
                             bus_data=bus_data,
                             bus_voltage_used=bus_voltage_used,
+                            bus_angle_used=bus_angle_used,
                             use_stored_guess=use_stored_guess,
                             logger=logger)
             set_control_dev(k=ii, f=f, t=t,
@@ -1925,6 +2016,7 @@ def get_vsc_data(
                             bus_dict=bus_dict,
                             bus_data=bus_data,
                             bus_voltage_used=bus_voltage_used,
+                            bus_angle_used=bus_angle_used,
                             use_stored_guess=use_stored_guess,
                             logger=logger)
 
@@ -1949,6 +2041,7 @@ def get_vsc_data(
                             bus_dict=bus_dict,
                             bus_data=bus_data,
                             bus_voltage_used=bus_voltage_used,
+                            bus_angle_used=bus_angle_used,
                             use_stored_guess=use_stored_guess,
                             logger=logger)
 
@@ -1961,6 +2054,7 @@ def get_vsc_data(
                             bus_dict=bus_dict,
                             bus_data=bus_data,
                             bus_voltage_used=bus_voltage_used,
+                            bus_angle_used=bus_angle_used,
                             use_stored_guess=use_stored_guess,
                             logger=logger)
 
