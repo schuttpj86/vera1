@@ -2627,13 +2627,14 @@ class SimulationsMain(TimeEventsMain):
                         self.circuit.investments_groups)
 
                     # compose the options
-                    options = sim.InvestmentsEvaluationOptions(solver=method,
-                                                               max_eval=max_eval,
-                                                               pf_options=self.get_selected_power_flow_options(),
-                                                               opf_options=self.get_opf_options(),
-                                                               obj_tpe=obj_fn_tpe,
-                                                               plugin_fcn_ptr=fn_ptr
-                                                               )
+                    options = sim.InvestmentsEvaluationOptions(
+                        solver=method,
+                        max_eval=max_eval,
+                        pf_options=self.get_selected_power_flow_options(),
+                        opf_options=self.get_opf_options(),
+                        obj_tpe=obj_fn_tpe,
+                        plugin_fcn_ptr=fn_ptr,
+                    )
 
                     if obj_fn_tpe == InvestmentsEvaluationObjectives.PowerFlow:
                         problem = sim.PowerFlowInvestmentProblem(
@@ -2673,6 +2674,8 @@ class SimulationsMain(TimeEventsMain):
                             problem = sim.AdequacyInvestmentProblem(
                                 grid=self.circuit,
                                 n_monte_carlo_sim=self.ui.max_iterations_reliability_spinBox.value(),
+                                use_firm_capacity_penalty=self.ui.firmCapacityShareSpinBox.value() > 0,
+                                minimum_firm_share=self.ui.firmCapacityShareSpinBox.value() / 100.0,
                                 use_monte_carlo=False,
                                 save_file=False,
                                 time_indices=self.get_time_indices()
