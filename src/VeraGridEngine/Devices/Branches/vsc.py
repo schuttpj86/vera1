@@ -156,9 +156,31 @@ class VSC(BranchParent):
         #     self._bus_dc_n = None
         #     self._bus_to = None
 
-        self._bus_from = bus_from
+        # the VSC must only connect from an DC to a AC bus
+        # this connectivity sense is done to keep track with the articles that set it
+        # from -> DC
+        # to   -> AC
+        # assert(bus_from.is_dc != bus_to.is_dc)
+        if bus_to is not None and bus_from is not None:
+            # connectivity:
+            # for the later primitives to make sense, the "bus from" must be AC and the "bus to" must be DC
+            if bus_from.is_dc and not bus_to.is_dc:  # this is the correct sense
+                self.bus_from = bus_from
+                self.bus_to = bus_to
+            elif not bus_from.is_dc and bus_to.is_dc:  # opposite sense, revert
+                self.bus_from = bus_to
+                self.bus_to = bus_from
+                print('Corrected the connection direction of the VSC device:', self.name)
+            else:
+                raise Exception('Impossible connecting a VSC device here. '
+                                'VSC devices must be connected between AC and DC buses')
+        else:
+            self.bus_from = None
+            self.bus_to = None
+
+        # self._bus_from = bus_from
         self._bus_dc_n = bus_dc_n
-        self._bus_to = bus_to
+        # self._bus_to = bus_to
 
         self.kdp = float(kdp)
         self.alpha1 = float(alpha1)

@@ -36,13 +36,31 @@ class VscGraphicItem(LineGraphicTemplateItem):
         :param width:
         :param api_object:
         """
-        LineGraphicTemplateItem.__init__(self=self,
-                                         from_port=from_port,
-                                         to_port=to_port,
-                                         editor=editor,
-                                         width=width,
-                                         api_object=api_object,
-                                         draw_labels=draw_labels)
+
+        if from_port.parent.api_object.is_dc and not to_port.parent.api_object.is_dc:  # this is the correct sense
+            # do nothing as the ports are in the correct sense
+            LineGraphicTemplateItem.__init__(self=self,
+                                             from_port=from_port,
+                                             to_port=to_port,
+                                             editor=editor,
+                                             width=width,
+                                             api_object=api_object,
+                                             draw_labels=draw_labels)
+        elif not from_port.parent.api_object.is_dc and to_port.parent.api_object.is_dc:  # opposite sense, revert
+            # flip the ports
+            LineGraphicTemplateItem.__init__(self=self,
+                                             from_port=to_port,
+                                             to_port=from_port,
+                                             editor=editor,
+                                             width=width,
+                                             api_object=api_object,
+                                             draw_labels=draw_labels)
+            print("had to flip VSC graphic ports!")
+        else:
+            raise Exception('VscGraphics: Impossible connecting a VSC device here. '
+                            'VSC devices must be connected between AC and DC buses')
+
+
 
     @property
     def api_object(self) -> VSC:
@@ -197,10 +215,16 @@ class VscGraphicItem(LineGraphicTemplateItem):
             if Qt is None:
                 Qt = 0
 
-            self.arrow_p_to.set_value(Pf, True, Pf < 0, name="Pf", units="MW", draw_label=self.draw_labels)
-            self.arrow_q_to.setVisible(False)
-            self.arrow_p_from.set_value(Pt, True, Pt > 0, name="Pt", units="MW", draw_label=self.draw_labels)
-            self.arrow_q_from.set_value(Qt, True, Qt > 0, name="Qt", units="MVAr", draw_label=self.draw_labels)
+            # from -> DC
+            # to   -> AC
+
+            # AC side
+            self.arrow_p_to.set_value(Pt, True, Pt > 0, name="Pac", units="MW", draw_label=self.draw_labels)
+            self.arrow_q_to.set_value(Qt, True, Qt > 0, name="Qac", units="MVAr", draw_label=self.draw_labels)
+
+            # DC side
+            self.arrow_p_from.set_value(Pf, True, Pf < 0, name="Pdc", units="MW", draw_label=self.draw_labels)
+            self.arrow_q_from.setVisible(False)
         else:
             if Pt is None:
                 self.arrow_p_from.setVisible(False)
