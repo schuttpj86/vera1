@@ -16,6 +16,8 @@ class TransformerTapsEditor(QDialog):
     def __init__(self, api_object: TapChanger):
         QDialog.__init__(self)
 
+        self.setWindowTitle("Tap changer editor")
+
         self.api_object: TapChanger = api_object
 
         self.layout = QVBoxLayout(self)

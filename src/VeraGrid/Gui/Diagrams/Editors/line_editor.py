@@ -118,8 +118,6 @@ class LineEditor(QDialog):
                                 warning_msg(text=f"The template {self.current_template.name} contains errors",
                                             title="Load template")
 
-
-
                     except ValueError:
                         pass
 
