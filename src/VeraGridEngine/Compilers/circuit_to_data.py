@@ -4,6 +4,7 @@
 # SPDX-License-Identifier: MPL-2.0
 from __future__ import annotations
 import numpy as np
+from cmath import rect
 from typing import Dict, Union, TYPE_CHECKING
 
 from VeraGridEngine.basic_structures import Logger
@@ -102,12 +103,12 @@ def set_bus_control_voltage(i: int,
             if remote_control and j > -1 and j != i:
                 # initialize the remote bus voltage to the control value but preserve angle while updating magnitude
                 existing_angle = np.angle(bus_data.Vbus[j])
-                bus_data.Vbus[j] = complex(candidate_Vm, 0) * np.exp(1j * existing_angle)
+                bus_data.Vbus[j] = rect(candidate_Vm, existing_angle)
                 bus_voltage_used[j] = True
             else:
                 # initialize the local bus voltage to the control value but preserve angle while updating magnitude
                 existing_angle = np.angle(bus_data.Vbus[i])
-                bus_data.Vbus[i] = complex(candidate_Vm, 0) * np.exp(1j * existing_angle)
+                bus_data.Vbus[i] = rect(candidate_Vm, existing_angle)
                 bus_voltage_used[i] = True
 
         elif candidate_Vm != bus_data.Vbus[i]:
