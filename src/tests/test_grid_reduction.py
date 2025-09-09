@@ -25,7 +25,9 @@ def test_ward_reduction():
     # gce.ward_reduction(grid=grid, reduction_bus_indices=remove_bus_idx, pf_res=pf_res)
     nc = gce.compile_numerical_circuit_at(circuit=grid, t_idx=None)
     lin = gce.LinearAnalysis(nc=nc)
-    gce.ptdf_reduction(grid=grid, reduction_bus_indices=remove_bus_idx, PTDF=lin.PTDF)
+    grid2, logger = gce.ptdf_reduction(grid=grid,
+                                       reduction_bus_indices=remove_bus_idx,
+                                       PTDF=lin.PTDF)
 
     pf_res2 = gce.power_flow(grid=grid, options=pf_options)
 

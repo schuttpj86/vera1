@@ -21,7 +21,7 @@ if TYPE_CHECKING:
 def ptdf_reduction(grid: MultiCircuit,
                    reduction_bus_indices: IntVec,
                    PTDF: Mat,
-                   tol=1e-8) -> Logger:
+                   tol=1e-8) -> Tuple[MultiCircuit, Logger]:
     """
     In-place Grid reduction using the PTDF injection mirroring
     No theory available
@@ -57,7 +57,7 @@ def ptdf_reduction(grid: MultiCircuit,
         i = bus_dict[elm.bus]  # bus index where it is currently connected
 
         if i in e_buses_set:
-            # this generator is to be reduced
+            # this injection is to be reduced
 
             for b in range(len(b_buses)):
                 bus_idx = b_buses[b]
@@ -114,7 +114,7 @@ def ptdf_reduction(grid: MultiCircuit,
     for bus in to_be_deleted:
         grid.delete_bus(obj=bus, delete_associated=True)
 
-    return logger
+    return grid, logger
 
 
 def ptdf_reduction_with_islands(grid: MultiCircuit,
@@ -161,7 +161,7 @@ def ptdf_reduction_with_islands(grid: MultiCircuit,
     i, j, data, n_elm = build_branches_C_coo_3(
         bus_active=bus_active,
         F1=branch_F, T1=branch_T, active1=branch_active,
-        F2=vsc_F, T2=vsc_T, active2=vsc_active,
+        F2=vsc_F, T2=vsc_T, FN2=np.full(len(vsc_F), -1, dtype=int), active2=vsc_active,
         F3=hvdc_F, T3=hvdc_T, active3=hvdc_active,
     )
 

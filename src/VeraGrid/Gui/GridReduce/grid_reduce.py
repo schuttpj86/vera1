@@ -16,6 +16,8 @@ from VeraGridEngine.Devices.Substation.bus import Bus
 from VeraGridEngine.Devices.multi_circuit import MultiCircuit
 from VeraGridEngine.Topology.GridReduction.di_shi_grid_reduction import di_shi_reduction
 from VeraGridEngine.Topology.GridReduction.ptdf_grid_reduction import ptdf_reduction
+from VeraGridEngine.Topology.GridReduction.ward_equivalents import ward_standard_reduction
+
 from VeraGridEngine.basic_structures import Logger
 from VeraGridEngine.enumerations import GridReductionMethod
 
@@ -27,9 +29,10 @@ class GridReduceDialogue(QtWidgets.QDialog):
 
     def __init__(self, grid: MultiCircuit, session: SimulationSession, selected_buses_set: Set[Bus]):
         """
-
-        :param grid:
-        :param session:
+        GridMergeDialogue
+        :param grid: MultiCircuit instance
+        :param session: SimulationSession instance to query the power flow
+        :param selected_buses_set: Set of buses (Bus objects) to reduce
         """
         QtWidgets.QDialog.__init__(self)
         self.ui = Ui_ReduceDialog()
@@ -39,13 +42,11 @@ class GridReduceDialogue(QtWidgets.QDialog):
         self.logger = Logger()
         self.logs_dialogue: LogsDialogue | None = None
 
-        lmdl = get_list_model(list(selected_buses_set))
-        self.ui.listView.setModel(lmdl)
+        self.ui.listView.setModel(get_list_model(list(selected_buses_set)))
 
-        methods = [GridReductionMethod.DiShi, GridReductionMethod.PTDF]
+        methods = [GridReductionMethod.DiShi, GridReductionMethod.PTDF, GridReductionMethod.Ward]
         self.methods_dict = {m.value: m for m in methods}
-        cmdl = get_list_model([m.value for m in methods])
-        self.ui.methodComboBox.setModel(cmdl)
+        self.ui.methodComboBox.setModel(get_list_model([m.value for m in methods]))
 
         self._grid: MultiCircuit = grid
         self._session: SimulationSession = session
@@ -70,6 +71,8 @@ class GridReduceDialogue(QtWidgets.QDialog):
                 title="Grid reduction?")
 
             if ok:
+
+                # convert the set of buses to bus indices
                 reduction_bus_indices = np.array([self._grid.buses.index(b) for b in self._selected_buses_set],
                                                  dtype=int)
 
@@ -82,12 +85,27 @@ class GridReduceDialogue(QtWidgets.QDialog):
                         warning_msg("Run a power flow first! or select another method", "Grid reduction")
                         return
 
+                    # NOTE: self._grid gets reduced in-place
                     grid_reduced, logger = di_shi_reduction(
                         grid=self._grid,
                         reduction_bus_indices=reduction_bus_indices,
-                        pf_res=pf_res,
-                        add_power_loads=True,
-                        use_linear=False
+                        V0=pf_res.voltage
+                    )
+
+                elif method == GridReductionMethod.Ward:
+
+                    # get the previous power flow
+                    _, pf_res = self._session.power_flow
+
+                    if pf_res is None:
+                        warning_msg("Run a power flow first! or select another method", "Grid reduction")
+                        return
+
+                    # NOTE: self._grid gets reduced in-place
+                    grid_reduced, logger = ward_standard_reduction(
+                        grid=self._grid,
+                        reduction_bus_indices=reduction_bus_indices,
+                        V0=pf_res.voltage
                     )
 
                 elif method == GridReductionMethod.PTDF:
@@ -98,7 +116,8 @@ class GridReduceDialogue(QtWidgets.QDialog):
                         warning_msg("Run a linear analysis first! or select another method", "Grid reduction")
                         return
 
-                    logger = ptdf_reduction(
+                    # NOTE: self._grid gets reduced in-place
+                    grid_reduced, logger = ptdf_reduction(
                         grid=self._grid,
                         reduction_bus_indices=reduction_bus_indices,
                         PTDF=lin_res.PTDF
