@@ -601,8 +601,7 @@ class SystemVars:
                 gen_p: Mat,
                 gen_cost: Mat,
                 batt_p: Mat,
-                shedding_cost: Mat,
-                overload_cost: Mat):
+                shedding_cost: Mat):
         """
         Compute the system values
         :param gen_emissions_rates_matrix: emissions rates matrix (n_emissions, n_gen)
@@ -624,7 +623,6 @@ class SystemVars:
 
             self.system_total_energy_cost = np.nan_to_num(gen_cost).sum(axis=1)
             self.system_total_energy_cost += np.nan_to_num(shedding_cost).sum(axis=1)
-            self.system_total_energy_cost += np.nan_to_num(overload_cost).sum(axis=1)
 
             self.system_unit_energy_cost = self.system_total_energy_cost / np.nan_to_num(gen_p).sum(axis=1)
 
@@ -725,8 +723,7 @@ class OpfVars:
                                               gen_p=data.gen_vars.p,
                                               batt_p=data.batt_vars.p,
                                               gen_cost=data.gen_vars.cost,
-                                              shedding_cost=data.load_vars.shedding_cost,
-                                              overload_cost=data.branch_vars.overload_cost)
+                                              shedding_cost=data.load_vars.shedding_cost)
 
         data.acceptable_solution = self.acceptable_solution
 
