@@ -1,6 +1,9 @@
 Welcome to VeraGrid's documentation!
 ===================================
 
+.. figure:: img/VeraGrid_banner.png
+    :alt: VeraGrid banner
+
 VeraGrid is a top tier power systems planning and simulation software. As
 such it has all the static analysis studies that you can think of, plus
 linear and non-linear optimization functions. Some of these functions
