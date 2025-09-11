@@ -6,6 +6,8 @@ linear and non-linear optimization functions. Some of these functions are
 well known, while others you may have never heard of as they are a
 product of cutting-edge research.
 
+
+![VeraGrid_banner.png](pics/VeraGrid_banner.png)[](![Ver(pics/VeraGrid_banner.png))
 ![VeraGrid](pics/VeraGrid_yt.png)
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/75e794c9bcfd49bda1721b9ba8f6c790)](https://app.codacy.com/app/SanPen/VeraGrid?utm_source=github.com&utm_medium=referral&utm_content=SanPen/VeraGrid&utm_campaign=Badge_Grade_Dashboard)
