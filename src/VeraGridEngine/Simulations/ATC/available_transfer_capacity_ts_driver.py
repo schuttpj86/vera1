@@ -99,7 +99,6 @@ class AvailableTransferCapacityTimeSeriesResults(ResultsTemplate):
 
         # sort by ATC
         if len(self.raw_report):
-            self.report_indices = np.arange(0, len(rep))
 
             t = rep[:, 0].astype(int)
             m = rep[:, 1].astype(int)
@@ -154,6 +153,8 @@ class AvailableTransferCapacityTimeSeriesResults(ResultsTemplate):
             idx = np.where((np.abs(self.report[:, 4]) > threshold) & (loading <= 1.0))[0]
 
             self.report = self.report[idx, :]
+
+            self.report_indices = np.arange(0, self.report.shape[0])
         else:
             print('Empty raw report :/')
 

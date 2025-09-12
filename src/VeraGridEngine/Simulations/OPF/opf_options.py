@@ -33,6 +33,7 @@ class OptimalPowerFlowOptions(OptionsTemplate):
                  maximize_flows=False,
                  inter_aggregation_info: InterAggregationInfo | None = None,
                  unit_commitment=False,
+                 use_glsk_as_cost: bool = False,
                  generation_expansion_planning: bool = False,
                  export_model_fname: Union[None, str] = None,
                  generate_report=False,
@@ -61,6 +62,7 @@ class OptimalPowerFlowOptions(OptionsTemplate):
         :param maximize_flows:
         :param inter_aggregation_info:
         :param unit_commitment:
+        :param use_glsk_as_cost: if true, the GLSK values are used instead of the traditional costs
         :param export_model_fname:
         :param generate_report:
         :param ips_method:
@@ -100,6 +102,8 @@ class OptimalPowerFlowOptions(OptionsTemplate):
         self.inter_aggregation_info = inter_aggregation_info
 
         self.unit_commitment = unit_commitment
+
+        self.use_glsk_as_cost = use_glsk_as_cost
 
         self.generation_expansion_planning = generation_expansion_planning
 

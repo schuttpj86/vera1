@@ -144,6 +144,7 @@ class OptimalPowerFlowDriver(TimeSeriesDriverTemplate):
                                          inter_aggregation_info=self.options.inter_aggregation_info,
                                          energy_0=None,
                                          fluid_level_0=None,
+                                         use_glsk_as_cost=self.options.use_glsk_as_cost,
                                          logger=self.logger,
                                          export_model_fname=self.options.export_model_fname,
                                          verbose=self.options.verbose,

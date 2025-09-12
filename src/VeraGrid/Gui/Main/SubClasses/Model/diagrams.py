@@ -1231,6 +1231,8 @@ class DiagramsMain(CompiledArraysMain):
         """
         nbus = self.circuit.get_bus_number()
         nbr = self.circuit.get_branch_number(add_vsc=False, add_hvdc=False, add_switch=True)
+        nhvdc = self.circuit.get_hvdc_number()
+        nvsc = self.circuit.get_vsc_number()
 
         bus_active = self.circuit.get_bus_actives(t_idx=t_idx)
         br_active = self.circuit.get_branch_actives(t_idx=t_idx, add_vsc=False, add_hvdc=False, add_switch=True)
@@ -1245,6 +1247,14 @@ class DiagramsMain(CompiledArraysMain):
                                              loadings=np.zeros(nbr, dtype=complex),
                                              br_active=br_active,
                                              hvdc_active=hvdc_active,
+                                             hvdc_loading=np.zeros(nhvdc, dtype=float),
+                                             hvdc_Pf=np.zeros(nhvdc, dtype=float),
+                                             hvdc_Pt=np.zeros(nhvdc, dtype=float),
+                                             vsc_active=vsc_active,
+                                             vsc_loading=np.zeros(nvsc, dtype=float),
+                                             vsc_Pf=np.zeros(nvsc, dtype=float),
+                                             vsc_Pt=np.zeros(nvsc, dtype=float),
+                                             vsc_Qt=np.zeros(nvsc, dtype=float),
                                              use_flow_based_width=use_flow_based_width,
                                              min_branch_width=min_branch_width,
                                              max_branch_width=max_branch_width,

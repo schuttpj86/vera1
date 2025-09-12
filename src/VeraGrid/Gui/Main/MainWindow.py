@@ -31,7 +31,7 @@ class Ui_mainWindow(object):
     def setupUi(self, mainWindow):
         if not mainWindow.objectName():
             mainWindow.setObjectName(u"mainWindow")
-        mainWindow.resize(1198, 742)
+        mainWindow.resize(1390, 847)
         mainWindow.setBaseSize(QSize(0, 0))
         font = QFont()
         font.setPointSize(10)
@@ -2931,80 +2931,29 @@ class Ui_mainWindow(object):
         self.groupBox.setFont(font6)
         self.gridLayout_18 = QGridLayout(self.groupBox)
         self.gridLayout_18.setObjectName(u"gridLayout_18")
+        self.opfGEPCheckBox = QCheckBox(self.groupBox)
+        self.opfGEPCheckBox.setObjectName(u"opfGEPCheckBox")
+        self.opfGEPCheckBox.setFont(font7)
+
+        self.gridLayout_18.addWidget(self.opfGEPCheckBox, 8, 0, 1, 2)
+
+        self.fixOpfCheckBox = QCheckBox(self.groupBox)
+        self.fixOpfCheckBox.setObjectName(u"fixOpfCheckBox")
+        self.fixOpfCheckBox.setFont(font7)
+
+        self.gridLayout_18.addWidget(self.fixOpfCheckBox, 9, 0, 1, 2)
+
         self.label_10 = QLabel(self.groupBox)
         self.label_10.setObjectName(u"label_10")
         self.label_10.setFont(font7)
 
         self.gridLayout_18.addWidget(self.label_10, 0, 0, 1, 1)
 
-        self.opfZonalGroupByComboBox = QComboBox(self.groupBox)
-        self.opfZonalGroupByComboBox.setObjectName(u"opfZonalGroupByComboBox")
-        self.opfZonalGroupByComboBox.setFont(font7)
-
-        self.gridLayout_18.addWidget(self.opfZonalGroupByComboBox, 2, 1, 1, 1)
-
         self.opfUnitCommitmentCheckBox = QCheckBox(self.groupBox)
         self.opfUnitCommitmentCheckBox.setObjectName(u"opfUnitCommitmentCheckBox")
         self.opfUnitCommitmentCheckBox.setFont(font7)
 
         self.gridLayout_18.addWidget(self.opfUnitCommitmentCheckBox, 5, 0, 1, 1)
-
-        self.label_132 = QLabel(self.groupBox)
-        self.label_132.setObjectName(u"label_132")
-
-        self.gridLayout_18.addWidget(self.label_132, 4, 0, 1, 2)
-
-        self.opf_time_grouping_comboBox = QComboBox(self.groupBox)
-        self.opf_time_grouping_comboBox.setObjectName(u"opf_time_grouping_comboBox")
-        self.opf_time_grouping_comboBox.setFont(font7)
-
-        self.gridLayout_18.addWidget(self.opf_time_grouping_comboBox, 1, 1, 1, 1)
-
-        self.mip_solver_comboBox = QComboBox(self.groupBox)
-        self.mip_solver_comboBox.setObjectName(u"mip_solver_comboBox")
-        self.mip_solver_comboBox.setFont(font7)
-
-        self.gridLayout_18.addWidget(self.mip_solver_comboBox, 0, 1, 1, 1)
-
-        self.fixOpfCheckBox = QCheckBox(self.groupBox)
-        self.fixOpfCheckBox.setObjectName(u"fixOpfCheckBox")
-        self.fixOpfCheckBox.setFont(font7)
-
-        self.gridLayout_18.addWidget(self.fixOpfCheckBox, 8, 0, 1, 2)
-
-        self.considerContingenciesOpfCheckBox = QCheckBox(self.groupBox)
-        self.considerContingenciesOpfCheckBox.setObjectName(u"considerContingenciesOpfCheckBox")
-        self.considerContingenciesOpfCheckBox.setFont(font7)
-
-        self.gridLayout_18.addWidget(self.considerContingenciesOpfCheckBox, 6, 0, 1, 2)
-
-        self.label_4 = QLabel(self.groupBox)
-        self.label_4.setObjectName(u"label_4")
-        self.label_4.setFont(font7)
-
-        self.gridLayout_18.addWidget(self.label_4, 1, 0, 1, 1)
-
-        self.save_mip_checkBox = QCheckBox(self.groupBox)
-        self.save_mip_checkBox.setObjectName(u"save_mip_checkBox")
-        self.save_mip_checkBox.setFont(font7)
-
-        self.gridLayout_18.addWidget(self.save_mip_checkBox, 11, 0, 1, 2)
-
-        self.verticalSpacer_18 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
-        self.gridLayout_18.addItem(self.verticalSpacer_18, 12, 0, 1, 1)
-
-        self.label_104 = QLabel(self.groupBox)
-        self.label_104.setObjectName(u"label_104")
-        self.label_104.setFont(font7)
-
-        self.gridLayout_18.addWidget(self.label_104, 3, 0, 1, 1)
-
-        self.label_103 = QLabel(self.groupBox)
-        self.label_103.setObjectName(u"label_103")
-        self.label_103.setFont(font7)
-
-        self.gridLayout_18.addWidget(self.label_103, 2, 0, 1, 1)
 
         self.opfContingencyToleranceSpinBox = QDoubleSpinBox(self.groupBox)
         self.opfContingencyToleranceSpinBox.setObjectName(u"opfContingencyToleranceSpinBox")
@@ -3015,11 +2964,68 @@ class Ui_mainWindow(object):
 
         self.gridLayout_18.addWidget(self.opfContingencyToleranceSpinBox, 3, 1, 1, 1)
 
-        self.opfGEPCheckBox = QCheckBox(self.groupBox)
-        self.opfGEPCheckBox.setObjectName(u"opfGEPCheckBox")
-        self.opfGEPCheckBox.setFont(font7)
+        self.considerContingenciesOpfCheckBox = QCheckBox(self.groupBox)
+        self.considerContingenciesOpfCheckBox.setObjectName(u"considerContingenciesOpfCheckBox")
+        self.considerContingenciesOpfCheckBox.setFont(font7)
 
-        self.gridLayout_18.addWidget(self.opfGEPCheckBox, 7, 0, 1, 2)
+        self.gridLayout_18.addWidget(self.considerContingenciesOpfCheckBox, 6, 0, 1, 2)
+
+        self.opfZonalGroupByComboBox = QComboBox(self.groupBox)
+        self.opfZonalGroupByComboBox.setObjectName(u"opfZonalGroupByComboBox")
+        self.opfZonalGroupByComboBox.setFont(font7)
+
+        self.gridLayout_18.addWidget(self.opfZonalGroupByComboBox, 2, 1, 1, 1)
+
+        self.save_mip_checkBox = QCheckBox(self.groupBox)
+        self.save_mip_checkBox.setObjectName(u"save_mip_checkBox")
+        self.save_mip_checkBox.setFont(font7)
+
+        self.gridLayout_18.addWidget(self.save_mip_checkBox, 12, 0, 1, 2)
+
+        self.label_132 = QLabel(self.groupBox)
+        self.label_132.setObjectName(u"label_132")
+
+        self.gridLayout_18.addWidget(self.label_132, 4, 0, 1, 2)
+
+        self.label_4 = QLabel(self.groupBox)
+        self.label_4.setObjectName(u"label_4")
+        self.label_4.setFont(font7)
+
+        self.gridLayout_18.addWidget(self.label_4, 1, 0, 1, 1)
+
+        self.label_103 = QLabel(self.groupBox)
+        self.label_103.setObjectName(u"label_103")
+        self.label_103.setFont(font7)
+
+        self.gridLayout_18.addWidget(self.label_103, 2, 0, 1, 1)
+
+        self.mip_solver_comboBox = QComboBox(self.groupBox)
+        self.mip_solver_comboBox.setObjectName(u"mip_solver_comboBox")
+        self.mip_solver_comboBox.setFont(font7)
+
+        self.gridLayout_18.addWidget(self.mip_solver_comboBox, 0, 1, 1, 1)
+
+        self.label_104 = QLabel(self.groupBox)
+        self.label_104.setObjectName(u"label_104")
+        self.label_104.setFont(font7)
+
+        self.gridLayout_18.addWidget(self.label_104, 3, 0, 1, 1)
+
+        self.verticalSpacer_18 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.gridLayout_18.addItem(self.verticalSpacer_18, 13, 0, 1, 1)
+
+        self.opf_time_grouping_comboBox = QComboBox(self.groupBox)
+        self.opf_time_grouping_comboBox.setObjectName(u"opf_time_grouping_comboBox")
+        self.opf_time_grouping_comboBox.setFont(font7)
+
+        self.gridLayout_18.addWidget(self.opf_time_grouping_comboBox, 1, 1, 1, 1)
+
+        self.useGslkAsCostsOpfCheckBox = QCheckBox(self.groupBox)
+        self.useGslkAsCostsOpfCheckBox.setObjectName(u"useGslkAsCostsOpfCheckBox")
+        self.useGslkAsCostsOpfCheckBox.setFont(font7)
+
+        self.gridLayout_18.addWidget(self.useGslkAsCostsOpfCheckBox, 7, 0, 1, 2)
 
 
         self.gridLayout_10.addWidget(self.groupBox, 3, 3, 1, 1)
@@ -4799,7 +4805,7 @@ class Ui_mainWindow(object):
         mainWindow.setCentralWidget(self.centralwidget)
         self.menuBar = QMenuBar(mainWindow)
         self.menuBar.setObjectName(u"menuBar")
-        self.menuBar.setGeometry(QRect(0, 0, 1198, 21))
+        self.menuBar.setGeometry(QRect(0, 0, 1390, 37))
         self.menuBar.setFont(font)
         self.menuProject = QMenu(self.menuBar)
         self.menuProject.setObjectName(u"menuProject")
@@ -5851,40 +5857,44 @@ class Ui_mainWindow(object):
 #endif // QT_CONFIG(tooltip)
         self.ips_control_Qlimits_checkBox.setText(QCoreApplication.translate("mainWindow", u"Control Q limits", None))
         self.groupBox.setTitle(QCoreApplication.translate("mainWindow", u"Linear settings", None))
+#if QT_CONFIG(tooltip)
+        self.opfGEPCheckBox.setToolTip(QCoreApplication.translate("mainWindow", u"Apply generation expansion planning", None))
+#endif // QT_CONFIG(tooltip)
+        self.opfGEPCheckBox.setText(QCoreApplication.translate("mainWindow", u"Generation expansion planning", None))
+#if QT_CONFIG(tooltip)
+        self.fixOpfCheckBox.setToolTip(QCoreApplication.translate("mainWindow", u"Fix infeasible problems and rey with the relaxed problem. Applies to OPF and NTC", None))
+#endif // QT_CONFIG(tooltip)
+        self.fixOpfCheckBox.setText(QCoreApplication.translate("mainWindow", u"Fix infeasibilities and retry", None))
         self.label_10.setText(QCoreApplication.translate("mainWindow", u"MIP solver", None))
 #if QT_CONFIG(tooltip)
         self.opfUnitCommitmentCheckBox.setToolTip(QCoreApplication.translate("mainWindow", u"Apply unit commitment technique", None))
 #endif // QT_CONFIG(tooltip)
         self.opfUnitCommitmentCheckBox.setText(QCoreApplication.translate("mainWindow", u"Unit commitment", None))
-        self.label_132.setText("")
-#if QT_CONFIG(tooltip)
-        self.opf_time_grouping_comboBox.setToolTip(QCoreApplication.translate("mainWindow", u"<html><head/><body><p>Choose the time grouping to possibly shorten the solution time.</p><p>This splits the time series by week, month, etc. and the subproblems are solved sequentially.</p></body></html>", None))
-#endif // QT_CONFIG(tooltip)
-#if QT_CONFIG(tooltip)
-        self.mip_solver_comboBox.setToolTip(QCoreApplication.translate("mainWindow", u"Choose the external mixed integer programming solver", None))
-#endif // QT_CONFIG(tooltip)
-#if QT_CONFIG(tooltip)
-        self.fixOpfCheckBox.setToolTip(QCoreApplication.translate("mainWindow", u"Fix infeasible problems and rey with the relaxed problem. Applies to OPF and NTC", None))
-#endif // QT_CONFIG(tooltip)
-        self.fixOpfCheckBox.setText(QCoreApplication.translate("mainWindow", u"Fix infeasibilities and retry", None))
-#if QT_CONFIG(tooltip)
-        self.considerContingenciesOpfCheckBox.setToolTip(QCoreApplication.translate("mainWindow", u"Consider the contingencies when dispatching", None))
-#endif // QT_CONFIG(tooltip)
-        self.considerContingenciesOpfCheckBox.setText(QCoreApplication.translate("mainWindow", u"Compute contingencies", None))
-        self.label_4.setText(QCoreApplication.translate("mainWindow", u"Time grouping", None))
-#if QT_CONFIG(tooltip)
-        self.save_mip_checkBox.setToolTip(QCoreApplication.translate("mainWindow", u"<html><head/><body><p>The program will save the MIP file in .lp format in the user VeraGrid folder before running a linear optimization study.</p></body></html>", None))
-#endif // QT_CONFIG(tooltip)
-        self.save_mip_checkBox.setText(QCoreApplication.translate("mainWindow", u"Save MIP file", None))
-        self.label_104.setText(QCoreApplication.translate("mainWindow", u"Contingency tolerance", None))
-        self.label_103.setText(QCoreApplication.translate("mainWindow", u"Zone grouping", None))
 #if QT_CONFIG(tooltip)
         self.opfContingencyToleranceSpinBox.setToolTip(QCoreApplication.translate("mainWindow", u"LODF matrix tolerance choosing contingencies", None))
 #endif // QT_CONFIG(tooltip)
 #if QT_CONFIG(tooltip)
-        self.opfGEPCheckBox.setToolTip(QCoreApplication.translate("mainWindow", u"Apply generation expansion planning", None))
+        self.considerContingenciesOpfCheckBox.setToolTip(QCoreApplication.translate("mainWindow", u"Consider the contingencies when dispatching", None))
 #endif // QT_CONFIG(tooltip)
-        self.opfGEPCheckBox.setText(QCoreApplication.translate("mainWindow", u"Generation expansion planning", None))
+        self.considerContingenciesOpfCheckBox.setText(QCoreApplication.translate("mainWindow", u"Compute contingencies", None))
+#if QT_CONFIG(tooltip)
+        self.save_mip_checkBox.setToolTip(QCoreApplication.translate("mainWindow", u"<html><head/><body><p>The program will save the MIP file in .lp format in the user VeraGrid folder before running a linear optimization study.</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
+        self.save_mip_checkBox.setText(QCoreApplication.translate("mainWindow", u"Save MIP file", None))
+        self.label_132.setText("")
+        self.label_4.setText(QCoreApplication.translate("mainWindow", u"Time grouping", None))
+        self.label_103.setText(QCoreApplication.translate("mainWindow", u"Zone grouping", None))
+#if QT_CONFIG(tooltip)
+        self.mip_solver_comboBox.setToolTip(QCoreApplication.translate("mainWindow", u"Choose the external mixed integer programming solver", None))
+#endif // QT_CONFIG(tooltip)
+        self.label_104.setText(QCoreApplication.translate("mainWindow", u"Contingency tolerance", None))
+#if QT_CONFIG(tooltip)
+        self.opf_time_grouping_comboBox.setToolTip(QCoreApplication.translate("mainWindow", u"<html><head/><body><p>Choose the time grouping to possibly shorten the solution time.</p><p>This splits the time series by week, month, etc. and the subproblems are solved sequentially.</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
+#if QT_CONFIG(tooltip)
+        self.useGslkAsCostsOpfCheckBox.setToolTip(QCoreApplication.translate("mainWindow", u"Instead of using the generation, loads cost for dispatching, use the GLSK (Generation, Load Shift Keys)", None))
+#endif // QT_CONFIG(tooltip)
+        self.useGslkAsCostsOpfCheckBox.setText(QCoreApplication.translate("mainWindow", u"Use GSLK as costs", None))
         self.label_73.setText(QCoreApplication.translate("mainWindow", u"Optimal Power Flow", None))
         self.groupBox_2.setTitle(QCoreApplication.translate("mainWindow", u"General settings", None))
         self.label_128.setText(QCoreApplication.translate("mainWindow", u"Verbose", None))
