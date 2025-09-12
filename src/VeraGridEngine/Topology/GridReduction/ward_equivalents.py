@@ -2,18 +2,20 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 # SPDX-License-Identifier: MPL-2.0
-
-from typing import Tuple, Sequence
+from __future__ import annotations
+from typing import Tuple, Sequence, TYPE_CHECKING
 
 import numpy as np
 import scipy.sparse as sp
 import scipy.sparse.linalg as spla
 
 import VeraGridEngine.Devices as dev
-from VeraGridEngine.Devices.multi_circuit import MultiCircuit
 from VeraGridEngine.DataStructures.numerical_circuit import NumericalCircuit
 from VeraGridEngine.Compilers.circuit_to_data import compile_numerical_circuit_at
 from VeraGridEngine.basic_structures import Logger, IntVec, CxVec
+
+if TYPE_CHECKING:
+    from VeraGridEngine.Devices.multi_circuit import MultiCircuit
 
 
 def get_reduction_sets_1(nc: NumericalCircuit,
@@ -114,7 +116,6 @@ def ward_standard_reduction(grid: MultiCircuit,
 
     # slice admittances and voltages
     YBE = adm.Ybus[np.ix_(b_buses, e_buses)]
-
     YEB = adm.Ybus[np.ix_(e_buses, b_buses)]
     YEE = adm.Ybus[np.ix_(e_buses, e_buses)]
 
@@ -146,7 +147,8 @@ def ward_standard_reduction(grid: MultiCircuit,
         yeq_row_i[i] = 0
         ysh = Yeq[i, i] - np.sum(yeq_row_i)
         grid.add_shunt(bus=bus,
-                       api_obj=dev.Shunt(name=f"Equivalent shunt {i}", B=ysh.imag, G=ysh.real))
+                       api_obj=dev.Shunt(name=f"Equivalent shunt {i}",
+                                         B=ysh.imag, G=ysh.real))
 
         for j in range(i):
 
@@ -157,7 +159,7 @@ def ward_standard_reduction(grid: MultiCircuit,
 
                 z = 1.0 / Yeq[i, j]
 
-                grid.add_series_reactance(dev.SeriesReactance(
+                grid.add_series_reactance(obj=dev.SeriesReactance(
                     name=f"Equivalent boundary impedance {b_buses[i]}-{b_buses[j]}",
                     bus_from=grid.buses[f],
                     bus_to=grid.buses[t],

@@ -521,7 +521,7 @@ class BaseDiagramWidget(QSplitter):
                     any_plot = True
 
                 elif isinstance(results, StochasticPowerFlowResults):
-                    loading_table = results.mdl(result_type=ResultTypes.BranchLoadingAverage)
+                    loading_table = results.mdl(result_type=ResultTypes.BranchLoadingCDF)
                     loading_table.convert_to_cdf()
                     loading_table.plot_device(ax=ax_2, device_idx=i, title="Stochastic loading")
                     any_plot = True

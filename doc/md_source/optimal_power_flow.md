@@ -192,15 +192,13 @@ branch 45 -893.769383   18.289069  900.000000  103.207961  -74.480782  6.230617 
 
 ### Hydro linear OPF
 
-
-
 ```python
 import datetime as dt
 import numpy as np
 import pandas as pd
-import VeraGridEngine as gce
+import VeraGridEngine as vg
 
-grid = gce.MultiCircuit(name="hydro_grid")
+grid = vg.MultiCircuit(name="hydro_grid")
 
 # master time profile
 start = dt.datetime(2023, 1, 1)
@@ -208,87 +206,80 @@ time_index = pd.date_range(start, periods=10, freq="H")
 profile = pd.Series(np.linspace(0, 10, len(time_index)), index=time_index)
 
 grid.time_profile = profile.index
-```
+
 
 #### Add fluid side
 
-```python
+
 # Electrical buses for the fluid nodes
-a_fb1, a_fb2, a_fb3 = (gce.Bus(name=n) for n in ("fb1", "fb2", "fb3"))
+a_fb1, a_fb2, a_fb3 = (vg.Bus(name=n) for n in ("fb1", "fb2", "fb3"))
 for b in (a_fb1, a_fb2, a_fb3):
     grid.add_bus(b)
 
 # Fluid nodes
-f1 = gce.FluidNode(name="fluid_node_1", min_level=0, max_level=100, current_level=50,
-                   spillage_cost=10, inflow=0, bus=a_fb1)
-f2 = gce.FluidNode(name="fluid_node_2", spillage_cost=10, bus=a_fb2)
-f3 = gce.FluidNode(name="fluid_node_3", spillage_cost=10, bus=a_fb3)
-f4 = gce.FluidNode(name="fluid_node_4", min_level=0, max_level=100, current_level=50,
-                   spillage_cost=10, inflow=0)
+f1 = vg.FluidNode(name="fluid_node_1", min_level=0, max_level=100, current_level=50,
+                  spillage_cost=10, inflow=0, bus=a_fb1)
+f2 = vg.FluidNode(name="fluid_node_2", spillage_cost=10, bus=a_fb2)
+f3 = vg.FluidNode(name="fluid_node_3", spillage_cost=10, bus=a_fb3)
+f4 = vg.FluidNode(name="fluid_node_4", min_level=0, max_level=100, current_level=50,
+                  spillage_cost=10, inflow=0)
 for n in (f1, f2, f3, f4):
     grid.add_fluid_node(n)
 
 # Paths
-p1 = gce.FluidPath(name="path_1", source=f1, target=f2, min_flow=-50, max_flow=50)
-p2 = gce.FluidPath(name="path_2", source=f2, target=f3, min_flow=-50, max_flow=50)
-p3 = gce.FluidPath(name="path_3", source=f3, target=f4, min_flow=-50, max_flow=50)
+p1 = vg.FluidPath(name="path_1", source=f1, target=f2, min_flow=-50, max_flow=50)
+p2 = vg.FluidPath(name="path_2", source=f2, target=f3, min_flow=-50, max_flow=50)
+p3 = vg.FluidPath(name="path_3", source=f3, target=f4, min_flow=-50, max_flow=50)
 for p in (p1, p2, p3):
     grid.add_fluid_path(p)
 
 # Generators linked to fluid devices
-g1 = gce.Generator(name="turb_1_gen", Pmax=1000, Pmin=0, Cost=0.5)
-g2 = gce.Generator(name="pump_1_gen", Pmax=0, Pmin=-1000, Cost=-0.5)
-g3 = gce.Generator(name="p2x_1_gen", Pmax=0, Pmin=-1000, Cost=-0.5)
+g1 = vg.Generator(name="turb_1_gen", Pmax=1000, Pmin=0, Cost=0.5)
+g2 = vg.Generator(name="pump_1_gen", Pmax=0, Pmin=-1000, Cost=-0.5)
+g3 = vg.Generator(name="p2x_1_gen", Pmax=0, Pmin=-1000, Cost=-0.5)
 
 grid.add_generator(a_fb3, g1)
 grid.add_generator(a_fb2, g2)
 grid.add_generator(a_fb1, g3)
 
 # Devices
-turb1 = gce.FluidTurbine(name="turbine_1", plant=f3, generator=g1,
-                         max_flow_rate=45, efficiency=0.95)
+turb1 = vg.FluidTurbine(name="turbine_1", plant=f3, generator=g1,
+                        max_flow_rate=45, efficiency=0.95)
 grid.add_fluid_turbine(f3, turb1)
 
-pump1 = gce.FluidPump(name="pump_1", reservoir=f2, generator=g2,
-                      max_flow_rate=49, efficiency=0.85)
+pump1 = vg.FluidPump(name="pump_1", reservoir=f2, generator=g2,
+                     max_flow_rate=49, efficiency=0.85)
 grid.add_fluid_pump(f2, pump1)
 
-p2x1 = gce.FluidP2x(name="p2x_1", plant=f1, generator=g3,
-                    max_flow_rate=49, efficiency=0.9)
+p2x1 = vg.FluidP2x(name="p2x_1", plant=f1, generator=g3,
+                   max_flow_rate=49, efficiency=0.9)
 grid.add_fluid_p2x(f1, p2x1)
-```
+
 
 #### Remaining electrical network
 
-```python
-b1 = gce.Bus(name="b1", vnom=10, is_slack=True)
-b2 = gce.Bus(name="b2", vnom=10)
+
+b1 = vg.Bus(name="b1", Vnom=10, is_slack=True)
+b2 = vg.Bus(name="b2", Vnom=10)
 
 grid.add_bus(b1)
 grid.add_bus(b2)
 
-g0 = gce.Generator(name="slack_gen", Pmax=1000, Pmin=0, Cost=0.8)
+g0 = vg.Generator(name="slack_gen", Pmax=1000, Pmin=0, Cost=0.8)
 grid.add_generator(b1, g0)
 
-l1 = gce.Load(name="l1", P=11, Q=0)
+l1 = vg.Load(name="l1", P=11, Q=0)
 grid.add_load(b2, l1)
 
-line1 = gce.Line(name="line1", bus_from=b1, bus_to=b2, rate=5, x=0.05)
-line2 = gce.Line(name="line2", bus_from=b1, bus_to=a_fb1, rate=10, x=0.05)
-line3 = gce.Line(name="line3", bus_from=b1, bus_to=a_fb2, rate=10, x=0.05)
-line4 = gce.Line(name="line4", bus_from=a_fb3, bus_to=b2, rate=15, x=0.05)
+line1 = vg.Line(name="line1", bus_from=b1, bus_to=b2, rate=5, x=0.05)
+line2 = vg.Line(name="line2", bus_from=b1, bus_to=a_fb1, rate=10, x=0.05)
+line3 = vg.Line(name="line3", bus_from=b1, bus_to=a_fb2, rate=10, x=0.05)
+line4 = vg.Line(name="line4", bus_from=a_fb3, bus_to=b2, rate=15, x=0.05)
 for ln in (line1, line2, line3, line4):
     grid.add_line(ln)
-```
 
-The resulting system is depicted below.
-
-![Hydro‑electric test case (6 buses + fluid network).](figures/opf/case6_fluid.png)
-
-#### Run optimization
-
-```python
-opf = gce.OptimalPowerFlowTimeSeriesDriver(grid)
+### Run the optimization
+opf = vg.OptimalPowerFlowTimeSeriesDriver(grid)
 print("Solving…")
 opf.run()
 
@@ -298,7 +289,10 @@ print("Branch loading:\n", opf.results.loading)
 print("Gen power:\n", opf.results.generator_power)
 ```
 
-#### Sample results
+The resulting system is depicted below.
+
+![Hydro‑electric test case (6 buses + fluid network).](figures/opf/case6_fluid.png)
+
 
 ##### Generation power (MW)
 
