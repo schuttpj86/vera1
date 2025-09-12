@@ -189,10 +189,10 @@ or have more than one cable at a time.
 
 The `HvdcLine` device has only 2 controls: Active power control (`Pset`) and AC line emulation (`free`)
 
-| Control type | Effect                                                  |
-|--------------|---------------------------------------------------------|
-| Pset         | Set active power                                        |
-| free         | AC emulation:<br/>$P = P_0 + k · (\theta_f - \theta_t)$ |
+| Control type | Effect                                                      |
+|--------------|-------------------------------------------------------------|
+| Pset         | Set active power                                            |
+| free         | AC emulation:<br/>$P = P_0 + k \cdot (\theta_f - \theta_t)$ |
 
 Let's see a python example using 4 buses:
 

@@ -30,7 +30,135 @@
   <component name="ChangeListManager">
     <list default="true" id="aa3ee678-6e91-470f-91a9-09e9d8a4756d" name="Changes" comment="fixed setup issues">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/VeraGridEngine/Simulations/PowerFlow/power_flow_options.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/VeraGridEngine/Simulations/PowerFlow/power_flow_options.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.Gui.AboutDialogue.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.Gui.Analysis.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.Gui.ContingencyPlanner.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.Gui.CoordinatesInput.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.Gui.Diagrams.Editors.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.Gui.Diagrams.MapWidget.Branches.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.Gui.Diagrams.MapWidget.Substation.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.Gui.Diagrams.MapWidget.Tiles.TileProviders.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.Gui.Diagrams.MapWidget.Tiles.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.Gui.Diagrams.MapWidget.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.Gui.Diagrams.SchematicWidget.Branches.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.Gui.Diagrams.SchematicWidget.Fluid.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.Gui.Diagrams.SchematicWidget.Injections.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.Gui.Diagrams.SchematicWidget.Substation.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.Gui.Diagrams.SchematicWidget.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.Gui.Diagrams.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.Gui.GridGenerator.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.Gui.GridMerge.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.Gui.GridReduce.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.Gui.LoadCatalogue.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.Gui.LoadDesigner.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.Gui.Main.SubClasses.Model.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.Gui.Main.SubClasses.Results.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.Gui.Main.SubClasses.Scripting.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.Gui.Main.SubClasses.Server.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.Gui.Main.SubClasses.Settings.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.Gui.Main.SubClasses.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.Gui.Main.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.Gui.ProfilesInput.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.Gui.RosetaExplorer.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.Gui.SigmaAnalysis.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.Gui.SolarPowerWizard.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.Gui.SubstationDesigner.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.Gui.SyncDialogue.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.Gui.SystemScaler.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.Gui.TowerBuilder.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.Gui.TreeModelViewer.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.Gui.Visualization.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.Gui.Widgets.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.Gui.WindPowerWizard.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.Gui.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.Session.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.ThirdParty.darkdetect.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.ThirdParty.qdarktheme.qtpy.QtCore.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.ThirdParty.qdarktheme.qtpy.QtGui.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.ThirdParty.qdarktheme.qtpy.QtSvg.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.ThirdParty.qdarktheme.qtpy.QtWidgets.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.ThirdParty.qdarktheme.qtpy.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.ThirdParty.qdarktheme.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.ThirdParty.qdarktheme.widget_gallery.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.ThirdParty.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.data.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCal.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Compilers.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.DataStructures.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Devices.Aggregation.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Devices.Associations.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Devices.Branches.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Devices.Diagrams.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Devices.Fluid.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Devices.Injections.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Devices.Parents.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Devices.Substation.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Devices.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.IO.base.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.IO.cim.cgmes.cgmes_assets.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.IO.cim.cgmes.cgmes_v2_4_15.devices.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.IO.cim.cgmes.cgmes_v2_4_15.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.IO.cim.cgmes.cgmes_v3_0_0.devices.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.IO.cim.cgmes.cgmes_v3_0_0.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.IO.cim.cgmes.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.IO.cim.cim16.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.IO.cim.db.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.IO.cim.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.IO.dgs.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.IO.epc.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.IO.gridcal.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.IO.iidm.devices.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.IO.iidm.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.IO.matpower.legacy.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.IO.matpower.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.IO.others.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.IO.raw.devices.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.IO.raw.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.IO.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.IO.ucte.devices.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.IO.ucte.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Simulations.AI.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Simulations.ATC.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Simulations.Clustering.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Simulations.ContingencyAnalysis.Methods.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Simulations.ContingencyAnalysis.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Simulations.ContinuationPowerFlow.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Simulations.Derivatives.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Simulations.Dynamics.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Simulations.InputsAnalysis.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Simulations.InvestmentsEvaluation.Methods.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Simulations.InvestmentsEvaluation.Problems.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Simulations.InvestmentsEvaluation.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Simulations.LinearFactors.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Simulations.NTC.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Simulations.NodalCapacity.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Simulations.OPF.Formulations.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Simulations.OPF.NumericalMethods.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Simulations.OPF.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Simulations.PowerFlow.Formulations.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Simulations.PowerFlow.NumericalMethods.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Simulations.PowerFlow.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Simulations.Reliability.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Simulations.ShortCircuitStudies.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Simulations.SigmaAnalysis.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Simulations.StateEstimation.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Simulations.Stochastic.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Simulations.Topology.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Simulations.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Topology.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Utils.Filtering.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Utils.MIP.SimpleMip.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Utils.MIP.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Utils.NumericalMethods.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Utils.Sparse.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Utils.ThirdParty.SyntheticNetworks.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Utils.ThirdParty.gslv.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Utils.ThirdParty.pulp.apis.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Utils.ThirdParty.pulp.model.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Utils.ThirdParty.pulp.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Utils.ThirdParty.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.Utils.rst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/rst_source/api/auto/GridCalEngine.rst" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -98,12 +226,12 @@
       </list>
     </option>
   </component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/SanPen/VeraGrid.git&quot;,
-    &quot;accountId&quot;: &quot;1acef425-303f-45a5-9f13-1a5d8e86b985&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/SanPen/GridCal.git",
+    "accountId": "cb83a36c-6a26-4d28-9aa3-3af0083cd55d"
   }
-}</component>
+}]]></component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/requirements.txt" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/GridCal/Gui/ConsoleWidget.py" root0="FORCE_HIGHLIGHTING" />
@@ -249,9 +377,9 @@
     "RunOnceActivity.git.unshallow": "true",
     "Shell Script.make.sh.executor": "Run",
     "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "devel",
+    "git-widget-placeholder": "master",
     "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "/Users/josep/Desktop/VeraGrid",
+    "last_opened_file_path": "/Users/santi/Git/GitHub/VeraGrid",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
@@ -283,7 +411,7 @@
       <recent name="D:\SIROCO\GridCal\src\GridCal\Gui\Diagrams\MapWidget\Substation" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.make">
     <configuration default="true" type="DjangoTestsConfigurationType">
       <module name="GridCalEngine" />
       <option name="ENV_FILES" value="" />
@@ -687,29 +815,6 @@
       <option name="_new_targetType" value="&quot;PATH&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="ExecuteGridCal" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="GridCal" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/GridCal" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/GridCal/ExecuteGridCal.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <module name="GridCalEngine" />
       <option name="ENV_FILES" value="" />
@@ -725,6 +830,29 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="make" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="VeraGrid" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/doc" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/doc/make.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -924,39 +1052,24 @@
       <option name="_new_targetType" value="&quot;PATH&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="pytest in tests" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
-      <module name="GridCal" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/tests" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="_new_keywords" value="&quot;&quot;" />
-      <option name="_new_parameters" value="&quot;&quot;" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;$PROJECT_DIR$/src/tests&quot;" />
-      <option name="_new_targetType" value="&quot;PATH&quot;" />
-      <method v="2" />
-    </configuration>
     <list>
-      <item itemvalue="Python tests.pytest in tests" />
+      <item itemvalue="Python.test_gslv_conversion" />
+      <item itemvalue="Python.test_power_flow" />
+      <item itemvalue="Python.test_raw_cgmes_cross_roundtrip" />
+      <item itemvalue="Python.make" />
       <item itemvalue="Shell Script.make.sh" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.make" />
         <item itemvalue="Shell Script.make.sh" />
-        <item itemvalue="Python tests.pytest in tests" />
       </list>
     </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-fc1d50d2d915-aa17d162503b-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-243.24978.54" />
+        <option value="bundled-python-sdk-dfff61a61320-9cdd278e9d02-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-251.25410.159" />
       </set>
     </attachedChunks>
   </component>
