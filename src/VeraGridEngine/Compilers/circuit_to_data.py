@@ -1133,8 +1133,8 @@ def fill_generator_parent(
     # reactive power-sharing data
     if data.active[k]:
         if data.controllable[k]:
-            bus_data.q_shared_total[i] += data.p[k]
-            data.q_share[k] = data.p[k]
+            bus_data.q_shared_total[i] += data.pmax[k]
+            data.q_share[k] = data.pmax[k]
         else:
             bus_data.q_fixed[i] += data.get_q_at(k)
 
