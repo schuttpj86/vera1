@@ -74,9 +74,9 @@ class VideoExportWorker(QtCore.QThread):
 
         self.filename = filename
         self.diagram = diagram
-        self.fps = fps
-        self.start_idx = start_idx
-        self.end_idx = end_idx
+        self.fps: int = fps
+        self.start_idx: int = start_idx
+        self.end_idx: int = end_idx
         self.current_study = current_study
         self.grid_colour_function: Callable[[ALL_EDITORS, str, int, bool], None] = grid_colour_function
 
@@ -273,6 +273,7 @@ class DiagramsMain(CompiledArraysMain):
         self.ui.palette_comboBox.currentTextChanged.connect(self.set_diagrams_palette)
         self.ui.tile_provider_comboBox.currentTextChanged.connect(self.set_diagrams_map_tile_provider)
 
+        # TODO: this lambda calls to colour twice is the simulation is run the first time
         self.ui.available_results_to_color_comboBox.currentTextChanged.connect(lambda: self.colour_diagrams(False))
 
         # sliders

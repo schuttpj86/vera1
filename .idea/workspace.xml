@@ -28,18 +28,9 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="aa3ee678-6e91-470f-91a9-09e9d8a4756d" name="Changes" comment="added use gslk as cost options&#10;Fixed issues with base atc representation and fixed the atc_ts report">
-      <change afterPath="$PROJECT_DIR$/doc/md_source/figures/powerflow_clustering_vs_stochastic.png" afterDir="false" />
+    <list default="true" id="aa3ee678-6e91-470f-91a9-09e9d8a4756d" name="Changes" comment="fixed visualization bug and added clustering and reduction docs">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doc/md_source/clustering.md" beforeDir="false" afterPath="$PROJECT_DIR$/doc/md_source/clustering.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doc/md_source/grid_reduction.md" beforeDir="false" afterPath="$PROJECT_DIR$/doc/md_source/grid_reduction.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doc/md_source/nodal_hosting_capacity.md" beforeDir="false" afterPath="$PROJECT_DIR$/doc/md_source/nodal_hosting_capacity.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doc/md_source/optimal_power_flow.md" beforeDir="false" afterPath="$PROJECT_DIR$/doc/md_source/optimal_power_flow.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doc/md_source/stochastic_power_flow.md" beforeDir="false" afterPath="$PROJECT_DIR$/doc/md_source/stochastic_power_flow.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doc/md_source/ward_reduction_algorithm.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/VeraGrid/Gui/Diagrams/base_diagram_widget.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/VeraGrid/Gui/Diagrams/base_diagram_widget.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/VeraGridEngine/Topology/GridReduction/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/VeraGridEngine/Topology/GridReduction/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/VeraGridEngine/Topology/GridReduction/ward_equivalents.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/VeraGridEngine/Topology/GridReduction/ward_equivalents.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/VeraGrid/Gui/Main/SubClasses/Model/diagrams.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/VeraGrid/Gui/Main/SubClasses/Model/diagrams.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -215,7 +206,7 @@
     "Python.ExecuteVeraGrid.executor": "Run",
     "Python.GridCalMain.executor": "Run",
     "Python.LineBuilderDialogue.executor": "Run",
-    "Python.VeraGridMain.executor": "Run",
+    "Python.VeraGridMain.executor": "Debug",
     "Python.auto_document_models.executor": "Run",
     "Python.cgmes_rdfs_graph.executor": "Run",
     "Python.circuit_to_optimods.executor": "Run",
@@ -294,7 +285,7 @@
       <recent name="D:\SIROCO\GridCal\src\GridCal\Gui\Diagrams\MapWidget\Substation" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.make">
+  <component name="RunManager" selected="Python.VeraGridMain">
     <configuration default="true" type="DjangoTestsConfigurationType">
       <module name="GridCalEngine" />
       <option name="ENV_FILES" value="" />
@@ -1019,8 +1010,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.make" />
         <item itemvalue="Python.VeraGridMain" />
+        <item itemvalue="Python.make" />
         <item itemvalue="Python tests.pytest in tests" />
         <item itemvalue="Python.update_gui_file" />
         <item itemvalue="Python.pyside6-designer" />
@@ -2236,7 +2227,7 @@
       <option name="project" value="LOCAL" />
       <updated>1698766404661</updated>
     </task>
-    <option name="localTasksCounter" value="698" />
+    <option name="localTasksCounter" value="699" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -2282,7 +2273,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="5.3.30" />
     <MESSAGE value="Added the ability to recolour the schematic with the design values" />
     <MESSAGE value="minor refactorings" />
     <MESSAGE value="Important opf refurbishing&#10;Added tests about generation, battery and load shedding" />
@@ -2307,7 +2297,8 @@
     <MESSAGE value="Early unification of TopologicalNode and ConnectivityNode" />
     <MESSAGE value="fixed docs issue" />
     <MESSAGE value="added use gslk as cost options&#10;Fixed issues with base atc representation and fixed the atc_ts report" />
-    <option name="LAST_COMMIT_MESSAGE" value="added use gslk as cost options&#10;Fixed issues with base atc representation and fixed the atc_ts report" />
+    <MESSAGE value="fixed visualization bug and added clustering and reduction docs" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed visualization bug and added clustering and reduction docs" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -2536,6 +2527,16 @@
           <url>file://$PROJECT_DIR$/src/VeraGridEngine/Simulations/results_table.py</url>
           <line>449</line>
           <option name="timeStamp" value="2591" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/VeraGrid/Gui/Main/SubClasses/Model/diagrams.py</url>
+          <line>1242</line>
+          <option name="timeStamp" value="2592" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/VeraGrid/Gui/Main/SubClasses/Model/diagrams.py</url>
+          <line>1277</line>
+          <option name="timeStamp" value="2593" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
