@@ -15,19 +15,21 @@ def test_state_estimation_pandapower():
         import pandapower
         # tests/data/grids/state-estimation /small_grid_gb_hv_estimate_raw_expected.json
         #fname = os.path.join("src", "tests", "data", "grids", "state-estimation", "small_grid_gb_hv_estimate_raw_expected.json")
-        fname = os.path.join("data", "grids", "state-estimation", "test_net_tng_unreduced_with_measurements.json")
+        #fname = os.path.join("data", "grids", "state-estimation", "test_net_tng_unreduced_with_measurements.json")
+        fname = os.path.join("data", "grids", "state-estimation", "finalized.json")
         net_wns = pandapower.from_json(fname)
-        net_wns.bus.loc[1519,"uuid"] = net_wns.bus.loc[1519].uuid.strip("DUMMY_BUS_")
-        net_wns.bus.loc[1517,"uuid"] = net_wns.bus.loc[1517].uuid.strip("DUMMY_BUS_")
-        net_wns.bus.loc[1518,"uuid"]= net_wns.bus.loc[1518].uuid.strip("DUMMY_BUS_")
-        net_wns.trafo.loc[23, "uuid"] = net_wns.trafo.loc[23].uuid.strip("DUMMY_PST__")
-        net_wns.trafo.loc[22, "uuid"] = net_wns.trafo.loc[22].uuid.strip("DUMMY_PST__")
-        net_wns.trafo.loc[21, "uuid"] = net_wns.trafo.loc[21].uuid.strip("DUMMY_PST__")
-        net_wns.ext_grid.loc[0, "in_service"] = False
-        net_wns.gen.loc[:,"in_service"]=True
-        net_wns.measurement.loc[:, "std_dev"] = 0.00001
-        # pandapower.to_pickle(net_wns, "test_net_tng_raw_expected.p")
-        net_wns.bus.loc[net_wns.bus[net_wns.bus.name.isna()].index, "name"] = "bus_named"
+        net_wns.bus['uuid'] = net_wns.bus['uuid'].str.replace('_', '').str.replace('-', '')
+        # net_wns.bus.loc[1519,"uuid"] = net_wns.bus.loc[1519].uuid.strip("DUMMY_BUS_")
+        # net_wns.bus.loc[1517,"uuid"] = net_wns.bus.loc[1517].uuid.strip("DUMMY_BUS_")
+        # net_wns.bus.loc[1518,"uuid"]= net_wns.bus.loc[1518].uuid.strip("DUMMY_BUS_")
+        # net_wns.trafo.loc[23, "uuid"] = net_wns.trafo.loc[23].uuid.strip("DUMMY_PST__")
+        # net_wns.trafo.loc[22, "uuid"] = net_wns.trafo.loc[22].uuid.strip("DUMMY_PST__")
+        # net_wns.trafo.loc[21, "uuid"] = net_wns.trafo.loc[21].uuid.strip("DUMMY_PST__")
+        # net_wns.ext_grid.loc[0, "in_service"] = False
+        # net_wns.gen.loc[:,"in_service"]=True
+        # net_wns.measurement.loc[:, "std_dev"] = 0.00001
+        # # pandapower.to_pickle(net_wns, "test_net_tng_raw_expected.p")
+        # net_wns.bus.loc[net_wns.bus[net_wns.bus.name.isna()].index, "name"] = "bus_named"
         g = Panda2VeraGrid(net_wns)
         grid = g.get_multicircuit()
 
@@ -75,7 +77,8 @@ def test_network_objects_consistency():
         import pandapower
         # tests/data/grids/state-estimation /small_grid_gb_hv_estimate_raw_expected.json
         # fname = os.path.join("src", "tests", "data", "grids", "state-estimation", "small_grid_gb_hv_estimate_raw_expected.json")
-        fname_pp = os.path.join("data", "grids", "state-estimation", "test_net_tng_raw_expected.json")
+        #fname_pp = os.path.join("data", "grids", "state-estimation", "test_net_tng_raw_expected.json")
+        fname_pp =  os.path.join("data", "grids", "state-estimation", "finalized.json")
         fname = os.path.join("data", "grids", "state-estimation", "19700101T0000Z_.zip")
         net_wns = pandapower.from_json(fname_pp)
         if "max_i_ka" not in net_wns.line:
