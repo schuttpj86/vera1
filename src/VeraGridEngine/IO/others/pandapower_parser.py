@@ -630,9 +630,9 @@ class Panda2VeraGrid:
 
             self.register(panda_type="trafo3w", panda_code=idx, api_obj=elm)
 
-    def parse_switches(self, grid: dev.MultiCircuit, bus_dictionary: Dict[str, dev.Bus]):
+    def parse_switches(self, grid: dev.MultiCircuit, bus_dictionary: Dict[str | int, dev.Bus]):
         """
-
+        See: https://pandapower.readthedocs.io/en/latest/elements/switch.html
         :param grid: MultiCircuit grid
         :param bus_dictionary:
         :return:
@@ -643,67 +643,96 @@ class Panda2VeraGrid:
 
             # Identify the first bus in the switch
             bus_from = bus_dictionary[switch_row['bus']]
+            k = int(switch_row['element'])
 
             if switch_row['et'] == 'b':  # Bus-to-bus switch
-                # Get the second bus directly
-                bus_to = bus_dictionary[switch_row['element']]
 
-            else:  # Bus-to-element switch
-                # Create or reuse an auxiliary bus for the element
-                aux_bus_name = f"Aux_Bus_{switch_row['et']}_{switch_row['element']}"
-                aux_bus_voltage = self.panda_net.bus.loc[switch_row['bus'], 'vn_kv']
+                if k < grid.get_bus_number():
+                    # Get the second bus directly
+                    bus_to = bus_dictionary[k]
 
-                # Check if an auxiliary bus with this name exists
-                bus_to = None
-                for bus in grid.buses:
-                    if bus.name == aux_bus_name:
-                        bus_to = bus
-                        break
+                    # Create the switch as a normal branch in VeraGrid
+                    switch_branch = dev.Switch(
+                        bus_from=bus_from,
+                        bus_to=bus_to,
+                        name=f"Switch_{switch_row['et']}_{switch_row['element']}",
+                        code=idx,
+                        active=switch_row['closed'],
+                    )
+                    switch_branch.rdfid = switch_row.get("uuid", "")
+                    grid.add_switch(switch_branch)
+                    self.register(panda_type="switch", panda_code=idx, api_obj=switch_branch)
+                else:
+                    self.logger.add_error("Switch referencing to bus out of bounds", value=k, device=f"switch {idx}")
 
-                if not bus_to:
+            elif switch_row['et'] == 'l':  # switch between bus and line
+
+                if k < grid.get_lines_number():
+
                     # Create the auxiliary bus if it doesn't exist
-                    bus_to = dev.Bus(name=aux_bus_name, Vnom=aux_bus_voltage)
+                    bus_to = dev.Bus(name=f"switch {idx} bus",
+                                     Vnom=bus_from.Vnom)
                     grid.add_bus(bus_to)
 
-                # Link the auxiliary bus to the corresponding element
-                if switch_row['et'] == 'l':  # Line element
-                    line_data = self.panda_net.line.loc[switch_row['element']]
-                    # Update the line's connections to include the auxiliary bus
-                    for line in grid.lines:
-                        if (line.bus_from == bus_dictionary[line_data['from_bus']]
-                                and line.bus_to == bus_dictionary[line_data['to_bus']]):
-                            if line_data['from_bus'] == switch_row['bus']:
-                                line.bus_from = bus_to
-                            else:
-                                line.bus_to = bus_to
-                            break
+                    branch = grid.lines[k]
 
-                elif switch_row['et'] == 't':  # Transformer element
-                    trafo_data = self.panda_net.trafo.loc[switch_row['element']]
+                    if branch.bus_from == bus_from:
+                        branch.bus_from = bus_to
+                    elif branch.bus_to == bus_from:
+                        branch.bus_to = bus_to
+                    else:
+                        self.logger.add_error("Disconnected switch", device=f"switch of transformer {branch.name}")
 
-                    # Update the transformer's connections to include the auxiliary bus
-                    for transformer in grid.transformers2w:
-                        if (transformer.bus_from == bus_dictionary[trafo_data['hv_bus']]
-                                and transformer.bus_to == bus_dictionary[trafo_data['lv_bus']]):
+                    # Create the switch as a normal branch in VeraGrid
+                    switch_branch = dev.Switch(
+                        bus_from=bus_from,
+                        bus_to=bus_to,
+                        name=f"switch of line {branch.name}",
+                        code=idx,
+                        active=switch_row['closed'],
+                    )
+                    switch_branch.rdfid = switch_row.get("uuid", "")
+                    grid.add_switch(switch_branch)
+                    self.register(panda_type="switch", panda_code=idx, api_obj=switch_branch)
+                else:
+                    self.logger.add_error("Switch referencing to line out of bounds", value=k, device=f"switch {idx}")
 
-                            if trafo_data['hv_bus'] == switch_row['bus']:
-                                transformer.bus_from = bus_to
-                            else:
-                                transformer.bus_to = bus_to
-                            break
+            elif switch_row['et'] == 't':  # switch between bus and transformer
 
-            # Create the switch as a normal branch in VeraGrid
-            switch_branch = dev.Switch(
-                bus_from=bus_from,
-                bus_to=bus_to,
-                name=f"Switch_{switch_row['et']}_{switch_row['element']}",
-                code=idx,
-                active=switch_row['closed'],
-                idtag=switch_row["uuid"] if "uuid" in switch_row else switch_row["name"]
-            )
-            grid.add_switch(switch_branch)
+                if k < grid.get_transformers2w_number():
 
-            self.register(panda_type="switch", panda_code=idx, api_obj=switch_branch)
+                    branch = grid.transformers2w[k]
+
+                    # Create the auxiliary bus if it doesn't exist
+                    bus_to = dev.Bus(name=f"switch {idx} bus",
+                                     Vnom=bus_from.Vnom)
+                    grid.add_bus(bus_to)
+
+                    if branch.bus_from == bus_from:
+                        branch.bus_from = bus_to
+                    elif branch.bus_to == bus_from:
+                        branch.bus_to = bus_to
+                    else:
+                        self.logger.add_error("Disconnected switch", device=f"switch of transformer {branch.name}")
+
+                    # Create the switch as a normal branch in VeraGrid
+                    switch_branch = dev.Switch(
+                        bus_from=bus_from,
+                        bus_to=bus_to,
+                        name=f"switch of transformer {branch.name}",
+                        code=idx,
+                        active=switch_row['closed'],
+                    )
+                    switch_branch.rdfid = switch_row.get("uuid", "")
+                    grid.add_switch(switch_branch)
+                    self.register(panda_type="switch", panda_code=idx, api_obj=switch_branch)
+
+                else:
+                    self.logger.add_error("Switch referencing to transformer out of bounds",
+                                          value=k, device=f"switch {idx}")
+
+            else:
+                self.logger.add_warning("TR3 switch not implemented", device=f"switch {idx}")
 
     def parse_measurements(self, grid: dev.MultiCircuit):
         """
@@ -809,10 +838,10 @@ class Panda2VeraGrid:
                         else:
                             self.logger.add_warning(f"PandaPower {m_tpe} measurement not implemented")
 
-                    elif elm_tpe in ['line', 'impedance', 'trafo','trafo3w']:
+                    elif elm_tpe in ['line', 'impedance', 'trafo', 'trafo3w']:
                         if m_tpe == 'p':
                             if side == 1 or side == 'from' or side == "hv":
-                                if elm_tpe=="trafo3w":
+                                if elm_tpe == "trafo3w":
                                     grid.add_pf_measurement(dev.PfMeasurement(
                                         value=val * self.load_scale,
                                         uncertainty=std,
@@ -827,11 +856,11 @@ class Panda2VeraGrid:
                                         name=name
                                     ))
                             elif side == 2 or side == 'to' or side == "lv":
-                                if elm_tpe=="trafo3w":
+                                if elm_tpe == "trafo3w":
                                     grid.add_pt_measurement(dev.PtMeasurement(
                                         value=val * self.load_scale,
                                         uncertainty=std,
-                                        api_obj=api_object.winding3, # winding3 corresponds to bus3 and LV side
+                                        api_obj=api_object.winding3,  # winding3 corresponds to bus3 and LV side
                                         name=name
                                     ))
                                 else:
@@ -841,17 +870,17 @@ class Panda2VeraGrid:
                                         api_obj=api_object,
                                         name=name
                                     ))
-                            elif side == "mv": # for trafo3w MV side
+                            elif side == "mv":  # for trafo3w MV side
                                 grid.add_pt_measurement(dev.PtMeasurement(
                                     value=val * self.load_scale,
                                     uncertainty=std,
-                                    api_obj=api_object.winding2, # bus2 is MV and winding2
+                                    api_obj=api_object.winding2,  # bus2 is MV and winding2
                                     name=name
                                 ))
 
                         elif m_tpe == 'q':
                             if side == 1 or side == 'from' or side == "hv":
-                                if elm_tpe=="trafo3w":
+                                if elm_tpe == "trafo3w":
                                     grid.add_qf_measurement(dev.QfMeasurement(
                                         value=val * self.load_scale,
                                         uncertainty=std,
@@ -867,7 +896,7 @@ class Panda2VeraGrid:
                                     ))
 
                             elif side == 2 or side == 'to' or side == "lv":
-                                if elm_tpe=="trafo3w":
+                                if elm_tpe == "trafo3w":
                                     grid.add_qt_measurement(dev.QtMeasurement(
                                         value=val * self.load_scale,
                                         uncertainty=std,
