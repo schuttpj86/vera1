@@ -32,7 +32,7 @@ def test_state_estimation_pandapower():
         # # pandapower.to_pickle(net_wns, "test_net_tng_raw_expected.p")
         # net_wns.bus.loc[net_wns.bus[net_wns.bus.name.isna()].index, "name"] = "bus_named"
         g = Panda2VeraGrid(net_wns)
-        grid = g.get_multicircuit()
+        grid = g.get_multicircuit(convert_switches=False)
 
         print()
         g.logger.print("PandaPower conversion logs")

@@ -183,7 +183,7 @@ class Panda2VeraGrid:
                 vmin=row['min_vm_pu'] if 'min_vm_pu' in row else 0.9,
                 vmax=row['max_vm_pu'] if 'max_vm_pu' in row else 1.1,
                 active=bool(row['in_service']),
-                idtag=row.get('uuid', None)
+                # idtag=row.get('uuid', None)  # uuids can be repeated and mess things up
             )
 
             elm.rdfid = row.get('uuid', elm.idtag)
@@ -647,6 +647,7 @@ class Panda2VeraGrid:
             if switch_row['et'] == 'b':  # Bus-to-bus switch
                 # Get the second bus directly
                 bus_to = bus_dictionary[switch_row['element']]
+
             else:  # Bus-to-element switch
                 # Create or reuse an auxiliary bus for the element
                 aux_bus_name = f"Aux_Bus_{switch_row['et']}_{switch_row['element']}"
@@ -975,7 +976,7 @@ class Panda2VeraGrid:
                     else:
                         self.logger.add_warning(f"PandaPower {elm_tpe} measurement type not implemented")
 
-    def get_multicircuit(self) -> dev.MultiCircuit:
+    def get_multicircuit(self, convert_switches: bool = True) -> dev.MultiCircuit:
         """
         Get a VeraGrid Multi-circuit from a PandaPower grid
         :return: MultiCircuit
@@ -984,9 +985,8 @@ class Panda2VeraGrid:
 
         if self.panda_net is not None:
             # grid.Sbase = self.panda_net.sn_mva if self.panda_net.sn_mva > 0.0 else 100.0  # always, the pandapower
-            # For pandapwoer Sbase is crazily affecting only load
-            grid.Sbase = 100.0  # always, the pandapower
-            # scaling is handled in the conversions
+            # For pandaPower Sbase is crazily affecting only load scaling and not the impedances
+            grid.Sbase = 100.0  # always, the pandapower scaling is handled in the conversions
             grid.fBase = self.panda_net.f_hz
 
             bus_dict = self.parse_buses(grid=grid)
@@ -1000,7 +1000,10 @@ class Panda2VeraGrid:
             self.parse_static_generators(grid=grid, bus_dictionary=bus_dict)
             self.parse_transformers(grid=grid, bus_dictionary=bus_dict)
             self.parse_transformers3W(grid=grid, bus_dictionary=bus_dict)
-            self.parse_switches(grid=grid, bus_dictionary=bus_dict)
+
+            if convert_switches:
+                self.parse_switches(grid=grid, bus_dictionary=bus_dict)
+
             self.parse_measurements(grid=grid)
 
         return grid
