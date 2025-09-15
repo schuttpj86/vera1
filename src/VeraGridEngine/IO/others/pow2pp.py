@@ -1,5 +1,6 @@
 import math
 import traceback
+import numpy as np
 from typing import Any, Literal
 
 import pandapower
@@ -19,7 +20,7 @@ IDENTIFIER_COLUMN_NAME = "uuid"
 
 CREATE_EXT_FOR_SLACK = False
 logger = Logger()
-
+frequency=50
 def find_bus_ids(
     element_table: pd.DataFrame,
     pandapower_net: pandapower.pandapowerNet,
@@ -320,7 +321,13 @@ def create_lines(
 
         if from_bus_idx is None or to_bus_idx is None:
             continue
+        # Convert b1 + b2 to c_nf_per_km
+        b1 = lines.get('b1', 0)
+        b2 = lines.get('b2', 0)
+        total_susceptance = b1 + b2
 
+        # Convert susceptance to capacitance
+        capacitance_farads = total_susceptance / (2 * np.pi * frequency)
         line_data.append(
             {
                 "name": line_id,
@@ -329,7 +336,7 @@ def create_lines(
                 "length_km": 1.0,  # Default length
                 "r_ohm_per_km": line["r"],
                 "x_ohm_per_km": line["x"],
-                "c_nf_per_km": 0,  # Simplified
+                "c_nf_per_km": capacitance_farads* 1e9 ,  # Simplified
                 "max_i_ka": 1000.0,  # Default
                 "in_service": line["connected1"] and line["connected2"],
                 "parallel": 1,
