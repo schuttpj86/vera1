@@ -167,13 +167,14 @@ class Panda2VeraGrid:
         else:
             return d.get(panda_code, None)
 
-    def parse_buses(self, grid: dev.MultiCircuit) -> Dict[str, dev.Bus]:
+    def parse_buses(self, grid: dev.MultiCircuit) -> Dict[str | int, dev.Bus]:
         """
         Add buses to the VeraGrid grid based on Pandapower data
         :param grid: MultiCircuit grid
-        :return: PP row name to VeraGrid row object
+        :return: PP row name or index to VeraGrid Bus object
         """
-        bus_dictionary = dict()
+        bus_dictionary: Dict[str | int, dev.Bus] = dict()
+
         for idx, row in self.panda_net.bus.iterrows():
             elm = dev.Bus(
                 name=row['name'],
@@ -189,10 +190,14 @@ class Panda2VeraGrid:
 
             grid.add_bus(elm)  # Add the row to the VeraGrid grid
 
+            # add the entry bu name in the buses dict
             if row['name'] in bus_dictionary:
                 self.logger.add_error("Repeated bus name", value=row['name'])
             else:
                 bus_dictionary[row['name']] = elm
+
+            # add also the entry by idx
+            bus_dictionary[idx] = elm
 
             self.register(panda_type="bus", panda_code=idx, api_obj=elm)
 
@@ -448,6 +453,13 @@ class Panda2VeraGrid:
             )
             elm.rdfid = row.get('uuid', elm.idtag)
             # --- Derived values ---
+
+            mf, mt = elm.get_virtual_taps()
+            if not (0.9 <= mf <= 1.1):
+                self.logger.add_warning("Virtual tap 'from' out of bounds, possible transformer data error", value=mf)
+
+            if not (0.9 <= mt <= 1.1):
+                self.logger.add_warning("Virtual tap 'to' out of bounds, possible transformer data error", value=mt)
 
             # see: https://pandapower.readthedocs.io/en/latest/elements/trafo.html#trafo
             Pcu = row.get("vkr_percent", 0.0) / 100 * row["sn_mva"] * 1000  # copper losses in kW
