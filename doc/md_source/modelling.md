@@ -17,7 +17,21 @@ compensation, while transformer winding configurations must be carefully modelle
 distribution level, load points can be highly unbalanced due to single-phase connections.
 
 <div style="text-align: center;">
-    <img src="figures/3ph_PowerSystem.png"
+    <img src="md_source/figures/3ph_PowerSystem.png"
+    alt="Electrical power system network"
+    title="Electrical power system network"
+    width="90%"/>
+</div>
+
+<div style="text-align: center;">
+    <img src="doc/md_source/figures/3ph_PowerSystem.png"
+    alt="Electrical power system network"
+    title="Electrical power system network"
+    width="90%"/>
+</div>
+
+<div style="text-align: center;">
+    <img src="VeraGrid/doc/md_source/figures/3ph_PowerSystem.png"
     alt="Electrical power system network"
     title="Electrical power system network"
     width="90%"/>
