@@ -665,6 +665,13 @@ class Assets:
     def lines(self, value: List[dev.Line]):
         self._lines = value
 
+    def get_lines_number(self) -> int:
+        """
+
+        :return:
+        """
+        return len(self._lines)
+
     def get_lines(self) -> List[dev.Line]:
         """
         get list of ac lines
