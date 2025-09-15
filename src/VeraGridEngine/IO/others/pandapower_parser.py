@@ -188,7 +188,11 @@ class Panda2VeraGrid:
             elm.rdfid = row.get('uuid', elm.idtag)
 
             grid.add_bus(elm)  # Add the row to the VeraGrid grid
-            bus_dictionary[row.name] = elm
+
+            if row['name'] in bus_dictionary:
+                self.logger.add_error("Repeated bus name", value=row['name'])
+            else:
+                bus_dictionary[row['name']] = elm
 
             self.register(panda_type="bus", panda_code=idx, api_obj=elm)
 

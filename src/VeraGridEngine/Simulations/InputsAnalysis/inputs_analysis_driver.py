@@ -318,11 +318,12 @@ class InputsAnalysisResults(ResultsTemplate):
         x = np.zeros((nt, ne))
 
         for elm in elms:
-            i = self.bus_dict[elm.bus]
-            i2 = d2[i]
-            if i2 != "":
-                i3 = int(i2)
-                x[:, i3] += elm.get_profile(magnitude=magnitude).toarray()
+            if elm.bus is not None:
+                i = self.bus_dict[elm.bus]
+                i2 = d2[i]
+                if i2 != "":
+                    i3 = int(i2)
+                    x[:, i3] += elm.get_profile(magnitude=magnitude).toarray()
 
         return x, headers
 

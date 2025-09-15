@@ -1686,8 +1686,9 @@ class MultiCircuit(Assets):
         bus_dict = self.get_bus_index_dict()
 
         for elm in self.get_injection_devices_iter():
-            k = bus_dict[elm.bus]
-            val[k] = elm.get_S()
+            if elm.bus is not None:
+                k = bus_dict[elm.bus]
+                val[k] = elm.get_S()
 
         return val
 
