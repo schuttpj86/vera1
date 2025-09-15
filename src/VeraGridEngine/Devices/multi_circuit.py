@@ -1701,8 +1701,9 @@ class MultiCircuit(Assets):
         bus_dict = self.get_bus_index_dict()
 
         for elm in self.get_injection_devices_iter():
-            k = bus_dict[elm.bus]
-            val[:, k] = elm.get_Sprof()
+            if elm.bus is not None:
+                k = bus_dict[elm.bus]
+                val[:, k] = elm.get_Sprof()
 
         return val
 
@@ -1716,13 +1717,15 @@ class MultiCircuit(Assets):
         bus_dict = self.get_bus_index_dict()
 
         for elm in self.get_load_like_devices():
-            k = bus_dict[elm.bus]
-            val[:, k] = elm.get_Sprof()
-
-        for elm in self.get_generation_like_devices():
-            if not elm.enabled_dispatch:
+            if elm.bus is not None:
                 k = bus_dict[elm.bus]
                 val[:, k] = elm.get_Sprof()
+
+        for elm in self.get_generation_like_devices():
+            if elm.bus is not None:
+                if not elm.enabled_dispatch:
+                    k = bus_dict[elm.bus]
+                    val[:, k] = elm.get_Sprof()
 
         return val
 
@@ -1736,9 +1739,10 @@ class MultiCircuit(Assets):
         bus_dict = self.get_bus_index_dict()
 
         for elm in self.get_generation_like_devices():
-            if elm.enabled_dispatch:
-                k = bus_dict[elm.bus]
-                val[:, k] = elm.get_Sprof()
+            if elm.bus is not None:
+                if elm.enabled_dispatch:
+                    k = bus_dict[elm.bus]
+                    val[:, k] = elm.get_Sprof()
 
         return val
 
