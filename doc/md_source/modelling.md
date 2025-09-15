@@ -17,21 +17,7 @@ compensation, while transformer winding configurations must be carefully modelle
 distribution level, load points can be highly unbalanced due to single-phase connections.
 
 <div style="text-align: center;">
-    <img src="md_source/figures/3ph_PowerSystem.png"
-    alt="Electrical power system network"
-    title="Electrical power system network"
-    width="90%"/>
-</div>
-
-<div style="text-align: center;">
-    <img src="doc/md_source/figures/3ph_PowerSystem.png"
-    alt="Electrical power system network"
-    title="Electrical power system network"
-    width="90%"/>
-</div>
-
-<div style="text-align: center;">
-    <img src="VeraGrid/doc/md_source/figures/3ph_PowerSystem.png"
+    <img src="https://github.com/SanPen/VeraGrid/blob/master/doc/md_source/figures/3ph_PowerSystem.png?raw=true"
     alt="Electrical power system network"
     title="Electrical power system network"
     width="90%"/>
@@ -47,7 +33,7 @@ losses, based on determining the per-unit-length parameters: resistance $R$, ind
 and capacitance $C$.
 
 <div style="text-align: center;">
-    <img src="figures/3ph_power_line.png"
+    <img src="https://github.com/SanPen/VeraGrid/blob/master/doc/md_source/figures/3ph_power_line.png?raw=true"
     alt="Power line geometric arrangement"
     title="Power line geometric arrangement"
     width="30%"/>
@@ -61,7 +47,7 @@ a shunt admittance matrix. Together, these form the basis of the $\pi$-equivalen
 studies.
 
 <div style="text-align: center;">
-    <img src="figures/3ph_pi_model.png"
+    <img src="https://github.com/SanPen/VeraGrid/blob/master/doc/md_source/figures/3ph_pi_model.png?raw=true"
     alt="Line π equivalent circuit"
     title="Line π equivalent circuit"
     width="60%"/>
@@ -111,7 +97,7 @@ and lossless free space, uniform earth properties, and conductor spacing much gr
 proximity effects. The impedance matrix elements are derived from the tower geometry and conductor characteristics.
 
 <div style="text-align: center;">
-    <img src="figures/3ph_carson.png"
+    <img src="https://github.com/SanPen/VeraGrid/blob/master/doc/md_source/figures/3ph_carson.png?raw=true"
     alt="Carson’s geometry data of the tower"
     title="Carson’s geometry data of the tower"
     width="30%"/>
@@ -352,7 +338,7 @@ the iron-core shunt admittance $\vec{Y}_{sh}$ from open-circuit tests. Modelling
 two-winding transformer:
 
 <div style="text-align: center;">
-    <img src="figures/3ph_single_phase_transformer.png"
+    <img src="https://github.com/SanPen/VeraGrid/blob/master/doc/md_source/figures/3ph_single_phase_transformer.png?raw=true"
     alt="Two-winding transformer"
     title="Two-winding transformer"
     width="50%"/>
@@ -363,7 +349,7 @@ currents related through short-circuit and open-circuit admittance parameters. T
 the transformer’s electrical equivalent circuit:
 
 <div style="text-align: center;">
-    <img src="figures/3ph_transformer_electrical_circuit.png"
+    <img src="https://github.com/SanPen/VeraGrid/blob/master/doc/md_source/figures/3ph_transformer_electrical_circuit.png?raw=true"
     alt="Transformer electrical equivalent circuit"
     title="Transformer electrical equivalent circuit"
     width="90%"/>
@@ -449,7 +435,7 @@ popular connections are star and delta, although the zig-zag connection is also 
 in figure bellow. Consequently, connectivity matrices must be computed for each configuration.
 
 <div style="text-align: center;">
-    <img src="figures/3ph_zigzag.png"
+    <img src="https://github.com/SanPen/VeraGrid/blob/master/doc/md_source/figures/3ph_zigzag.png?raw=true"
     alt="Zig-zag transformer"
     title="Zig-zag transformer"
     width="40%"/>
@@ -458,7 +444,7 @@ in figure bellow. Consequently, connectivity matrices must be computed for each 
 For instance, the following figure shows the three-phase delta-star (Dy) connection:
 
 <div style="text-align: center;">
-    <img src="figures/3ph_Dy_connection.png"
+    <img src="https://github.com/SanPen/VeraGrid/blob/master/doc/md_source/figures/3ph_Dy_connection.png?raw=true"
     alt="Dy connection"
     title="Dy connection"
     width="70%"/>
@@ -569,7 +555,7 @@ The HV side connection is indicated first using uppercase letters, followed by t
 The phase displacement is then specified using clock notation:
 
 <div style="text-align: center;">
-    <img src="figures/3ph_clock_notation.png"
+    <img src="https://github.com/SanPen/VeraGrid/blob/master/doc/md_source/figures/3ph_clock_notation.png?raw=true"
     alt="Clock notation"
     title="Clock notation"
     width="30%"/>
@@ -756,7 +742,7 @@ Given the diversity of loads in power networks, they are grouped into bulk consu
 ZIP model, which combines impedance, current, and power components.
 
 <div style="text-align: center;">
-    <img src="figures/3ph_zip_model.png"
+    <img src="https://github.com/SanPen/VeraGrid/blob/master/doc/md_source/figures/3ph_zip_model.png?raw=true"
     alt="ZIP model"
     title="ZIP model"
     width="50%"/>
@@ -767,7 +753,7 @@ formulation uses phase-to-neutral voltages and line currents, all loads are mode
 star-connected, requiring delta loads to be converted to star equivalents for impedance, current, and power injections.
 
 <div style="text-align: center;">
-    <img src="figures/3ph_loads_star_delta.png"
+    <img src="https://github.com/SanPen/VeraGrid/blob/master/doc/md_source/figures/3ph_loads_star_delta.png?raw=true"
     title="Star and delta connected loads"
     width="70%"/>
 </div>
@@ -788,7 +774,7 @@ $$
 $$
 
 <div style="text-align: center;">
-    <img src="figures/3ph_star_impedance.png"
+    <img src="https://github.com/SanPen/VeraGrid/blob/master/doc/md_source/figures/3ph_star_impedance.png?raw=true"
     title="Three-phase star impedance loads"
     width="50%"/>
 </div>
@@ -836,7 +822,7 @@ $$
 $$
 
 <div style="text-align: center;">
-    <img src="figures/3ph_delta_impedance.png"
+    <img src="https://github.com/SanPen/VeraGrid/blob/master/doc/md_source/figures/3ph_delta_impedance.png?raw=true"
     title="Three-phase delta impedance loads"
     width="60%"/>
 </div>
@@ -894,7 +880,7 @@ $$
 $$
 
 <div style="text-align: center;">
-    <img src="figures/3ph_two_phase_impedance.png"
+    <img src="https://github.com/SanPen/VeraGrid/blob/master/doc/md_source/figures/3ph_two_phase_impedance.png?raw=true"
     title="Two-phase impedance loads"
     width="40%"/>
 </div>
@@ -942,7 +928,7 @@ $$
 $$
 
 <div style="text-align: center;">
-    <img src="figures/3ph_single_phase_impedance.png"
+    <img src="https://github.com/SanPen/VeraGrid/blob/master/doc/md_source/figures/3ph_single_phase_impedance.png?raw=true"
     title="Single-phase impedance loads"
     width="20%"/>
 </div>
@@ -992,7 +978,7 @@ $$
 $$
 
 <div style="text-align: center;">
-    <img src="figures/3ph_star_current.png"
+    <img src="https://github.com/SanPen/VeraGrid/blob/master/doc/md_source/figures/3ph_star_current.png?raw=true"
     title="Three-phase star current loads"
     width="50%"/>
 </div>
@@ -1045,7 +1031,7 @@ between the two phases to which the current-defined load is connected. Then, the
 will be updated in each iteration, adding significant complexity compared to the traditional power flow.
 
 <div style="text-align: center;">
-    <img src="figures/3ph_delta_current.png"
+    <img src="https://github.com/SanPen/VeraGrid/blob/master/doc/md_source/figures/3ph_delta_current.png?raw=true"
     title="Three-phase delta current loads"
     width="60%"/>
 </div>
@@ -1094,7 +1080,7 @@ $$
 $$
 
 <div style="text-align: center;">
-    <img src="figures/3ph_two_phase_current.png"
+    <img src="https://github.com/SanPen/VeraGrid/blob/master/doc/md_source/figures/3ph_two_phase_current.png?raw=true"
     title="Two-phase current loads"
     width="40%"/>
 </div>
@@ -1142,7 +1128,7 @@ $$
 $$
 
 <div style="text-align: center;">
-    <img src="figures/3ph_single_phase_current.png"
+    <img src="https://github.com/SanPen/VeraGrid/blob/master/doc/md_source/figures/3ph_single_phase_current.png?raw=true"
     title="Single-phase current loads"
     width="20%"/>
 </div>
@@ -1190,7 +1176,7 @@ $$
 $$
 
 <div style="text-align: center;">
-    <img src="figures/3ph_star_power.png"
+    <img src="https://github.com/SanPen/VeraGrid/blob/master/doc/md_source/figures/3ph_star_power.png?raw=true"
     title="Three-phase star power loads"
     width="50%"/>
 </div>
@@ -1239,7 +1225,7 @@ $$
 $$
 
 <div style="text-align: center;">
-    <img src="figures/3ph_delta_power.png"
+    <img src="https://github.com/SanPen/VeraGrid/blob/master/doc/md_source/figures/3ph_delta_power.png?raw=true"
     title="Three-phase delta power loads"
     width="60%"/>
 </div>
@@ -1288,7 +1274,7 @@ $$
 $$
 
 <div style="text-align: center;">
-    <img src="figures/3ph_two_phase_power.png"
+    <img src="https://github.com/SanPen/VeraGrid/blob/master/doc/md_source/figures/3ph_two_phase_power.png?raw=true"
     title="Two-phase power loads"
     width="40%"/>
 </div>
@@ -1336,7 +1322,7 @@ $$
 $$
 
 <div style="text-align: center;">
-    <img src="figures/3ph_single_phase_power.png"
+    <img src="https://github.com/SanPen/VeraGrid/blob/master/doc/md_source/figures/3ph_single_phase_power.png?raw=true"
     title="Single-phase power loads"
     width="20%"/>
 </div>
@@ -1394,7 +1380,7 @@ The generator could be modelled during the short-circuit using the classic Thév
 voltage source in series with the generator’s impedance, as shown in the electrical circuit of the following figure:
 
 <div style="text-align: center;">
-    <img src="figures/3ph_thevenin.png"
+    <img src="https://github.com/SanPen/VeraGrid/blob/master/doc/md_source/figures/3ph_thevenin.png?raw=true"
     title="Thévenin equivalent circuit"
     width="50%"/>
 </div>
@@ -1404,7 +1390,7 @@ ideal voltage source. Therefore, the generator can be also modelled using its No
 in parallel with the generator’s impedance, as shown in the schematic bellow:
 
 <div style="text-align: center;">
-    <img src="figures/3ph_norton.png"
+    <img src="https://github.com/SanPen/VeraGrid/blob/master/doc/md_source/figures/3ph_norton.png?raw=true"
     title="Norton equivalent circuit"
     width="35%"/>
 </div>
