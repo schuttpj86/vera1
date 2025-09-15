@@ -4,6 +4,7 @@
 # SPDX-License-Identifier: MPL-2.0
 import os
 
+import VeraGridEngine as vg
 from VeraGridEngine import power_flow, SolverType
 from VeraGridEngine.IO.file_handler import FileOpen
 from VeraGridEngine.IO.others.pandapower_parser import Panda2VeraGrid, PANDAPOWER_AVAILABLE
@@ -36,7 +37,7 @@ def test_state_estimation_pandapower():
         print()
         g.logger.print("PandaPower conversion logs")
 
-        # gce.save_file(grid, 'small_grid_gb_hv_estimate_raw_expected.gridcal')
+        # vg.save_file(grid, os.path.join("data", "grids", "state-estimation", "finalized.veragrid"))
 
         pf_res = power_flow(grid)
         print(pf_res.get_bus_df())
