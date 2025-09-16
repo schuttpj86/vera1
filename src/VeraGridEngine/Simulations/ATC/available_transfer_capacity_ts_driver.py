@@ -106,8 +106,12 @@ class AvailableTransferCapacityTimeSeriesResults(ResultsTemplate):
             m = rep[:, 1].astype(int)
             c = rep[:, 2].astype(int)
 
-            # time
-            self.report[:, 0] = self.time_array[t].strftime('%d/%m/%Y %H:%M').values
+            time_dict = {ti: t for ti, t in zip(self.time_indices, self.time_array)}
+
+            for i in range(self.report.shape[0]):
+                self.report[i, 0] = time_dict[t[i]].strftime('%d/%m/%Y %H:%M')
+                self.report[i, 3] = self.rates[t[i], m[i]]  # 'Rate', (time, branch)
+                self.report[i, 8] = self.contingency_rates[t[i], m[i]]
 
             # Branch name
             self.report[:, 1] = self.branch_names[m]
@@ -115,8 +119,7 @@ class AvailableTransferCapacityTimeSeriesResults(ResultsTemplate):
             # Base flow'
             self.report[:, 2] = rep[:, 10]
 
-            # rate
-            self.report[:, 3] = self.rates[t, m]  # 'Rate', (time, branch)
+
 
             # alpha
             self.report[:, 4] = rep[:, 3]
@@ -131,9 +134,6 @@ class AvailableTransferCapacityTimeSeriesResults(ResultsTemplate):
 
             # 'Limiting contingency flow'
             self.report[:, 7] = rep[:, 11]
-
-            # 'Contingency rate' (time, branch)
-            self.report[:, 8] = self.contingency_rates[t, m]
 
             # 'Beta'
             self.report[:, 9] = rep[:, 4]
@@ -151,8 +151,13 @@ class AvailableTransferCapacityTimeSeriesResults(ResultsTemplate):
             self.report[:, 13] = rep[:, 9]
 
             # trim by abs alpha > threshold and loading <= 1
-            loading = np.abs(self.report[:, 2] / (self.report[:, 3] + 1e-20))
-            idx = np.where((np.abs(self.report[:, 4]) > threshold) & (loading <= 1.0))[0]
+            # loading = np.abs(self.report[:, 2] / (self.report[:, 3] + 1e-20))
+            idx = list()
+            for i in range(self.report.shape[0]):
+                if (abs(self.report[i, 4]) > threshold
+                        and abs(self.report[i, 2] / (self.report[i, 3] + 1e-20)) <= 1.0):
+                    idx.append(i)
+            idx = np.array(idx, dtype=int)
 
             self.report = self.report[idx, :]
 
