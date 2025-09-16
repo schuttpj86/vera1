@@ -13,14 +13,16 @@ from VeraGridEngine.Compilers.circuit_to_data import compile_numerical_circuit_a
 from VeraGridEngine.Simulations.LinearFactors.linear_analysis_options import LinearAnalysisOptions
 from VeraGridEngine.Simulations.LinearFactors.linear_analysis_ts_driver import LinearAnalysisTimeSeriesDriver
 from VeraGridEngine.Simulations.LinearFactors.linear_analysis import LinearAnalysis
-from VeraGridEngine.Simulations.ATC.available_transfer_capacity_driver import compute_atc_list, compute_alpha, compute_dP
+from VeraGridEngine.Simulations.ATC.available_transfer_capacity_driver import compute_atc_list, compute_alpha, \
+    compute_dP
 from VeraGridEngine.Simulations.ATC.available_transfer_capacity_options import AvailableTransferCapacityOptions
 from VeraGridEngine.Simulations.results_table import ResultsTable
 from VeraGridEngine.Simulations.results_template import ResultsTemplate
 from VeraGridEngine.Simulations.driver_template import TimeSeriesDriverTemplate
 from VeraGridEngine.Simulations.Clustering.clustering_results import ClusteringResults
 from VeraGridEngine.basic_structures import Vec, Mat, IntVec, StrVec, DateVec
-from VeraGridEngine.enumerations import StudyResultsType, AvailableTransferMode, ResultTypes, DeviceType, SimulationTypes
+from VeraGridEngine.enumerations import StudyResultsType, AvailableTransferMode, ResultTypes, DeviceType, \
+    SimulationTypes
 
 
 class AvailableTransferCapacityTimeSeriesResults(ResultsTemplate):
@@ -29,7 +31,7 @@ class AvailableTransferCapacityTimeSeriesResults(ResultsTemplate):
     """
 
     def __init__(self, br_names: StrVec, bus_names: StrVec, rates: Mat, contingency_rates: Mat, time_array: DateVec,
-                 clustering_results):
+                 clustering_results: Union[ClusteringResults, None] = None):
         """
 
         :param br_names:
@@ -164,7 +166,7 @@ class AvailableTransferCapacityTimeSeriesResults(ResultsTemplate):
         :return: dictionary of 2D numpy arrays (probably of complex numbers)
         """
         data = super().get_dict()
-        data['report'] =  self.report.tolist()
+        data['report'] = self.report.tolist()
         return data
 
     def mdl(self, result_type: ResultTypes) -> ResultsTable:
@@ -230,7 +232,7 @@ class AvailableTransferCapacityTimeSeriesDriver(TimeSeriesDriverTemplate):
         """
         Get time steps list of strings
         """
-
+        # No time steps because so far the only output is a report
         return []
 
     def run(self) -> None:
@@ -258,6 +260,8 @@ class AvailableTransferCapacityTimeSeriesDriver(TimeSeriesDriverTemplate):
             options=la_options,
             time_indices=self.time_indices
         )
+
+        la_driver.copy_signals(other=self)
 
         la_driver.run()
 
@@ -318,8 +322,8 @@ class AvailableTransferCapacityTimeSeriesDriver(TimeSeriesDriverTemplate):
             # consider the HVDC transfer
             if self.options.Pf_hvdc is not None:
                 if len(self.options.idx_hvdc_br):
-                    base_exchange += (self.options.inter_area_hvdc_branch_sense * self.options.Pf_hvdc[
-                        t, self.options.idx_hvdc_br]).sum()
+                    base_exchange += (self.options.inter_area_hvdc_branch_sense
+                                      * self.options.Pf_hvdc[t, self.options.idx_hvdc_br]).sum()
 
             # compute ATC
             report = compute_atc_list(br_idx=br_idx,
@@ -348,7 +352,7 @@ class AvailableTransferCapacityTimeSeriesDriver(TimeSeriesDriverTemplate):
             else:
                 self.results.raw_report = np.r_[self.results.raw_report, report]
 
-            self.report_progress2(t, len(self.time_indices))
+            self.report_progress2(it, len(self.time_indices))
 
             if self.__cancel__:
                 break

@@ -106,6 +106,16 @@ class DriverTemplate:
         """
         pass
 
+    def copy_signals(self, other: "TimeSeriesDriverTemplate"):
+        """
+        Copy the signals from another driver
+        :param other:
+        :return:
+        """
+        self.progress_signal = other.progress_signal
+        self.progress_text = other.progress_text
+        self.done_signal = other.done_signal
+
     def report_progress(self, val: float):
         """
         Report progress

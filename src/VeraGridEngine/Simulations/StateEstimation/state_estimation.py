@@ -144,7 +144,7 @@ def Jacobian_SE(Ybus: csc_matrix, Yf: csc_matrix, Yt: csc_matrix, V: CxVec,
 
 
 def get_measurements_and_deviations(se_input: StateEstimationInput, Sbase: float,
-                                    use_current_squared_meas:bool = True)-> Tuple[Vec, Vec, ObjVec]:
+                                    use_current_squared_meas: bool = True) -> Tuple[Vec, Vec, ObjVec]:
     """
     get_measurements_and_deviations the measurements into "measurements" and "sigma"
     ordering: Pinj, Pflow, Qinj, Qflow, Iflow, Vm
@@ -173,6 +173,7 @@ def get_measurements_and_deviations(se_input: StateEstimationInput, Sbase: float
             sigma[k] = m.get_standard_deviation_pu(Sbase)
             measurements[k] = m
             k += 1
+
     if not use_current_squared_meas:
         for lst in [se_input.if_value, se_input.it_value]:
             for m in lst:
@@ -672,7 +673,7 @@ def solve_se_nr(nc: NumericalCircuit,
         gx = HtW @ dz
 
         # Solve the increment
-        dx = spsolve(Gx, gx) # (HtW @ dz) * (new_state) = HtW @ H
+        dx = spsolve(Gx, gx)  # (HtW @ dz) * (new_state) = HtW @ H
 
         # modify the solution
         if fixed_slack:
@@ -817,6 +818,7 @@ def solve_se_nr(nc: NumericalCircuit,
                                          is_observable=bool(converged),
                                          bad_data_detected=bad_data_detected)
 
+
 def solve_se_gauss_newton(nc: NumericalCircuit,
                           Ybus: CscMat,
                           Yf: CscMat,
@@ -857,7 +859,8 @@ def solve_se_gauss_newton(nc: NumericalCircuit,
     load_per_bus = nc.load_data.get_injections_per_bus() / nc.Sbase
 
     # Get measurements
-    z, sigma, measurements = get_measurements_and_deviations(se_input=se_input, Sbase=nc.Sbase, use_current_squared_meas=True)
+    z, sigma, measurements = get_measurements_and_deviations(se_input=se_input, Sbase=nc.Sbase,
+                                                             use_current_squared_meas=True)
     # Weight matrix with regularization to avoid numerical issues
     sigma2 = np.power(sigma, 2.0)
     W_vec = 1.0 / np.maximum(sigma2, 1e-10)  # Avoid division by zero
@@ -871,7 +874,7 @@ def solve_se_gauss_newton(nc: NumericalCircuit,
     # Step control parameters
     max_step_va = 0.3  # radians
     max_step_vm = 0.2  # per unit
-    relaxation = 1.1   # initial step relaxation
+    relaxation = 1.1  # initial step relaxation
     obj_val_prev = 1e30
 
     while not converged and iter_ < max_iter:
@@ -897,7 +900,7 @@ def solve_se_gauss_newton(nc: NumericalCircuit,
         except:
             # If matrix is singular, use pseudo-inverse
             dx = spilu(G).solve(g)
-        #Update state
+        # Update state
         if fixed_slack:
             dVa = dx[:n_no_slack]
             dVm = dx[n_no_slack:]
@@ -1005,25 +1008,25 @@ def solve_se_gauss_newton(nc: NumericalCircuit,
 
 
 def decoupled_state_estimation(nc: NumericalCircuit,
-                          Ybus: CscMat,
-                          Yf: CscMat,
-                          Yt: CscMat,
-                          Yshunt_bus: CxVec,
-                          F: IntVec,
-                          T: IntVec,
-                          Cf: csc_matrix,
-                          Ct: csc_matrix,
-                          se_input: StateEstimationInput,
-                          vd: IntVec,
-                          pv: IntVec,
-                          no_slack: IntVec,
-                          tol=1e-9,
-                          max_iter=100,
-                          verbose: int = 0,
-                          c_threshold: float = 4.0,
-                          prefer_correct: bool = False,
-                          fixed_slack: bool = False,
-                          logger: Logger | None = None) -> NumericStateEstimationResults:
+                               Ybus: CscMat,
+                               Yf: CscMat,
+                               Yt: CscMat,
+                               Yshunt_bus: CxVec,
+                               F: IntVec,
+                               T: IntVec,
+                               Cf: csc_matrix,
+                               Ct: csc_matrix,
+                               se_input: StateEstimationInput,
+                               vd: IntVec,
+                               pv: IntVec,
+                               no_slack: IntVec,
+                               tol=1e-9,
+                               max_iter=100,
+                               verbose: int = 0,
+                               c_threshold: float = 4.0,
+                               prefer_correct: bool = False,
+                               fixed_slack: bool = False,
+                               logger: Logger | None = None) -> NumericStateEstimationResults:
     """
     Fast decoupled WLS state estimator using LU decomposition.
     Active power -> angles
@@ -1046,7 +1049,6 @@ def decoupled_state_estimation(nc: NumericalCircuit,
     z, sigma, measurements = get_measurements_and_deviations(se_input=se_input, Sbase=nc.Sbase,
                                                              use_current_squared_meas=False)
     W = diags(1.0 / sigma ** 2, 0, format="csc")
-
 
     # --- Create measurement type mapping based on processing order ---
     # The measurements are processed in this fixed order:
@@ -1110,11 +1112,11 @@ def decoupled_state_estimation(nc: NumericalCircuit,
         Wa = W[a_idx, :][:, a_idx].tocsc()
         Ga = Ha.T @ Wa @ Ha
         if Ga.shape[0] > 0:
-            #Ga_reg = Ga + eps_base * np.diag(np.max(np.abs(Ga), axis=0))
+            # Ga_reg = Ga + eps_base * np.diag(np.max(np.abs(Ga), axis=0))
             Ga = Ga + reg_eps * diags(np.ones(Ga.shape[0]), 0, format='csc')
 
         # --- 3) Compute Ta
-        Ta = Ha.T @ Wa @ dz[a_idx]/1
+        Ta = Ha.T @ Wa @ dz[a_idx] / 1
         # --- 4) Solve Ga * dtheta = Ta
         try:
             lu_ga = splu(Ga)
@@ -1138,7 +1140,7 @@ def decoupled_state_estimation(nc: NumericalCircuit,
         Wr = W[r_idx, :][:, r_idx].tocsc()
         Gr = Hr.T @ Wr @ Hr
         if Gr.shape[0] > 0:
-            #Gr_reg = Gr + eps_base * np.diag(np.max(np.abs(Gr), axis=0))
+            # Gr_reg = Gr + eps_base * np.diag(np.max(np.abs(Gr), axis=0))
             Gr = Gr + reg_eps_v * diags(np.ones(Gr.shape[0]), 0, format='csc')
 
         # --- 7) Compute Tr and solve Gr * dV = Tr
@@ -1173,7 +1175,7 @@ def decoupled_state_estimation(nc: NumericalCircuit,
 
         previous_max_update = norm_f
 
-        if norm_f < tol*100: # decoupled solution checks for both active & reactive parts against tolerance,
+        if norm_f < tol * 100:  # decoupled solution checks for both active & reactive parts against tolerance,
             # so its a bit lower, but it also provides same(very) result for all tests with more stricter tol
             converged = True
             if verbose > 0:
@@ -1209,5 +1211,5 @@ def decoupled_state_estimation(nc: NumericalCircuit,
                                          converged=bool(converged),
                                          iterations=iter_count,
                                          elapsed=time.time() - start_time,
-                                         is_observable=bool(converged), # by default it is observable if it converges
+                                         is_observable=bool(converged),  # by default it is observable if it converges
                                          bad_data_detected=False)
