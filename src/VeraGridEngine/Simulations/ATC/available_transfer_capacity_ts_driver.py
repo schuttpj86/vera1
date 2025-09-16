@@ -119,8 +119,6 @@ class AvailableTransferCapacityTimeSeriesResults(ResultsTemplate):
             # Base flow'
             self.report[:, 2] = rep[:, 10]
 
-
-
             # alpha
             self.report[:, 4] = rep[:, 3]
 
