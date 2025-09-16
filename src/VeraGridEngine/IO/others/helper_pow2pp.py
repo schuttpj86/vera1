@@ -1,18 +1,23 @@
 import traceback
 
 import numpy as np
-import pandapower
+
 import pandas as pd
-import pypowsybl
-from pypowsybl import PyPowsyblError
-from pypowsybl.network import Network
+
+# import pandapower
+# import pypowsybl
+# from pypowsybl import PyPowsyblError
+# from pypowsybl.network import Network
+
 from collections.abc import Sequence
 from VeraGridEngine.basic_structures import Logger
 
 IDENTIFIER_COLUMN_NAME = "uuid"
-empty_net = pandapower.create_empty_network()
+# empty_net = pandapower.create_empty_network()
 EXPECTED_COLUMNS: dict[str, list[str]] = {}
 logger = Logger()
+
+
 def catch_exceptions(func):
     def wrapper(*args, **kwargs):
         try:
@@ -24,8 +29,9 @@ def catch_exceptions(func):
 
     return wrapper
 
+
 def drop_irrelevant_columns(
-    element_table: pd.DataFrame, element_type: str
+        element_table: pd.DataFrame, element_type: str
 ) -> pd.DataFrame:
     if element_type not in EXPECTED_COLUMNS:
         # keep all columns if in doubt
@@ -34,9 +40,10 @@ def drop_irrelevant_columns(
     columns_to_keep = list(set(element_table.columns).intersection(expected_columns))
     return element_table.loc[:, columns_to_keep].reset_index(drop=True)
 
+
 @catch_exceptions
 def create_switches(
-        pandapower_net: pandapower.pandapowerNet, powsybl_net: Network
+        pandapower_net: "pandapower.pandapowerNet", powsybl_net: "Network"
 ) -> None:
     """
 
@@ -146,6 +153,11 @@ def create_and_match_buses_for_switches(pandapower_net, powsybl_net) -> pd.DataF
 
     """
 
+    try:
+        from pypowsybl import PyPowsyblError
+    except ImportError:
+        return
+
     new_columns = ["bus", "element", "et", IDENTIFIER_COLUMN_NAME]
     all_switches = pd.DataFrame(columns=new_columns)
     elements_connected_to_switches = pd.DataFrame(columns=["type", "bus_id", "side"])
@@ -202,7 +214,7 @@ def create_and_match_buses_for_switches(pandapower_net, powsybl_net) -> pd.DataF
 def connect_elements_to_switches_bus_breaker(
         all_switches: pd.DataFrame,
         elements_connected_to_switches: pd.DataFrame,
-        pandapower_net: pandapower.pandapowerNet,
+        pandapower_net: "pandapower.pandapowerNet",
 ):
     # 1. map bus-breaker-ids to bus-indices
     bus_breaker_id_to_bus_index = {
@@ -276,8 +288,15 @@ def connect_elements_to_switches_bus_breaker(
 
 
 def find_voltage_levels(
-        element_table: pd.DataFrame, powsybl_net: Network
+        element_table: pd.DataFrame, powsybl_net: "Network"
 ) -> pd.DataFrame:
+
+    try:
+        from pypowsybl import PyPowsyblError
+    except ImportError:
+        return
+
+
     if "voltage_level_id" not in element_table.columns:
         raise PyPowsyblError(
             "Column voltage_level_id is not defined in provided element-table!"
@@ -319,8 +338,8 @@ def set_index_as_column(dataframe):
 def create_and_match_buses_for_switches_per_voltage_level_bus_breaker(
         all_switches: pd.DataFrame,
         elements_connected_to_switches: pd.DataFrame,
-        pandapower_net: pandapower.pandapowerNet,
-        powsybl_net: pypowsybl.network.Network,
+        pandapower_net: "pandapower.pandapowerNet",
+        powsybl_net: "pypowsybl.network.Network",
         voltage_level: pd.Series,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
     bb = powsybl_net.get_bus_breaker_topology(voltage_level.name)
@@ -349,8 +368,8 @@ def create_and_match_buses_for_switches_per_voltage_level_bus_breaker(
 
 def create_and_match_buses_for_switches_per_voltage_level_node_breaker(
         all_switches: pd.DataFrame,
-        pandapower_net: pandapower.pandapowerNet,
-        powsybl_net: pypowsybl.network.Network,
+        pandapower_net: "pandapower.pandapowerNet",
+        powsybl_net: "pypowsybl.network.Network",
         voltage_level: pd.Series,
 ) -> pd.DataFrame:
     nb = powsybl_net.get_node_breaker_topology(voltage_level.name)
@@ -472,8 +491,9 @@ def create_and_match_buses_for_switches_per_voltage_level_node_breaker(
 
     return all_switches
 
+
 def connect_elements_to_switches_node_breaker(
-    all_switches: pd.DataFrame, pandapower_net: pandapower.pandapowerNet
+        all_switches: pd.DataFrame, pandapower_net: "pandapower.pandapowerNet"
 ):
     conn1_to_bus = (
         all_switches.loc[
@@ -514,8 +534,8 @@ def connect_elements_to_switches_node_breaker(
     bus_target_column = "bus"
     for table in ["load", "gen", "sgen", "ext_grid", "busbarsection", "shunt"]:
         if (
-            table not in pandapower_net
-            or IDENTIFIER_COLUMN_NAME not in pandapower_net[table].columns
+                table not in pandapower_net
+                or IDENTIFIER_COLUMN_NAME not in pandapower_net[table].columns
         ):
             continue
         new_buses = pandapower_net[table][IDENTIFIER_COLUMN_NAME].map(conn_to_bus)
@@ -524,8 +544,8 @@ def connect_elements_to_switches_node_breaker(
 
     for table, element_type in [("trafo", "t"), ("trafo3w", "t3"), ("line", "l")]:
         if (
-            table not in pandapower_net
-            or IDENTIFIER_COLUMN_NAME not in pandapower_net[table].columns
+                table not in pandapower_net
+                or IDENTIFIER_COLUMN_NAME not in pandapower_net[table].columns
         ):
             continue
         # These elements can be connected by referencing the element-index in column 'element' and  setting the correct
@@ -556,12 +576,14 @@ def connect_elements_to_switches_node_breaker(
             )
     all_switches["et"] = all_switches["et"].fillna("b")
 
+
 def initialise_new_columns(switches):
     switches["element"] = np.nan
     switches["bus"] = np.nan
     switches["et"] = np.nan
     switches[IDENTIFIER_COLUMN_NAME] = switches.index.values
     return switches.astype({"element": "object", "bus": "object", "et": "object"})
+
 
 def create_new_buses(
         nodes: Sequence, highest_bus_index: int
@@ -575,11 +597,12 @@ def create_new_buses(
         return buses, highest_bus_index
     return buses, buses.index.max()
 
+
 def add_new_buses_to_pandapower_net(
-    new_buses,
-    pandapower_net,
-    voltage_level: pd.Series,
-    assign_id_column_if_not_set=True,
+        new_buses,
+        pandapower_net,
+        voltage_level: pd.Series,
+        assign_id_column_if_not_set=True,
 ):
     if new_buses.empty:
         return
@@ -606,4 +629,3 @@ def add_new_buses_to_pandapower_net(
             ],
             axis=0,
         )
-

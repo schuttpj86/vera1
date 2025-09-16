@@ -1,9 +1,9 @@
 from collections import defaultdict
 
 import numpy as np
-import pandapower as pdp
-import pypowsybl as pp
-import pypowsybl.network
+# import pandapower as pdp
+# import pypowsybl as pp
+# import pypowsybl.network
 
 from VeraGridEngine.IO.others.pow2pp import convert_to_pandapower
 
@@ -15,6 +15,12 @@ from VeraGridEngine.IO.others.pow2pp import convert_to_pandapower
 
 
 def test_transnet_exmple_net():
+
+    try:
+        import pypowsybl.network
+    except ImportError:
+        return
+
     pow = pypowsybl.network.load(
         "/home/ankur/Dokumente/githubdev/GridCal/src/tests/data/grids/state-estimation/19700101T0000Z_.zip"
     )
@@ -27,6 +33,12 @@ def test_transnet_exmple_net():
 
 
 def test_conversion_on_example_networks():
+
+    try:
+        import pypowsybl as pp
+    except ImportError:
+        return
+
     """Test the conversion on various example pypowsybl networks"""
 
     # List of available example networks with correct creation methods
@@ -105,6 +117,12 @@ def test_conversion_on_example_networks():
 
 def run_pypowsybl_powerflow(network):
     """Run power flow using pypowsybl"""
+
+    try:
+        import pypowsybl as pp
+    except ImportError:
+        return
+
     try:
         # Create a simple power flow
         pf = pp.loadflow.run_ac(network)
@@ -128,6 +146,17 @@ def run_pandapower_powerflow(network):
 
 
 def run_pandapower_pp(network):
+
+    try:
+        import pypowsybl as pp
+    except ImportError:
+        return
+
+    try:
+        import pandapower as pdp
+    except ImportError:
+        return
+
     """Run power flow using pandapower with robust settings"""
     try:
         # Check if we have a slack bus
@@ -258,6 +287,12 @@ def generate_summary_report(results):
 
 def detailed_network_analysis(network_name="ieee14"):
     """Perform detailed analysis on a specific network"""
+
+    try:
+        import pypowsybl as pp
+    except ImportError:
+        return
+
     print(f"\n{'=' * 80}")
     print(f"DETAILED ANALYSIS: {network_name}")
     print(f"{'=' * 80}")
@@ -370,6 +405,12 @@ def detailed_comparison(pp_result, pdp_result):
 
 def test_specific_features():
     """Test specific features on appropriate networks"""
+
+    try:
+        import pypowsybl as pp
+    except ImportError:
+        return
+
     print(f"\n{'=' * 80}")
     print("SPECIFIC FEATURE TESTING")
     print(f"{'=' * 80}")
@@ -410,6 +451,12 @@ def test_specific_features():
 
 def quick_test():
     """Quick test to verify basic functionality"""
+
+    try:
+        import pypowsybl as pp
+    except ImportError:
+        return
+
     print("Running quick test...")
 
     # Test with IEEE 9 bus system
