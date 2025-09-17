@@ -9,7 +9,9 @@ fname = os.path.join('..', '..', 'tests', 'data', 'grids', 'Matpower', 'case118.
 
 grid = vg.open_file(fname)
 
-pf_res = vg.power_flow(grid=grid)
+pf_opt = vg.PowerFlowOptions(solver_type=vg.SolverType.NR)
+
+pf_res = vg.power_flow(grid=grid, options=pf_opt)
 print("pf error:", pf_res.error)
 
 # build a dictionary with the from flows
@@ -33,7 +35,7 @@ grid2, logger = ptdf_reduction(
 )
 
 # run a power flow after
-pf_res2 = vg.power_flow(grid=grid2)
+pf_res2 = vg.power_flow(grid=grid2, options=pf_opt)
 print("pf2 error:", pf_res2.error)
 
 # mount the flows comparison dictionary

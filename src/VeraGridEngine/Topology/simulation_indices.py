@@ -12,7 +12,7 @@ from VeraGridEngine.basic_structures import Vec, IntVec, BoolVec
 @nb.njit(cache=True)
 def compile_types(Pbus: Vec,
                   types: IntVec,
-                  pq_val =1,
+                  pq_val=1,
                   pv_val=2,
                   vd_val=3,
                   pqv_val=4,
@@ -68,9 +68,18 @@ def compile_types(Pbus: Vec,
 
     return ref, pq, pv, pqv, p, no_slack
 
-@nb.njit(cache=True)
-def replace_bus_types(bus_types, pq_val =1, pv_val=2, pqv_val=4, p_val=5):
 
+@nb.njit(cache=True)
+def replace_bus_types(bus_types, pq_val=1, pv_val=2, pqv_val=4, p_val=5):
+    """
+
+    :param bus_types:
+    :param pq_val:
+    :param pv_val:
+    :param pqv_val:
+    :param p_val:
+    :return:
+    """
     for i in range(len(bus_types)):
 
         if bus_types[i] == pqv_val:
@@ -190,7 +199,6 @@ class SimulationIndices:
 
             else:
                 raise Exception(f"Unknown tap phase control mode {ctrl_tau}")
-
 
         # convert lists to integer arrays
         k_pf_tau = np.array(k_pf_tau, dtype=int)

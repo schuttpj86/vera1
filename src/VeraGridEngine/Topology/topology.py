@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: MPL-2.0
 from __future__ import annotations
 
-from typing import List, Dict
+from typing import List, Dict, Tuple
 import numpy as np
 import numba as nb
 import scipy.sparse as sp
@@ -496,50 +496,66 @@ def get_adjacency_matrix(C_branch_bus_f: csc_matrix, C_branch_bus_t: csc_matrix,
     return C_bus_bus
 
 
-def find_different_states(states_array: IntMat, force_all=False) -> Dict[int, List[int]]:
+def find_different_states(states_array: IntMat) -> Tuple[Dict[int, List[int]], IntVec]:
     """
     Find the different branch states in time that may lead to different islands
     :param states_array: bool array indicating the different grid states (time, device)
-    :param force_all: Skip analysis and every time step is a state
     :return: Dictionary with the time: [array of times] represented by the index, for instance
              {0: [0, 1, 2, 3, 4], 5: [5, 6, 7, 8]}
              This means that [0, 1, 2, 3, 4] are represented by the topology of 0
              and that [5, 6, 7, 8] are represented by the topology of 5
     """
-    n_time = states_array.shape[0]
+    # n_time = states_array.shape[0]
+    #
+    # if force_all:
+    #     return {i: [i] for i in range(n_time)}  # force all states
+    #
+    # else:
+    #
+    #     # initialize
+    #     states = dict()  # type: Dict[int, List[int]]
+    #     k = 1
+    #     for t in range(n_time):
+    #
+    #         # search this state in the already existing states
+    #         keys = list(states.keys())
+    #         nn = len(keys)
+    #         found = False
+    #         i = 0
+    #         while i < nn and not found:
+    #             t2 = keys[i]
+    #
+    #             # compare state at t2 with the state at t
+    #             if np.array_equal(states_array[t, :], states_array[t2, :]):
+    #                 states[t2].append(t)  # add the state to the existing list of the key
+    #                 found = True
+    #
+    #             i += 1
+    #
+    #         if not found:
+    #             # new state found (append itself)
+    #             states[t] = [t]
+    #
+    #         k += 1
+    #
+    #     return states
 
-    if force_all:
-        return {i: [i] for i in range(n_time)}  # force all states
+    # Convert rows into a structured dtype (hashable)
+    view = np.ascontiguousarray(states_array).view(
+        np.dtype((np.void, states_array.dtype.itemsize * states_array.shape[1]))
+    )
 
-    else:
+    # Find unique rows
+    uniq, idx, inv = np.unique(view, return_index=True, return_inverse=True)
 
-        # initialize
-        states = dict()  # type: Dict[int, List[int]]
-        k = 1
-        for t in range(n_time):
+    groups = dict()
+    for rep, k in zip(idx, range(len(idx))):
+        rows = np.where(inv == k)[0]
+        groups[rep] = rows.tolist()  # includes rep itself
 
-            # search this state in the already existing states
-            keys = list(states.keys())
-            nn = len(keys)
-            found = False
-            i = 0
-            while i < nn and not found:
-                t2 = keys[i]
+    mapping = idx[inv]  # row -> representative
 
-                # compare state at t2 with the state at t
-                if np.array_equal(states_array[t, :], states_array[t2, :]):
-                    states[t2].append(t)  # add the state to the existing list of the key
-                    found = True
-
-                i += 1
-
-            if not found:
-                # new state found (append itself)
-                states[t] = [t]
-
-            k += 1
-
-        return states
+    return groups, mapping[:, 0]
 
 
 def get_csr_bus_indices(C: csr_matrix) -> IntVec:

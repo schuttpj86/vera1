@@ -196,7 +196,6 @@ class TimeSeriesDriverTemplate(DriverTemplate):
             self.sampled_probabilities: Vec = clustering_results.sampled_probabilities
             self.original_sample_idx: IntVec = clustering_results.original_sample_idx
 
-            self.topologic_groups: Dict[int, List[int]] = self.get_topologic_groups()
 
         else:
             self.using_clusters = False
@@ -212,8 +211,6 @@ class TimeSeriesDriverTemplate(DriverTemplate):
                     self.time_indices: IntVec = time_indices
                     self.sampled_probabilities: Vec = np.ones(shape=len(self.time_indices)) / len(self.time_indices)
 
-                    self.topologic_groups: Dict[int, List[int]] = self.get_topologic_groups()
-
     def get_steps(self):
         """
         Get time steps list of strings
@@ -222,19 +219,6 @@ class TimeSeriesDriverTemplate(DriverTemplate):
             return []
         else:
             return [self.grid.time_profile[i].strftime('%d-%m-%Y %H:%M') for i in self.time_indices]
-
-    def get_topologic_groups(self) -> Dict[int, List[int]]:
-        """
-        Get numerical circuit time groups
-        :return: Dictionary with the time: [array of times] represented by the index, for instance
-                 {0: [0, 1, 2, 3, 4], 5: [5, 6, 7, 8]}
-                 This means that [0, 1, 2, 3, 4] are represented by the topology of 0
-                 and that [5, 6, 7, 8] are represented by the topology of 5
-        """
-
-        return tp.find_different_states(
-            states_array=self.grid.get_branch_active_time_array()[self.time_indices]
-        )
 
     def get_fuel_emissions_energy_calculations(self, gen_p: Mat, gen_cost: Mat):
         """

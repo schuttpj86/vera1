@@ -293,7 +293,9 @@ class MultiCircuit(Assets):
                  and that [5, 6, 7, 8] are represented by the topology of 5
         """
 
-        return find_different_states(states_array=self.get_branch_active_time_array())
+        groups, mapping = find_different_states(states_array=self.get_branch_active_time_array())
+
+        return groups
 
     def copy(self) -> "MultiCircuit":
         """
@@ -1688,7 +1690,7 @@ class MultiCircuit(Assets):
         for elm in self.get_injection_devices_iter():
             if elm.bus is not None:
                 k = bus_dict[elm.bus]
-                val[k] = elm.get_S()
+                val[k] += elm.get_S()
 
         return val
 
@@ -1704,7 +1706,7 @@ class MultiCircuit(Assets):
         for elm in self.get_injection_devices_iter():
             if elm.bus is not None:
                 k = bus_dict[elm.bus]
-                val[:, k] = elm.get_Sprof()
+                val[:, k] += elm.get_Sprof()
 
         return val
 
@@ -1720,13 +1722,13 @@ class MultiCircuit(Assets):
         for elm in self.get_load_like_devices():
             if elm.bus is not None:
                 k = bus_dict[elm.bus]
-                val[:, k] = elm.get_Sprof()
+                val[:, k] += elm.get_Sprof()
 
         for elm in self.get_generation_like_devices():
             if elm.bus is not None:
                 if not elm.enabled_dispatch:
                     k = bus_dict[elm.bus]
-                    val[:, k] = elm.get_Sprof()
+                    val[:, k] += elm.get_Sprof()
 
         return val
 
@@ -1743,7 +1745,7 @@ class MultiCircuit(Assets):
             if elm.bus is not None:
                 if elm.enabled_dispatch:
                     k = bus_dict[elm.bus]
-                    val[:, k] = elm.get_Sprof()
+                    val[:, k] += elm.get_Sprof()
 
         return val
 

@@ -7,28 +7,32 @@ from __future__ import annotations
 import numpy as np
 from typing import Tuple, TYPE_CHECKING
 from scipy.sparse import coo_matrix
-import VeraGridEngine.Devices as dev
 from VeraGridEngine.basic_structures import IntVec, Mat, Logger
 from VeraGridEngine.enumerations import DeviceType
 from VeraGridEngine.Compilers.circuit_to_data import compile_numerical_circuit_at
-from VeraGridEngine.Topology.topology import find_islands, build_branches_C_coo_3
+from VeraGridEngine.Topology.topology import find_islands, build_branches_C_coo_3, find_different_states
 
 if TYPE_CHECKING:
     from VeraGridEngine.Devices.multi_circuit import MultiCircuit
     from VeraGridEngine.Simulations.PowerFlow.power_flow_results import PowerFlowResults
+    from VeraGridEngine.Simulations.LinearFactors.linear_analysis import LinearAnalysisTs
 
 
 def ptdf_reduction(grid: MultiCircuit,
                    reduction_bus_indices: IntVec,
                    PTDF: Mat,
-                   tol=1e-8) -> Tuple[MultiCircuit, Logger]:
+                   lin_ts: LinearAnalysisTs,
+                   tol=1e-8,
+                   aggregate_devices: bool = False) -> Tuple[MultiCircuit, Logger]:
     """
     In-place Grid reduction using the PTDF injection mirroring
     No theory available
     :param grid: MultiCircuit
     :param reduction_bus_indices: Bus indices of the buses to delete
     :param PTDF: PTDF matrix
+    :param lin_ts: LinearAnalysisTs
     :param tol: Tolerance, any equivalent power value under this is omitted
+    :param aggregate_devices: Aggregate boundary devices (optional)
     """
     logger = Logger()
 
@@ -37,20 +41,24 @@ def ptdf_reduction(grid: MultiCircuit,
 
     if len(e_buses) == 0:
         logger.add_info(msg="Nothing to reduce")
-        return logger
+        return grid, logger
 
     if len(i_buses) == 0:
         logger.add_info(msg="Nothing to keep (null grid as a result)")
-        return logger
+        return grid, logger
 
     if len(b_buses) == 0:
         logger.add_info(msg="The reducible and non reducible sets are disjoint and cannot be reduced")
-        return logger
+        return grid, logger
 
     # Start moving objects
     e_buses_set = set(e_buses)
     bus_dict = grid.get_bus_index_dict()
     has_ts = grid.has_time_series
+
+    if has_ts and lin_ts is None:
+        logger.add_error("You must provide the lin_ts parameter")
+        return grid, logger
 
     for elm in grid.get_injection_devices():
         if elm.bus is not None:
@@ -69,39 +77,44 @@ def ptdf_reduction(grid: MultiCircuit,
 
                         # create new device at the boundary bus
                         if elm.device_type == DeviceType.GeneratorDevice:
-                            new_elm = dev.Generator(name=f"{elm.name}@{bus.name}")
+                            new_elm = elm.copy()
+                            new_elm.comment = "PTDF reduced equivalent generator"
                             new_elm.P = ptdf_val * elm.P
                             if has_ts:
-                                new_elm.P_prof = ptdf_val * elm.P_prof.toarray()
-                            new_elm.comment = "Equivalent generator"
+                                new_elm.P_prof = lin_ts.get_time_flow(branch_idx, bus_idx, elm.P_prof.toarray())
+
+                            new_elm.comment = "PTDF reduced equivalent generator"
                             grid.add_generator(bus=bus, api_obj=new_elm)
 
                         elif elm.device_type == DeviceType.BatteryDevice:
-                            new_elm = dev.Battery(name=f"{elm.name}@{bus.name}")
+                            new_elm = elm.copy()
                             new_elm.P = ptdf_val * elm.P
                             if has_ts:
-                                new_elm.P_prof = ptdf_val * elm.P_prof.toarray()
-                            new_elm.comment = "Equivalent battery"
+                                new_elm.P_prof = lin_ts.get_time_flow(branch_idx, bus_idx, elm.P_prof.toarray())
+
+                            new_elm.comment = "PTDF reduced equivalent battery"
                             grid.add_battery(bus=bus, api_obj=new_elm)
 
                         elif elm.device_type == DeviceType.StaticGeneratorDevice:
-                            new_elm = dev.StaticGenerator(name=f"{elm.name}@{bus.name}")
+                            new_elm = elm.copy()
                             new_elm.P = ptdf_val * elm.P
                             new_elm.Q = ptdf_val * elm.Q
                             if has_ts:
-                                new_elm.P_prof = ptdf_val * elm.P_prof.toarray()
-                                new_elm.Q_prof = ptdf_val * elm.Q_prof.toarray()
-                            new_elm.comment = "Equivalent static generator"
+                                new_elm.P_prof = lin_ts.get_time_flow(branch_idx, bus_idx, elm.P_prof.toarray())
+                                new_elm.Q_prof = lin_ts.get_time_flow(branch_idx, bus_idx, elm.Q_prof.toarray())
+
+                            new_elm.comment = "PTDF reduced equivalent static generator"
                             grid.add_static_generator(bus=bus, api_obj=new_elm)
 
                         elif elm.device_type == DeviceType.LoadDevice:
-                            new_elm = dev.Load(name=f"{elm.name}@{bus.name}")
+                            new_elm = elm.copy()
                             new_elm.P = ptdf_val * elm.P
                             new_elm.Q = ptdf_val * elm.Q
                             if has_ts:
-                                new_elm.P_prof = ptdf_val * elm.P_prof.toarray()
-                                new_elm.Q_prof = ptdf_val * elm.Q_prof.toarray()
-                            new_elm.comment = "Equivalent load"
+                                new_elm.P_prof = lin_ts.get_time_flow(branch_idx, bus_idx, elm.P_prof.toarray())
+                                new_elm.Q_prof = lin_ts.get_time_flow(branch_idx, bus_idx, elm.Q_prof.toarray())
+
+                            new_elm.comment = "PTDF reduced equivalent load"
                             grid.add_load(bus=bus, api_obj=new_elm)
                         else:
                             # device I don't care about
@@ -136,15 +149,15 @@ def ptdf_reduction_with_islands(grid: MultiCircuit,
 
     if len(e_buses) == 0:
         logger.add_info(msg="Nothing to reduce")
-        return logger
+        return grid, logger
 
     if len(i_buses) == 0:
         logger.add_info(msg="Nothing to keep (null grid as a result)")
-        return logger
+        return grid, logger
 
     if len(b_buses) == 0:
         logger.add_info(msg="The reducible and non reducible sets are disjoint and cannot be reduced")
-        return logger
+        return grid, logger
 
     # get the islands --------------------------------------------------------------------------------------------------
     nbus = grid.get_bus_number()
@@ -192,7 +205,8 @@ def ptdf_reduction_with_islands(grid: MultiCircuit,
 
                         # create new device at the boundary bus
                         if elm.device_type == DeviceType.GeneratorDevice:
-                            new_elm = dev.Generator(name=f"{elm.name}@{bus.name}")
+                            new_elm = elm.copy()
+                            new_elm.comment = "PTDF reduced equivalent generator"
                             new_elm.P = ptdf_val * elm.P
                             if has_ts:
                                 new_elm.P_prof = ptdf_val * elm.P_prof.toarray()
@@ -200,7 +214,7 @@ def ptdf_reduction_with_islands(grid: MultiCircuit,
                             grid.add_generator(bus=bus, api_obj=new_elm)
 
                         elif elm.device_type == DeviceType.BatteryDevice:
-                            new_elm = dev.Battery(name=f"{elm.name}@{bus.name}")
+                            new_elm = elm.copy()
                             new_elm.P = ptdf_val * elm.P
                             if has_ts:
                                 new_elm.P_prof = ptdf_val * elm.P_prof.toarray()
@@ -208,7 +222,7 @@ def ptdf_reduction_with_islands(grid: MultiCircuit,
                             grid.add_battery(bus=bus, api_obj=new_elm)
 
                         elif elm.device_type == DeviceType.StaticGeneratorDevice:
-                            new_elm = dev.StaticGenerator(name=f"{elm.name}@{bus.name}")
+                            new_elm = elm.copy()
                             new_elm.P = ptdf_val * elm.P
                             new_elm.Q = ptdf_val * elm.Q
                             if has_ts:
@@ -218,7 +232,7 @@ def ptdf_reduction_with_islands(grid: MultiCircuit,
                             grid.add_static_generator(bus=bus, api_obj=new_elm)
 
                         elif elm.device_type == DeviceType.LoadDevice:
-                            new_elm = dev.Load(name=f"{elm.name}@{bus.name}")
+                            new_elm = elm.copy()
                             new_elm.P = ptdf_val * elm.P
                             new_elm.Q = ptdf_val * elm.Q
                             if has_ts:

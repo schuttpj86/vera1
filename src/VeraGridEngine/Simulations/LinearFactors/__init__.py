@@ -4,5 +4,5 @@
 # SPDX-License-Identifier: MPL-2.0
 
 from VeraGridEngine.Simulations.LinearFactors.linear_analysis_ts_driver import LinearAnalysisTimeSeriesDriver, LinearAnalysisTimeSeriesResults
-from VeraGridEngine.Simulations.LinearFactors.linear_analysis import LinearAnalysis, LinearMultiContingency, LinearMultiContingencies
+from VeraGridEngine.Simulations.LinearFactors.linear_analysis import LinearAnalysis, LinearMultiContingency, LinearMultiContingencies, LinearAnalysisTs
 from VeraGridEngine.Simulations.LinearFactors.linear_analysis_driver import LinearAnalysisOptions, LinearAnalysisDriver, LinearAnalysisResults
