@@ -11,7 +11,7 @@ from VeraGridEngine.Simulations.LinearFactors.linear_analysis import LinearAnaly
 from VeraGridEngine.Simulations.ContingencyAnalysis.contingency_analysis_options import ContingencyAnalysisOptions
 from VeraGridEngine.Simulations.OPF.Formulations.linear_opf_ts import run_linear_opf_ts
 from VeraGridEngine.Simulations.OPF.opf_options import OptimalPowerFlowOptions
-from VeraGridEngine.basic_structures import Logger
+from VeraGridEngine.basic_structures import Logger, CxVec
 
 if TYPE_CHECKING:
     from VeraGridEngine.Simulations.ContingencyAnalysis.contingency_analysis_driver import ContingencyAnalysisDriver
@@ -81,8 +81,8 @@ def optimal_linear_contingency_analysis(grid: MultiCircuit,
             calling_class.logger.add_error(msg)
             raise Exception(msg)
     else:
-        Sbus = nc.get_power_injections_pu()
-        flows_n = linear_analysis.get_flows(Sbus) * nc.Sbase
+        Sbus: CxVec = nc.get_power_injections()
+        flows_n = linear_analysis.get_flows(Sbus=Sbus, P_hvdc=nc.hvdc_data.Pset)
 
     loadings_n = flows_n / (nc.passive_branch_data.rates + 1e-9)
 
@@ -154,7 +154,8 @@ def optimal_linear_contingency_analysis(grid: MultiCircuit,
         # report progress
         if t is None:
             if calling_class is not None:
-                calling_class.report_text(f'Contingency group: {linear_multiple_contingencies.contingency_groups_used[ic].name}')
+                calling_class.report_text(
+                    f'Contingency group: {linear_multiple_contingencies.contingency_groups_used[ic].name}')
                 calling_class.report_progress2(ic, len(linear_multiple_contingencies.multi_contingencies))
 
     results.lodf = linear_analysis.LODF

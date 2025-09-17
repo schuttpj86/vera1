@@ -10,7 +10,7 @@ from VeraGridEngine.Compilers.circuit_to_data import compile_numerical_circuit_a
 from VeraGridEngine.Simulations.ContingencyAnalysis.contingency_analysis_results import ContingencyAnalysisResults
 from VeraGridEngine.Simulations.LinearFactors.linear_analysis import LinearAnalysis, LinearMultiContingencies
 from VeraGridEngine.Simulations.ContingencyAnalysis.contingency_analysis_options import ContingencyAnalysisOptions
-from VeraGridEngine.basic_structures import Logger
+from VeraGridEngine.basic_structures import Logger, CxVec
 
 if TYPE_CHECKING:
     from VeraGridEngine.Simulations.ContingencyAnalysis.contingency_analysis_driver import ContingencyAnalysisDriver
@@ -74,8 +74,8 @@ def linear_contingency_analysis(grid: MultiCircuit,
             calling_class.logger.add_error(msg)
             raise Exception(msg)
     else:
-        Sbus = nc.get_power_injections()  # MW
-        flows_n = linear_analysis.get_flows(Sbus)
+        Sbus: CxVec = nc.get_power_injections()  # MW
+        flows_n = linear_analysis.get_flows(Sbus=Sbus, P_hvdc=nc.hvdc_data.Pset)
 
     loadings_n = flows_n / (nc.passive_branch_data.rates + 1e-9)
 

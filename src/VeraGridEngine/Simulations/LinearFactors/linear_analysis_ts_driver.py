@@ -88,8 +88,10 @@ class LinearAnalysisTimeSeriesDriver(TimeSeriesDriverTemplate):
 
             driver_ = LinearAnalysis(
                 nc=nc,
-                distributed_slack=True,
-                correct_values=False,
+                distributed_slack=self.options.distribute_slack,
+                correct_values=self.options.correct_values,
+                # distributed_slack=True,
+                # correct_values=False,
             )
 
             Sbus = nc.get_power_injections_pu()

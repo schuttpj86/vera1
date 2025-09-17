@@ -299,7 +299,7 @@ class AvailableTransferCapacityTimeSeriesDriver(TimeSeriesDriverTemplate):
                     self.logger.add_error(msg)
                     raise Exception(msg)
             else:
-                flows_t: Vec = linear_analysis.get_flows(P)
+                flows_t: Vec = linear_analysis.get_flows(Sbus=P, P_hvdc=nc.hvdc_data.Pset)
 
             # compute the branch exchange sensitivity (alpha)
             dP = compute_dP(

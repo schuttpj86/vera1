@@ -491,16 +491,45 @@ class LinearAnalysis:
             rates=rates
         )
 
-    def get_flows(self, Sbus: Union[CxVec, CxMat]) -> Union[CxVec, CxMat]:
+    def get_flows(self, Sbus: CxVec, P_hvdc: Vec | None = None, P_vsc: Vec | None = None) -> CxVec:
         """
         Compute the time series branch Sf using the PTDF
-        :param Sbus: Power Injections time series array (nbus) for 1D, (time, nbus) for 2D
-        :return: branch active power Sf (nbus) for 1D, (time, nbus) for 2D
+        :param Sbus: Power Injections time series array (nbus)
+        :param P_hvdc: Power from HvdcLines (nhvdc) (optional)
+        :param P_vsc: Power from Vsc (nvsc) (optional)
+        :return: branch active power Sf (nbranch)
         """
         if Sbus.ndim == 1:
-            return np.dot(self.PTDF, Sbus.real)
-        elif Sbus.ndim == 2:
-            return np.dot(self.PTDF, Sbus.real.T).T
+            Pf = self.PTDF @ Sbus.real
+
+            if P_hvdc is not None:
+                Pf += self.HvdcDF @ P_hvdc
+
+            if P_vsc is not None:
+                Pf += self.VscDF @ P_vsc
+
+            return Pf
+        else:
+            raise Exception(f'Sbus has unsupported dimensions: {Sbus.shape}')
+
+    def get_flows2d(self, Sbus: CxMat, P_hvdc: Mat | None = None, P_vsc: Mat | None = None) -> CxMat:
+        """
+        Compute the time series branch Sf using the PTDF
+        :param Sbus: Power Injections time series array (time, nbus) for 2D
+        :param P_hvdc: Power from HvdcLines (nhvdc) (optional)
+        :param P_vsc: Power from Vsc (nvsc) (optional)
+        :return: branch active power Sf (time, nbranch)
+        """
+        if Sbus.ndim == 2:
+            Pf = np.dot(self.PTDF, Sbus.real.T).T
+
+            if P_hvdc is not None:
+                Pf += np.dot(self.HvdcDF, P_hvdc.T).T
+
+            if P_vsc is not None:
+                Pf += np.dot(self.VscDF, P_vsc.T).T
+
+            return Pf
         else:
             raise Exception(f'Sbus has unsupported dimensions: {Sbus.shape}')
 
