@@ -145,13 +145,9 @@ We have included extra materials to work with. These are included in the standal
 
 ## Tutorials and examples
 
-- [Getting started](https://veragrid.readthedocs.io/en/latest/rst_source/getting_started/index.html)
+- [Grid modelling and getting started](https://veragrid.readthedocs.io/en/latest/md_source/modelling.html)
 
-- [Cloning the repository (video)](https://youtu.be/59W_rqimB6w)
-
-- [Making a grid with profiles (video)](https://youtu.be/H2d_2bMsIS0)
-
-- [VeraGrid PlayGround repository](https://github.com/yasirroni/VeraGridPlayground) with some notebooks and examples.
+- [Making a grid with profiles](https://veragrid.readthedocs.io/en/latest/md_source/modelling.html#distribution-grid-example-in-the-sequence-reference-frame)
 
 - [The tests](https://github.com/SanPen/VeraGrid/tree/master/src/tests) may serve as a valuable source of examples.
 
@@ -164,7 +160,8 @@ cases out of the box, without you having to do anything special.
 And of course, VeraGrid solves all Matpower 8 provided grids, solving the continental USA case in about 1 second:
 
 
-[![VeraGrid](Grids_and_profiles/matpower_benchmark/n_buses_vs_time.png)](https://www.youtube.com/watch?v=O-tb_um8YtU)
+[![VeraGrid](Grids_and_profiles/matpower_benchmark/n_buses_vs_time.png)]([![VeraGrid](Grids_and_profiles/matpower_benchmark/n_buses_vs_time.png)](https://www.youtube.com/watch?v=O-tb_um8YtU)
+)
 
 Find the results at the [benchmarks page](https://veragrid.readthedocs.io/en/latest/rst_source/development/benchmarks.html) 
 for more details.
