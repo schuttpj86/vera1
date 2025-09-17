@@ -1131,10 +1131,17 @@ def fill_generator_parent(
         data.p3_star[3 * k + idx3] = data.p[k] / 3.0
 
     # reactive power-sharing data
+    # We use P as a reference for scaling, hence issues may arise if P = 0.0
+    # Thus we add a small value to compensate for that
+    # The small value cannot be 1e-20, as then the split of Q 
+    # would be half the value (1e-20/1e-20). 
+    # A value of 1e-14 seems a sweet compromise.
     if data.active[k]:
         if data.controllable[k]:
-            bus_data.q_shared_total[i] += data.pmax[k]
-            data.q_share[k] = data.pmax[k]
+            bus_data.q_shared_total[i] += data.p[k] + 1e-14
+            data.q_share[k] = data.p[k] + 1e-14
+            # bus_data.q_shared_total[i] += data.p[k]
+            # data.q_share[k] = data.p[k]
         else:
             bus_data.q_fixed[i] += data.get_q_at(k)
 
