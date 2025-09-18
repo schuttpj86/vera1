@@ -930,7 +930,16 @@ class Vector:
                       For immutable types (int, float, str, None), store directly.
                       For objects, store independent deep copies.
         """
-        self._data = [value] * size
+        if isinstance(value, (int, float, str, type(None), bool)):
+            self._data = [value] * size
+        elif isinstance(value, list):
+            self._data = [list()] * size
+        elif isinstance(value, set):
+            self._data = [set()] * size
+        elif isinstance(value, dict):
+            self._data = [dict()] * size
+        else:
+            self._data = [copy.deepcopy(value) for _ in range(size)]
 
     def __getitem__(self, index):
         return self._data[index]
@@ -963,6 +972,12 @@ class Vector:
         else:
             if isinstance(value, (int, float, str, type(None), bool)):
                 self._data.extend([value] * (new_size - current_size))
+            elif isinstance(value, list):
+                self._data = [list()] * (new_size - current_size)
+            elif isinstance(value, set):
+                self._data = [set()] * (new_size - current_size)
+            elif isinstance(value, dict):
+                self._data = [dict()] * (new_size - current_size)
             else:
                 self._data.extend(copy.deepcopy(value) for _ in range(new_size - current_size))
 

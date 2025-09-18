@@ -53,10 +53,17 @@ grid_ward = vg.ward_standard_reduction(
 # PTDF reduction
 nc = vg.compile_numerical_circuit_at(circuit=grid, t_idx=None)
 lin = vg.LinearAnalysis(nc=nc)
+
+if grid.has_time_series:
+    lin_ts = vg.LinearAnalysisTs(grid=grid)
+else:
+    lin_ts = None
+
 grid_ptdf, logger_ptdf = vg.ptdf_reduction(
     grid=grid.copy(),
     reduction_bus_indices=reduction_bus_indices,
-    PTDF=lin.PTDF
+    PTDF=lin.PTDF,
+    lin_ts=lin_ts
 )
 
 # Di-Shi reduction

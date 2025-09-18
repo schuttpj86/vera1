@@ -25,9 +25,16 @@ def test_ward_reduction():
     # gce.ward_reduction(grid=grid, reduction_bus_indices=remove_bus_idx, pf_res=pf_res)
     nc = gce.compile_numerical_circuit_at(circuit=grid, t_idx=None)
     lin = gce.LinearAnalysis(nc=nc)
+
+    if grid.has_time_series:
+        lin_ts = gce.LinearAnalysisTs(grid=grid)
+    else:
+        lin_ts = None
+
     grid2, logger = gce.ptdf_reduction(grid=grid,
                                        reduction_bus_indices=remove_bus_idx,
-                                       PTDF=lin.PTDF)
+                                       PTDF=lin.PTDF,
+                                       lin_ts=lin_ts)
 
     pf_res2 = gce.power_flow(grid=grid, options=pf_options)
 

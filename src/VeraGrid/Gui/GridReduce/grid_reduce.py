@@ -17,7 +17,8 @@ from VeraGridEngine.Devices.multi_circuit import MultiCircuit
 from VeraGridEngine.Topology.GridReduction.di_shi_grid_reduction import di_shi_reduction
 from VeraGridEngine.Topology.GridReduction.ptdf_grid_reduction import ptdf_reduction
 from VeraGridEngine.Topology.GridReduction.ward_equivalents import ward_standard_reduction
-
+from VeraGridEngine.Simulations.LinearFactors.linear_analysis import LinearAnalysis, LinearAnalysisTs
+from VeraGridEngine.Compilers.circuit_to_data import compile_numerical_circuit_at
 from VeraGridEngine.basic_structures import Logger
 from VeraGridEngine.enumerations import GridReductionMethod
 
@@ -110,17 +111,20 @@ class GridReduceDialogue(QtWidgets.QDialog):
 
                 elif method == GridReductionMethod.PTDF:
                     # get the previous power flow
-                    _, lin_res = self._session.linear_power_flow
+                    nc = compile_numerical_circuit_at(circuit=self._grid, t_idx=None)
+                    lin = LinearAnalysis(nc=nc)
 
-                    if lin_res is None:
-                        warning_msg("Run a linear analysis first! or select another method", "Grid reduction")
-                        return
+                    if self._grid.has_time_series:
+                        lin_ts = LinearAnalysisTs(grid=self._grid)
+                    else:
+                        lin_ts = None
 
                     # NOTE: self._grid gets reduced in-place
                     grid_reduced, logger = ptdf_reduction(
                         grid=self._grid,
                         reduction_bus_indices=reduction_bus_indices,
-                        PTDF=lin_res.PTDF
+                        PTDF=lin.PTDF,
+                        lin_ts=lin_ts
                     )
                 else:
                     raise NotImplementedError("Reduction method not supported")

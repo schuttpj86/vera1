@@ -327,3 +327,15 @@ class LoadParent(InjectionParent):
 
             if show_fig:
                 plt.show()
+
+    def __iadd__(self, other: "LoadParent"):
+        """
+        Add another generator here
+        :param other: Generator to add
+        """
+
+        self.P += other.P
+        self.P_prof = self.P_prof.toarray() + other.P_prof.toarray()
+
+        self.Q += other.Q
+        self.Q_prof = self.Q_prof.toarray() + other.Q_prof.toarray()

@@ -132,3 +132,11 @@ class Battery(Generator):
         self.register(key='charge_efficiency', units='p.u.', tpe=float, definition='Charging efficiency.')
         self.register(key='discharge_efficiency', units='p.u.', tpe=float, definition='Discharge efficiency.')
         self.register(key='discharge_per_cycle', units='p.u.', tpe=float, definition='')
+
+    def __iadd__(self, other: "Battery"):
+        """
+        Add another generator here
+        :param other: Generator to add
+        """
+        super().__iadd__(other)
+        self.Enom += other.Enom
