@@ -315,34 +315,6 @@ class OptimalPowerFlowTimeSeriesResults(ResultsTemplate):
 
         self.Sf[t, :] = res.Sf
 
-    def apply_lp_profiles(self, circuit: MultiCircuit):
-        """
-        Apply the LP results as device profiles.
-        """
-        generators = circuit.get_generators()
-        for i, elm in enumerate(generators):
-            pr = self.generator_power[:, i]
-            if len(pr) == circuit.get_time_number():
-                elm.P_prof = pr
-
-        batteries = circuit.get_batteries()
-        for i, elm in enumerate(batteries):
-            pr = self.battery_power[:, i]
-            if len(pr) == circuit.get_time_number():
-                elm.P_prof = pr
-
-        loads = circuit.get_load_like_devices()
-        for i, elm in enumerate(loads):
-            pr = self.load_shedding[:, i]
-            if len(pr) == circuit.get_time_number():
-                elm.P_prof -= pr
-
-        hvdc = circuit.get_hvdc()
-        for i, elm in enumerate(hvdc):
-            pr = self.hvdc_Pf[:, i]
-            if len(pr) == circuit.get_time_number():
-                elm.Pset_prof = pr
-
     def mdl(self, result_type) -> ResultsTable:
         """
         Plot the results

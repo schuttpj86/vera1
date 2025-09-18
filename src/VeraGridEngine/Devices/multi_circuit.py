@@ -2755,6 +2755,9 @@ class MultiCircuit(Assets):
         for i, elm in enumerate(self.get_loads()):
             elm.P_prof.set(results.load_power[:, i])
 
+        for i, elm in enumerate(self.get_hvdc()):
+            elm.Pset_prof.set(results.hvdc_Pf[:, i])
+
     def set_opf_snapshot_results(self, results: OptimalPowerFlowResults):
         """
         Assign OptimalPowerFlowResults to the objects
@@ -2767,8 +2770,11 @@ class MultiCircuit(Assets):
         for i, elm in enumerate(self.get_batteries()):
             elm.P = results.battery_power[i]
 
-        # for i, elm in enumerate(self.get_loads()):
-        #     elm.P = results.load_power[i]
+        for i, elm in enumerate(self.get_loads()):
+            elm.P = results.load_power[i]
+
+        for i, elm in enumerate(self.get_hvdc()):
+            elm.Pset.set(results.hvdc_Pf[i])
 
     def get_reduction_sets(self, reduction_bus_indices: Sequence[int],
                            add_vsc=False, add_hvdc=False, add_switch=True) -> Tuple[IntVec, IntVec, IntVec, IntVec]:

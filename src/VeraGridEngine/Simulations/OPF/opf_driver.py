@@ -152,10 +152,15 @@ class OptimalPowerFlowDriver(TimeSeriesDriverTemplate):
 
             self.results.voltage = opf_vars.bus_vars.Vm[0, :] * np.exp(1j * opf_vars.bus_vars.Va[0, :])
             self.results.bus_shadow_prices = opf_vars.bus_vars.shadow_prices[0, :]
+
+            self.results.load_power = opf_vars.load_vars.p[0, :]
             self.results.load_shedding = opf_vars.load_vars.shedding[0, :]
+
             self.results.battery_power = opf_vars.batt_vars.p[0, :]
             # self.results.battery_energy = opf_vars.batt_vars.e[0, :]
+
             self.results.generator_power = opf_vars.gen_vars.p[0, :]
+
             self.results.Sf = opf_vars.branch_vars.flows[0, :]
             self.results.St = -opf_vars.branch_vars.flows[0, :]
             self.results.overloads = (opf_vars.branch_vars.flow_slacks_pos[0, :]

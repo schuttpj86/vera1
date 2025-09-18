@@ -68,7 +68,8 @@ class OptimalPowerFlowResults(ResultsTemplate):
 
                                                     ResultTypes.BatteryResults: [ResultTypes.BatteryPower],
 
-                                                    ResultTypes.LoadResults: [ResultTypes.LoadShedding,
+                                                    ResultTypes.LoadResults: [ResultTypes.LoadPower,
+                                                                              ResultTypes.LoadShedding,
                                                                               ResultTypes.LoadSheddingCost],
 
                                                     ResultTypes.BranchResults: [ResultTypes.BranchActivePowerFrom,
@@ -129,6 +130,7 @@ class OptimalPowerFlowResults(ResultsTemplate):
         self.Sbus = np.zeros(n, dtype=complex)
         self.bus_shadow_prices = np.zeros(n, dtype=float)
 
+        self.load_power = np.zeros(nload, dtype=float)
         self.load_shedding = np.zeros(nload, dtype=float)
         self.load_shedding_cost = np.zeros(nload, dtype=float)
 
@@ -200,6 +202,7 @@ class OptimalPowerFlowResults(ResultsTemplate):
         self.register(name='Sbus', tpe=CxVec)
         self.register(name='bus_shadow_prices', tpe=Vec)
 
+        self.register(name='load_power', tpe=Vec)
         self.register(name='load_shedding', tpe=Vec)
         self.register(name='load_shedding_cost', tpe=Vec)
 
@@ -486,6 +489,18 @@ class OptimalPowerFlowResults(ResultsTemplate):
                                 ylabel='(deg)',
                                 xlabel='',
                                 units='(deg)')
+
+        elif result_type == ResultTypes.LoadPower:
+
+            return ResultsTable(data=self.load_power,
+                                index=self.load_names,
+                                idx_device_type=DeviceType.LoadLikeDevice,
+                                columns=[result_type.value],
+                                cols_device_type=DeviceType.NoDevice,
+                                title=str(result_type.value),
+                                ylabel='(MW)',
+                                xlabel='',
+                                units='(MW)')
 
         elif result_type == ResultTypes.LoadShedding:
 
