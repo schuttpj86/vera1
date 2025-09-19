@@ -267,7 +267,7 @@ class FileOpen:
 
                     elif data_dictionary['version'] == 3.0:
                         self.circuit = MultiCircuit()
-                        interpret_excel_v3(self.circuit, data_dictionary)
+                        interpret_excel_v3(self.circuit, data_dictionary, logger=self.logger)
 
                     elif data_dictionary['version'] == 4.0:
                         if data_dictionary is not None:
