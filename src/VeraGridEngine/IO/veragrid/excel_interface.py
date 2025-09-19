@@ -2,14 +2,16 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.  
 # SPDX-License-Identifier: MPL-2.0
+from __future__ import annotations
 
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Sequence
 from warnings import warn
 import numpy as np
 import pandas as pd
 from VeraGridEngine.basic_structures import Logger
 from VeraGridEngine.Devices.multi_circuit import MultiCircuit
 import VeraGridEngine.Devices as dev
+from VeraGridEngine.Devices.types import ALL_DEV_TYPES
 from VeraGridEngine.enumerations import DeviceType
 from VeraGridEngine.IO.veragrid.pack_unpack import gather_model_as_data_frames, get_objects_dictionary
 
@@ -676,7 +678,9 @@ def interpret_excel_v3(circuit: MultiCircuit,
     circuit.comments = data['Comments'] if 'Comments' in data.keys() else ''
 
     # common function
-    def set_object_attributes(obj_, attr_list, values):
+    def set_object_attributes(obj_: ALL_DEV_TYPES,
+                              attr_list: List[str],
+                              values: Sequence[float | int | str]):
         """
 
         :param obj_:
@@ -1145,7 +1149,7 @@ def save_excel(circuit: MultiCircuit, file_path):
         for key in dfs.keys():
             key2 = str(key)
             if len(key2) > 30:
-                key2 = key2[:30] # excel sheet names have a max of 30 chars
+                key2 = key2[:30]  # excel sheet names have a max of 30 chars
             dfs[key].to_excel(excel_writer=writer, sheet_name=key2)
 
     return logger

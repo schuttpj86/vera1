@@ -839,31 +839,5 @@ class OptimalPowerFlowTimeSeriesResults(ResultsTemplate):
                                 ylabel='(MW)',
                                 units='(MW)')
 
-        # elif result_type == ResultTypes.OpfTechnologyPlot:
-        #     # the generation already accounts for the shedding
-        #     generation = self.generator_power.sum(axis=1) + self.battery_power.sum(axis=1)
-        #     load = self.load_power.sum(axis=1) - self.load_shedding.sum(axis=1)
-        #
-        #     if self.plotting_allowed():
-        #         plt.ion()
-        #         fig = plt.figure(figsize=(8, 6))
-        #         ax3 = plt.subplot(1, 1, 1)
-        #
-        #         # for i in range(self.power_by_technology.shape[1]):
-        #         ax3.stackplot(x=self.time_array, y=self.power_by_technology, labels=self.technology_names)
-        #
-        #         ax3.legend()
-        #         fig.suptitle(str(result_type.value))
-        #         plt.tight_layout()
-        #         plt.show()
-        #
-        #     return ResultsTable(data=np.c_[generation, load],
-        #                         index=pd.to_datetime(self.time_array),
-        #                         idx_device_type=DeviceType.TimeDevice,
-        #                         columns=np.array(['Generation (MW)', 'Load (MW)']),
-        #                         cols_device_type=DeviceType.NoDevice,
-        #                         title=result_type.value,
-        #                         ylabel='(MW)',
-        #                         units='(MW)')
         else:
             raise Exception('Result type not understood:' + str(result_type))
