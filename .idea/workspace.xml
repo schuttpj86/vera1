@@ -29,11 +29,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="aa3ee678-6e91-470f-91a9-09e9d8a4756d" name="Changes" comment="fixed visualization bug and added clustering and reduction docs">
-      <change afterPath="$PROJECT_DIR$/src/tests/test_3ph_pf_driver.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/trunk/unbalanced_pf/3ph_driver_test.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/trunk/unbalanced_pf/estabanell_devel.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/tests/test_3_phase_pf_13bus.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tests/test_3ph_pf_13bus.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/trunk/unbalanced_pf/IEEE 13-bus Test Feeder Case worker.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/trunk/unbalanced_pf/IEEE 13-bus Test Feeder Case worker.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/VeraGridEngine/DataStructures/branch_parent_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/VeraGridEngine/DataStructures/branch_parent_data.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -216,6 +214,7 @@
     "Python.demo_code.executor": "Run",
     "Python.demo_code2.executor": "Debug",
     "Python.demo_code3.executor": "Run",
+    "Python.estabanell_devel.executor": "Debug",
     "Python.full_trafo_validation.executor": "Run",
     "Python.grid_merge.executor": "Run",
     "Python.ieee9.executor": "Run",
@@ -999,10 +998,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python tests.pytest in test_3ph_pf_driver.py" />
-        <item itemvalue="Python.3ph_driver_test" />
         <item itemvalue="Python tests.pytest for test_3ph_pf_driver.test_ieee_13_bus_feeder_driver" />
         <item itemvalue="Python tests.pytest for test_3ph_pf_13bus.test_ieee_13_bus_feeder_modified" />
         <item itemvalue="Python tests.pytest for test_3ph_pf_13bus.test_ieee_13_bus_feeder" />
+        <item itemvalue="Python.3ph_driver_test" />
       </list>
     </recent_temporary>
   </component>
@@ -2497,7 +2496,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/src/VeraGridEngine/Simulations/ATC/available_transfer_capacity_ts_driver.py</url>
-          <line>177</line>
+          <line>182</line>
           <option name="timeStamp" value="2582" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -2530,6 +2529,16 @@
           <url>file://$PROJECT_DIR$/doc/conf.py</url>
           <line>14</line>
           <option name="timeStamp" value="2649" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/trunk/unbalanced_pf/estabanell_devel.py</url>
+          <line>102</line>
+          <option name="timeStamp" value="2687" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/VeraGridEngine/Devices/Branches/sequence_line_type.py</url>
+          <line>200</line>
+          <option name="timeStamp" value="2688" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
