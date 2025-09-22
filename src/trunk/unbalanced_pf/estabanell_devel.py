@@ -22,10 +22,10 @@ df_buses_lines = df_buses_lines[
 # -------------------------------------------------------------------------------------
 #   Simplification 58022 -> 58023
 # -------------------------------------------------------------------------------------
-camino = ["58022","58021","58024","58031","58032","58033","58034","58023"]
+path = ["58022","58021","58024","58031","58032","58033","58034","58023"]
 
 mask = df_buses_lines.apply(
-    lambda row: (str(row["node_start"]) in camino and str(row["node_end"]) in camino),
+    lambda row: (str(row["node_start"]) in path and str(row["node_end"]) in path),
     axis=1
 )
 df_path = df_buses_lines[mask]
@@ -104,11 +104,14 @@ df_powers = pd.read_csv('estabanell_grid/Corbes_CUPS_CT-0975.csv', sep=";")
 # For now, only the first measurement of each meter
 df_first = df_powers.groupby("MeterID").first().reset_index()
 
+S_sum = 0 + 0j
 for _, row_meters in df_meters.iterrows():
     row_power = df_first[df_first["MeterID"] == row_meters["comptador"]]
 
     P = float(row_power["TotalActiveEnergyConsumed"].values[0]) - float(row_power["TotalActiveEnergyProduced"].values[0]) / 1000
     Q = float(row_power["TotalReactiveEnergyProduced"].values[0]) - float(row_power["TotalReactiveEnergyConsumed"].values[0]) / 1000
+
+    S_sum = S_sum + (P + 1j * Q)
 
     if int(row_meters['tensio']) == 400:
         # Balanced
