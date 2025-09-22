@@ -28,10 +28,9 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="aa3ee678-6e91-470f-91a9-09e9d8a4756d" name="Changes" comment="fixed visualization bug and added clustering and reduction docs">
-      <change afterPath="$PROJECT_DIR$/src/trunk/unbalanced_pf/estabanell_devel.py" afterDir="false" />
+    <list default="true" id="aa3ee678-6e91-470f-91a9-09e9d8a4756d" name="Changes" comment="estabanell_devel.py">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/VeraGridEngine/DataStructures/branch_parent_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/VeraGridEngine/DataStructures/branch_parent_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/trunk/unbalanced_pf/estabanell_devel.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/trunk/unbalanced_pf/estabanell_devel.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -94,8 +93,8 @@
   </component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/SanPen/GridCal.git&quot;,
-    &quot;accountId&quot;: &quot;cb83a36c-6a26-4d28-9aa3-3af0083cd55d&quot;
+    &quot;url&quot;: &quot;https://github.com/SanPen/VeraGrid.git&quot;,
+    &quot;accountId&quot;: &quot;1acef425-303f-45a5-9f13-1a5d8e86b985&quot;
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
@@ -184,6 +183,7 @@
     "Python tests.pytest for test_tower_composition.test_tower_composition.executor": "Run",
     "Python tests.pytest for test_transformer_type.test_psse_conversion3.executor": "Debug",
     "Python tests.pytest for test_transformer_type.test_transformer_type.executor": "Run",
+    "Python tests.pytest in test_3ph_admittance_matrix.py.executor": "Run",
     "Python tests.pytest in test_3ph_pf_driver.py.executor": "Run",
     "Python tests.pytest in test_ac_opf.py.executor": "Run",
     "Python tests.pytest in test_basic.py.executor": "Run",
@@ -214,7 +214,8 @@
     "Python.demo_code.executor": "Run",
     "Python.demo_code2.executor": "Debug",
     "Python.demo_code3.executor": "Run",
-    "Python.estabanell_devel.executor": "Debug",
+    "Python.estabanell_devel.executor": "Run",
+    "Python.estabanell_test.executor": "Run",
     "Python.full_trafo_validation.executor": "Run",
     "Python.grid_merge.executor": "Run",
     "Python.ieee9.executor": "Run",
@@ -222,7 +223,9 @@
     "Python.make.executor": "Run",
     "Python.make_wheels.executor": "Run",
     "Python.new_circuit_objects.executor": "Run",
+    "Python.newton_raphson_fx.executor": "Debug",
     "Python.overhead_line_calcs.executor": "Run",
+    "Python.pf_basic_formulation_3ph.executor": "Debug",
     "Python.post_example.executor": "Run",
     "Python.pymoo_example.executor": "Debug",
     "Python.pyside6-designer.executor": "Run",
@@ -255,7 +258,7 @@
     "WebServerToolWindowFactoryState": "false",
     "git-widget-placeholder": "devel",
     "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "C:/Users/alexb/VeraGrid/src/tests",
+    "last_opened_file_path": "C:/Users/alexb/VeraGrid/src/trunk/unbalanced_pf",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
@@ -1008,7 +1011,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-dfff61a61320-9cdd278e9d02-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-251.25410.159" />
+        <option value="bundled-python-sdk-f78a9d071105-aa17d162503b-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-243.26574.90" />
       </set>
     </attachedChunks>
   </component>
@@ -2214,7 +2217,7 @@
       <option name="project" value="LOCAL" />
       <updated>1698766404661</updated>
     </task>
-    <option name="localTasksCounter" value="699" />
+    <option name="localTasksCounter" value="701" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -2260,8 +2263,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added the ability to recolour the schematic with the design values" />
-    <MESSAGE value="minor refactorings" />
     <MESSAGE value="Important opf refurbishing&#10;Added tests about generation, battery and load shedding" />
     <MESSAGE value="Added power by technology summary at the OPF results&#10;Much better implementation of the stacked results plot" />
     <MESSAGE value="Split storage vars, and now it works as expected" />
@@ -2285,7 +2286,9 @@
     <MESSAGE value="fixed docs issue" />
     <MESSAGE value="added use gslk as cost options&#10;Fixed issues with base atc representation and fixed the atc_ts report" />
     <MESSAGE value="fixed visualization bug and added clustering and reduction docs" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed visualization bug and added clustering and reduction docs" />
+    <MESSAGE value="get_3ph_names" />
+    <MESSAGE value="estabanell_devel.py" />
+    <option name="LAST_COMMIT_MESSAGE" value="estabanell_devel.py" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -2531,14 +2534,24 @@
           <option name="timeStamp" value="2649" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/src/trunk/unbalanced_pf/estabanell_devel.py</url>
+          <url>file://$PROJECT_DIR$/src/VeraGridEngine/Simulations/PowerFlow/NumericalMethods/newton_raphson_fx.py</url>
           <line>102</line>
-          <option name="timeStamp" value="2687" />
+          <option name="timeStamp" value="2703" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/src/VeraGridEngine/Devices/Branches/sequence_line_type.py</url>
-          <line>200</line>
-          <option name="timeStamp" value="2688" />
+          <url>file://$PROJECT_DIR$/src/VeraGridEngine/Utils/Sparse/csc2.py</url>
+          <line>636</line>
+          <option name="timeStamp" value="2704" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/VeraGridEngine/Simulations/PowerFlow/NumericalMethods/newton_raphson_fx.py</url>
+          <line>90</line>
+          <option name="timeStamp" value="2705" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/trunk/unbalanced_pf/estabanell_devel.py</url>
+          <line>170</line>
+          <option name="timeStamp" value="2706" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
