@@ -1992,7 +1992,8 @@ class SimulationsMain(TimeEventsMain):
         generate_report = self.ui.addOptimalPowerFlowReportCheckBox.isChecked()
         robust = self.ui.fixOpfCheckBox.isChecked()
         generation_expansion_planning = self.ui.opfGEPCheckBox.isChecked()
-
+        use_glsk_as_cost = self.ui.useGslkAsCostsOpfCheckBox.isChecked()
+        add_losses_approximation = self.ui.approximateLossesOpfCheckBox.isChecked()
         _, pf_results = self.session.power_flow
 
         if self.ui.save_mip_checkBox.isChecked():
@@ -2052,6 +2053,8 @@ class SimulationsMain(TimeEventsMain):
                                               generation_expansion_planning=generation_expansion_planning,
                                               export_model_fname=export_model_fname,
                                               generate_report=generate_report,
+                                              use_glsk_as_cost=use_glsk_as_cost,
+                                              add_losses_approximation=add_losses_approximation,
                                               ips_method=ips_method,
                                               ips_tolerance=ips_tolerance,
                                               ips_iterations=ips_iterations,
