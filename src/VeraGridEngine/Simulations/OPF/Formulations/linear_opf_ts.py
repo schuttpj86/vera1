@@ -1340,14 +1340,22 @@ def add_linear_branches_formulation(t: int,
 
                 # add to the objective (αij =rij * ∣Fij0∣/V2)
                 # insetad of the rates, the literature suggests an absolute initial value of the flow
-                factor = branch_data_t.R[m] * branch_data_t.rates[m] / (bus_data_t.Vnom[branch_data_t.F[m]] ** 2)
+                V = bus_data_t.Vnom[branch_data_t.F[m]]
+                if V > 0.0:
+                    factor = branch_data_t.R[m] * branch_data_t.rates[m] / (V ** 2)
+                else:
+                    factor = branch_data_t.R[m]
+
+                # store the values for later retrieval
                 branch_vars.losses[t, m] = branch_vars.z_flows[t, m] * factor
+
+                # add the losses to the objective
                 f_obj += branch_vars.losses[t, m]
 
-                # divide the losses contribution equally among the from and to buses
+                # divide the losses contribution equally among the from and to buses as new loads
                 l_inj = 0.5 * branch_vars.losses[t, m]
-                bus_vars.Pbalance[t, fr] += l_inj
-                bus_vars.Pbalance[t, to] += l_inj
+                bus_vars.Pbalance[t, fr] -= l_inj
+                bus_vars.Pbalance[t, to] -= l_inj
 
             # add the flow constraint if monitored
             if branch_data_t.monitor_loading[m]:
