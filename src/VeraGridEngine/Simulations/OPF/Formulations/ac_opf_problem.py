@@ -1716,8 +1716,8 @@ class NonLinearOptimalPfProblem:
         # pd.DataFrame(Pg_dis).transpose().to_csv('REEresP.csv')
         # pd.DataFrame(Qg_dis).transpose().to_csv('REEresQ.csv')
 
-        Pg = np.zeros(self.n_gen_disp_sh)
-        Qg = np.zeros(self.n_gen_disp_sh)
+        Pg = np.zeros(self.ngen + self.nsh)
+        Qg = np.zeros(self.ngen + self.nsh)
 
         Pg[self.gen_disp_idx_sh] = self.Pg
         Qg[self.gen_disp_idx_sh] = self.Qg
