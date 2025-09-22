@@ -7,53 +7,6 @@ logger = gce.Logger()
 grid = gce.MultiCircuit()
 df_buses_lines = pd.read_csv('estabanell_grid/linies_bt_eRoots.csv', sep=";")
 
-# Buses que no quieres
-buses_to_delete = [
-    57573, 57552, 117181, 117182, 57744, 58152, 58173, 58025, 58026, 57723,
-    58020, 58039, 58030, 58029, 58028, 58043, 58036, 58027, 58037, 58046
-]
-buses_to_delete_str = [str(b) for b in buses_to_delete]
-
-df_buses_lines = df_buses_lines[
-    ~df_buses_lines["node_start"].astype(str).isin(buses_to_delete_str) &
-    ~df_buses_lines["node_end"].astype(str).isin(buses_to_delete_str)
-]
-
-# -------------------------------------------------------------------------------------
-#   Simplification 58022 -> 58023
-# -------------------------------------------------------------------------------------
-camino = ["58022","58021","58024","58031","58032","58033","58034","58023"]
-
-mask = df_buses_lines.apply(
-    lambda row: (str(row["node_start"]) in camino and str(row["node_end"]) in camino),
-    axis=1
-)
-df_path = df_buses_lines[mask]
-
-# sumar impedancias y longitud
-R_eq = df_path["resistencia"].sum()
-X_eq = df_path["reactancia"].sum()
-L_eq = df_path["longitud_cad"].sum()
-Imax_eq = df_path["intensitat_admisible"].min()
-
-# eliminar esas líneas del DataFrame original
-df_buses_lines = df_buses_lines.drop(df_path.index)
-
-# añadir la nueva línea equivalente
-df_buses_lines = pd.concat([
-    df_buses_lines,
-    pd.DataFrame([{
-        "tram": "58022_58023",
-        "num_linia": "Equivalent",
-        "node_start": 58022,
-        "node_end": 58023,
-        "resistencia": R_eq,
-        "reactancia": X_eq,
-        "longitud_cad": L_eq,
-        "intensitat_admisible": Imax_eq
-    }])
-], ignore_index=True)
-
 # ---------------------------------------------------------------------------------------------------------------------
 #   Buses
 # ---------------------------------------------------------------------------------------------------------------------
@@ -151,7 +104,7 @@ for _, row_meters in df_meters.iterrows():
 # ----------------------------------------------------------------------------------------------------------------------
 # Run power flow
 # ----------------------------------------------------------------------------------------------------------------------
-res = gce.power_flow(grid=grid, options=gce.PowerFlowOptions(three_phase_unbalanced=True, solver_type=SolverType.NR))
+res = gce.power_flow(grid=grid, options=gce.PowerFlowOptions(three_phase_unbalanced=True, solver_type=SolverType.HELM))
 print("\n", res.get_voltage_3ph_df())
 print("\nConverged? ", res.converged)
 print("\nIterations: ", res.iterations)
