@@ -1,4 +1,5 @@
 import VeraGridEngine.api as gce
+from VeraGridEngine.enumerations import SolverType, ShuntConnectionType
 import pandas as pd
 import numpy as np
 
@@ -21,10 +22,10 @@ df_buses_lines = df_buses_lines[
 # -------------------------------------------------------------------------------------
 #   Simplification 58022 -> 58023
 # -------------------------------------------------------------------------------------
-camino = ["58022","58021","58024","58031","58032","58033","58034","58023"]
+path = ["58022","58021","58024","58031","58032","58033","58034","58023"]
 
 mask = df_buses_lines.apply(
-    lambda row: (str(row["node_start"]) in camino and str(row["node_end"]) in camino),
+    lambda row: (str(row["node_start"]) in path and str(row["node_end"]) in path),
     axis=1
 )
 df_path = df_buses_lines[mask]
@@ -70,21 +71,33 @@ for bus in buses:
 # ---------------------------------------------------------------------------------------------------------------------
 #   Lines
 # ---------------------------------------------------------------------------------------------------------------------
+rho_Cu = 1.72
+rho_Al = 2.82
+Al_to_Cu = rho_Cu / rho_Al
+last_R, last_X = None, None
 for _, row in df_buses_lines.iterrows():
 
-    R_test = row['resistencia']
+    if row['reactancia'] == 0:
+        # usa los valores de la fila anterior guardados
+        R_val = last_R * Al_to_Cu
+        X_val = last_X
+    else:
+        # usa los valores de la fila actual
+        R_val = row['resistencia']
+        X_val = row['reactancia']
+        # actualiza memoria
+        last_R, last_X = R_val, X_val
+
     line_type = gce.SequenceLineType(
         name=row['tram'],
         Imax=row['intensitat_admisible'] / 1e3,
         Vnom=400,
-        R=row['resistencia'],
-        X=row['reactancia'],
-        R0= 3 * row['resistencia'],
-        X0= 3 * row['reactancia']
+        R=R_val,
+        X=X_val,
+        R0=3 * R_val,
+        X0=3 * X_val
     )
     grid.add_sequence_line(line_type)
-
-    bus_iter = bus_dict[row['node_start']]
 
     line = gce.Line(
         bus_from=bus_dict[row['node_start']],
@@ -92,9 +105,9 @@ for _, row in df_buses_lines.iterrows():
         name=row['tram'],
         code=row['num_linia'],
         rate=row['intensitat_admisible'] * 400 / 1e6,
-        length=row['longitud_cad'] / 1000,
-        template=line_type
+        length=row['longitud_cad'] / 1000
     )
+    line.apply_template(line_type, grid.Sbase, grid.fBase, logger)
     grid.add_line(obj=line)
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -106,22 +119,25 @@ df_powers = pd.read_csv('estabanell_grid/Corbes_CUPS_CT-0975.csv', sep=";")
 # For now, only the first measurement of each meter
 df_first = df_powers.groupby("MeterID").first().reset_index()
 
+S_sum = 0 + 0j
 for _, row_meters in df_meters.iterrows():
     row_power = df_first[df_first["MeterID"] == row_meters["comptador"]]
 
-    P = float(row_power["TotalActiveEnergyConsumed"].values[0])
-    Q = float(row_power["TotalReactiveEnergyConsumed"].values[0])
+    P = float(row_power["TotalActiveEnergyConsumed"].values[0]) - float(row_power["TotalActiveEnergyProduced"].values[0]) / 1000
+    Q = float(row_power["TotalReactiveEnergyProduced"].values[0]) - float(row_power["TotalReactiveEnergyConsumed"].values[0]) / 1000
 
-    load = gce.Load(name=row_meters['comptador'])
+    S_sum = S_sum + (P + 1j * Q)
 
     if int(row_meters['tensio']) == 400:
         # Balanced
-        load.Pa = P / 3
-        load.Pb = P / 3
-        load.Pc = P / 3
-        load.Qa = Q / 3
-        load.Qb = Q / 3
-        load.Qc = Q / 3
+        load = gce.Load(
+            name=row_meters['comptador'],
+            P1=P / 3,
+            Q1=Q / 3,
+            P2=P / 3,
+            Q2=Q / 3,
+            P3=P / 3,
+            Q3=Q / 3)
 
     elif int(row_meters['tensio']) == 230:
         # Unbalanced
@@ -129,24 +145,31 @@ for _, row_meters in df_meters.iterrows():
         phase = np.random.choice(["A", "B", "C"], p=phase_probs)
 
         if phase == "A":
-            load.Pa = P
-            load.Qa = Q
+            load = gce.Load(
+                name=row_meters['comptador'],
+                P1=P,
+                Q1=Q)
         elif phase == "B":
-            load.Pb = P
-            load.Qb = Q
+            load = gce.Load(
+                name=row_meters['comptador'],
+                P2=P,
+                Q2=Q)
         else:
-            load.Pc = P
-            load.Qc = Q
+            load = gce.Load(
+                name=row_meters['comptador'],
+                P3=P,
+                Q3=Q)
 
     else:
         raise Exception("Incorrect load voltage!")
 
+    load.conn = ShuntConnectionType.GroundedStar
     grid.add_load(bus=bus_dict[row_meters['node']], api_obj=load)
 
 # ----------------------------------------------------------------------------------------------------------------------
 # Run power flow
 # ----------------------------------------------------------------------------------------------------------------------
-res = gce.power_flow(grid=grid, options=gce.PowerFlowOptions(three_phase_unbalanced=True))
+res = gce.power_flow(grid=grid, options=gce.PowerFlowOptions(three_phase_unbalanced=True, solver_type=SolverType.NR))
 print("\n", res.get_voltage_3ph_df())
 print("\nConverged? ", res.converged)
 print("\nIterations: ", res.iterations)
@@ -155,4 +178,4 @@ print("\nIterations: ", res.iterations)
 #   Save Grid
 # ---------------------------------------------------------------------------------------------------------------------
 print()
-# gce.save_file(grid=grid, filename='estabanell_modified.veragrid')
+gce.save_file(grid=grid, filename='estabanell_modified.veragrid')
