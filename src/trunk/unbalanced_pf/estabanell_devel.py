@@ -71,16 +71,31 @@ for bus in buses:
 # ---------------------------------------------------------------------------------------------------------------------
 #   Lines
 # ---------------------------------------------------------------------------------------------------------------------
+rho_Cu = 1.72
+rho_Al = 2.82
+Al_to_Cu = rho_Cu / rho_Al
+last_R, last_X = None, None
 for _, row in df_buses_lines.iterrows():
+
+    if row['reactancia'] == 0:
+        # usa los valores de la fila anterior guardados
+        R_val = last_R * Al_to_Cu
+        X_val = last_X
+    else:
+        # usa los valores de la fila actual
+        R_val = row['resistencia']
+        X_val = row['reactancia']
+        # actualiza memoria
+        last_R, last_X = R_val, X_val
 
     line_type = gce.SequenceLineType(
         name=row['tram'],
         Imax=row['intensitat_admisible'] / 1e3,
         Vnom=400,
-        R=row['resistencia'],
-        X=row['reactancia'],
-        R0= 3 * row['resistencia'],
-        X0= 3 * row['reactancia']
+        R=R_val,
+        X=X_val,
+        R0=3 * R_val,
+        X0=3 * X_val
     )
     grid.add_sequence_line(line_type)
 
