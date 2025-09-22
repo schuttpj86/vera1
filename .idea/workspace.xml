@@ -29,7 +29,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="aa3ee678-6e91-470f-91a9-09e9d8a4756d" name="Changes" comment="get_3ph_names">
-      <change afterPath="$PROJECT_DIR$/src/trunk/unbalanced_pf/estabanell_test.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/trunk/unbalanced_pf/estabanell_devel.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/trunk/unbalanced_pf/estabanell_devel.py" afterDir="false" />
     </list>
@@ -92,12 +91,12 @@
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
   </component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/SanPen/VeraGrid.git",
-    "accountId": "1acef425-303f-45a5-9f13-1a5d8e86b985"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/SanPen/VeraGrid.git&quot;,
+    &quot;accountId&quot;: &quot;1acef425-303f-45a5-9f13-1a5d8e86b985&quot;
   }
-}]]></component>
+}</component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/requirements.txt" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/GridCal/Gui/ConsoleWidget.py" root0="FORCE_HIGHLIGHTING" />
@@ -215,7 +214,7 @@
     "Python.demo_code.executor": "Run",
     "Python.demo_code2.executor": "Debug",
     "Python.demo_code3.executor": "Run",
-    "Python.estabanell_devel.executor": "Run",
+    "Python.estabanell_devel.executor": "Debug",
     "Python.estabanell_test.executor": "Run",
     "Python.full_trafo_validation.executor": "Run",
     "Python.grid_merge.executor": "Run",
@@ -224,6 +223,7 @@
     "Python.make.executor": "Run",
     "Python.make_wheels.executor": "Run",
     "Python.new_circuit_objects.executor": "Run",
+    "Python.newton_raphson_fx.executor": "Debug",
     "Python.overhead_line_calcs.executor": "Run",
     "Python.pf_basic_formulation_3ph.executor": "Debug",
     "Python.post_example.executor": "Run",
@@ -2534,14 +2534,24 @@
           <option name="timeStamp" value="2649" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/src/VeraGridEngine/Simulations/PowerFlow/Formulations/pf_basic_formulation_3ph.py</url>
-          <line>215</line>
-          <option name="timeStamp" value="2695" />
+          <url>file://$PROJECT_DIR$/src/VeraGridEngine/Simulations/PowerFlow/NumericalMethods/newton_raphson_fx.py</url>
+          <line>102</line>
+          <option name="timeStamp" value="2703" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/VeraGridEngine/Utils/Sparse/csc2.py</url>
+          <line>636</line>
+          <option name="timeStamp" value="2704" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/VeraGridEngine/Simulations/PowerFlow/NumericalMethods/newton_raphson_fx.py</url>
+          <line>90</line>
+          <option name="timeStamp" value="2705" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/src/trunk/unbalanced_pf/estabanell_devel.py</url>
-          <line>100</line>
-          <option name="timeStamp" value="2699" />
+          <line>156</line>
+          <option name="timeStamp" value="2706" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
