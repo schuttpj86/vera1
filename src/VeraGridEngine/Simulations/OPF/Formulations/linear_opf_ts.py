@@ -35,7 +35,8 @@ from VeraGridEngine.DataStructures.fluid_pump_data import FluidPumpData
 from VeraGridEngine.DataStructures.fluid_p2x_data import FluidP2XData
 from VeraGridEngine.basic_structures import Logger, Vec, IntVec, DateVec, Mat
 from VeraGridEngine.Utils.MIP.selected_interface import LpExp, LpVar, LpModel, lpDot, join
-from VeraGridEngine.enumerations import HvdcControlType, ZonalGrouping, MIPSolvers, TapPhaseControl, ConverterControlType
+from VeraGridEngine.enumerations import HvdcControlType, ZonalGrouping, MIPSolvers, TapPhaseControl, \
+    ConverterControlType
 from VeraGridEngine.Simulations.LinearFactors.linear_analysis import (LinearAnalysis, LinearMultiContingency,
                                                                       LinearMultiContingencies)
 
@@ -308,6 +309,8 @@ class BranchVars:
         :param n_elm: Number of branches
         """
         self.flows = np.zeros((nt, n_elm), dtype=object)
+        self.z_flows = np.zeros((nt, n_elm), dtype=object)  # absolute used with add_losses_approximation
+        self.losses = np.zeros((nt, n_elm), dtype=object)  # absolute used with add_losses_approximation
         self.flow_slacks_pos = np.zeros((nt, n_elm), dtype=object)
         self.flow_slacks_neg = np.zeros((nt, n_elm), dtype=object)
         self.tap_angles = np.zeros((nt, n_elm), dtype=object)
@@ -339,6 +342,7 @@ class BranchVars:
                 data.flow_constraints_ub[t, i] = model.get_value(self.flow_constraints_ub[t, i])
                 data.flow_constraints_lb[t, i] = model.get_value(self.flow_constraints_lb[t, i])
                 data.overload_cost[t, i] = model.get_value(self.overload_cost[t, i]) * Sbase
+                data.losses[t, i] = model.get_value(self.losses[t, i]) * Sbase
 
         for i in range(len(self.contingency_flow_data)):
             t, m, c, var, neg_slack, pos_slack = self.contingency_flow_data[i]
@@ -853,8 +857,8 @@ def add_linear_generation_formulation(t: Union[int, None],
 
                     if not skip_generation_limits:
                         prob.set_var_bounds(var=gen_vars.p[t, k],
-                                       lb=gen_data_t.pmin[k] / Sbase,
-                                       ub=gen_data_t.pmax[k] / Sbase)
+                                            lb=gen_data_t.pmin[k] / Sbase,
+                                            ub=gen_data_t.pmax[k] / Sbase)
 
                 # add the ramp constraints
                 if ramp_constraints and t is not None:
@@ -1240,7 +1244,8 @@ def add_linear_branches_formulation(t: int,
                                     branch_vars: BranchVars,
                                     bus_vars: BusVars,
                                     prob: LpModel,
-                                    inf=1e20):
+                                    inf=1e20,
+                                    add_losses_approximation: bool = False):
     """
     Formulate the branches
     :param t: time index
@@ -1252,6 +1257,7 @@ def add_linear_branches_formulation(t: int,
     :param bus_vars: BusVars
     :param prob: OR problem
     :param inf: number considered infinite
+    :param add_losses_approximation: If true the distribution factors losses approximation is used
     :return objective function
     """
     f_obj = 0.0
@@ -1317,6 +1323,31 @@ def add_linear_branches_formulation(t: int,
             # power injected and subtracted due to the phase shift
             bus_vars.Pbalance[t, fr] -= branch_vars.flows[t, m]
             bus_vars.Pbalance[t, to] += branch_vars.flows[t, m]
+
+            if add_losses_approximation:
+                # declare the abs flow LPVar
+                branch_vars.z_flows[t, m] = prob.add_var(lb=0,
+                                                         ub=inf,
+                                                         name=join("z_flow_", [t, m], "_"))
+
+                # zij ≥ Fij
+                prob.add_cst(cst=branch_vars.flows[t, m] <= branch_vars.z_flows[t, m],
+                             name=join("z_flow_u_lim_", [t, m]))
+
+                # zij ≥ -Fij
+                prob.add_cst(cst=-branch_vars.flows[t, m] <= branch_vars.z_flows[t, m],
+                             name=join("z_flow_l_lim_", [t, m]))
+
+                # add to the objective (αij =rij * ∣Fij0∣/V2)
+                # insetad of the rates, the literature suggests an absolute initial value of the flow
+                factor = branch_data_t.R[m] * branch_data_t.rates[m] / (bus_data_t.Vnom[branch_data_t.F[m]] ** 2)
+                branch_vars.losses[t, m] = branch_vars.z_flows[t, m] * factor
+                f_obj += branch_vars.losses[t, m]
+
+                # divide the losses contribution equally among the from and to buses
+                l_inj = 0.5 * branch_vars.losses[t, m]
+                bus_vars.Pbalance[t, fr] += l_inj
+                bus_vars.Pbalance[t, to] += l_inj
 
             # add the flow constraint if monitored
             if branch_data_t.monitor_loading[m]:
@@ -1793,6 +1824,7 @@ def run_linear_opf_ts(grid: MultiCircuit,
                       nodal_capacity_sign: float = 1.0,
                       capacity_nodes_idx: Union[IntVec, None] = None,
                       use_glsk_as_cost: bool = False,
+                      add_losses_approximation: bool = False,
                       logger: Logger = Logger(),
                       progress_text: Union[None, Callable[[str], None]] = None,
                       progress_func: Union[None, Callable[[float], None]] = None,
@@ -1821,6 +1853,8 @@ def run_linear_opf_ts(grid: MultiCircuit,
     :param optimize_nodal_capacity: Optimize the nodal capacity? (optional)
     :param nodal_capacity_sign: if > 0 the generation is maximized, if < 0 the load is maximized
     :param capacity_nodes_idx: Array of bus indices to optimize their nodal capacity for
+    :param use_glsk_as_cost: If true the generators use the GLSK as dispatch values
+    :param add_losses_approximation: If true the distribution factors losses approximation is used
     :param logger: logger instance
     :param progress_text: Text progress callback
     :param progress_func: Numerical progress callback
@@ -2034,7 +2068,8 @@ def run_linear_opf_ts(grid: MultiCircuit,
                 branch_vars=mip_vars.branch_vars,
                 bus_vars=mip_vars.bus_vars,
                 prob=lp_model,
-                inf=1e20
+                inf=1e20,
+                add_losses_approximation=add_losses_approximation
             )
 
             # formulate nodes ------------------------------------------------------------------------------------------

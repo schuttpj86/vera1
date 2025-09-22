@@ -105,27 +105,30 @@ class OptimalPowerFlowTimeSeriesDriver(TimeSeriesDriverTemplate):
         if self.options.solver == SolverType.LINEAR_OPF:
 
             # DC optimal power flow
-            opf_vars = run_linear_opf_ts(grid=self.grid,
-                                         time_indices=self.time_indices,
-                                         solver_type=self.options.mip_solver,
-                                         zonal_grouping=self.options.zonal_grouping,
-                                         skip_generation_limits=self.options.skip_generation_limits,
-                                         consider_contingencies=self.options.consider_contingencies,
-                                         contingency_groups_used=self.grid.contingency_groups,
-                                         unit_commitment=self.options.unit_commitment,
-                                         ramp_constraints=self.options.unit_commitment,
-                                         generation_expansion_planning=self.options.generation_expansion_planning,
-                                         all_generators_fixed=False,
-                                         lodf_threshold=self.options.lodf_tolerance,
-                                         maximize_inter_area_flow=self.options.maximize_flows,
-                                         inter_aggregation_info=self.options.inter_aggregation_info,
-                                         use_glsk_as_cost=self.options.use_glsk_as_cost,
-                                         logger=self.logger,
-                                         progress_text=self.report_text,
-                                         progress_func=self.report_progress,
-                                         export_model_fname=self.options.export_model_fname,
-                                         verbose=self.options.verbose,
-                                         robust=self.options.robust)
+            opf_vars = run_linear_opf_ts(
+                grid=self.grid,
+                time_indices=self.time_indices,
+                solver_type=self.options.mip_solver,
+                zonal_grouping=self.options.zonal_grouping,
+                skip_generation_limits=self.options.skip_generation_limits,
+                consider_contingencies=self.options.consider_contingencies,
+                contingency_groups_used=self.grid.contingency_groups,
+                unit_commitment=self.options.unit_commitment,
+                ramp_constraints=self.options.unit_commitment,
+                generation_expansion_planning=self.options.generation_expansion_planning,
+                all_generators_fixed=False,
+                lodf_threshold=self.options.lodf_tolerance,
+                maximize_inter_area_flow=self.options.maximize_flows,
+                inter_aggregation_info=self.options.inter_aggregation_info,
+                use_glsk_as_cost=self.options.use_glsk_as_cost,
+                add_losses_approximation=self.options.add_losses_approximation,
+                logger=self.logger,
+                progress_text=self.report_text,
+                progress_func=self.report_progress,
+                export_model_fname=self.options.export_model_fname,
+                verbose=self.options.verbose,
+                robust=self.options.robust
+            )
 
             self.results.voltage = opf_vars.bus_vars.Vm * np.exp(1j * opf_vars.bus_vars.Va)
             self.results.bus_shadow_prices = opf_vars.bus_vars.shadow_prices
@@ -151,6 +154,7 @@ class OptimalPowerFlowTimeSeriesDriver(TimeSeriesDriverTemplate):
             self.results.St = -opf_vars.branch_vars.flows
             self.results.overloads = opf_vars.branch_vars.flow_slacks_pos - opf_vars.branch_vars.flow_slacks_neg
             self.results.overloads_cost = opf_vars.branch_vars.overload_cost
+            self.results.losses = opf_vars.branch_vars.losses
 
             self.results.loading = opf_vars.branch_vars.loading
             self.results.phase_shift = opf_vars.branch_vars.tap_angles
@@ -300,27 +304,30 @@ class OptimalPowerFlowTimeSeriesDriver(TimeSeriesDriverTemplate):
 
                 # run an opf for the group interval only if the group is within the start:end boundaries
                 # DC optimal power flow
-                opf_vars = run_linear_opf_ts(grid=self.grid,
-                                             time_indices=time_indices,
-                                             solver_type=self.options.mip_solver,
-                                             zonal_grouping=self.options.zonal_grouping,
-                                             skip_generation_limits=self.options.skip_generation_limits,
-                                             consider_contingencies=self.options.consider_contingencies,
-                                             contingency_groups_used=self.options.contingency_groups_used,
-                                             unit_commitment=self.options.unit_commitment,
-                                             ramp_constraints=self.options.unit_commitment,
-                                             generation_expansion_planning=self.options.generation_expansion_planning,
-                                             all_generators_fixed=False,
-                                             lodf_threshold=self.options.lodf_tolerance,
-                                             maximize_inter_area_flow=self.options.maximize_flows,
-                                             inter_aggregation_info=self.options.inter_aggregation_info,
-                                             energy_0=energy_0,
-                                             fluid_level_0=fluid_level_0,
-                                             use_glsk_as_cost=self.options.use_glsk_as_cost,
-                                             logger=self.logger,
-                                             export_model_fname=self.options.export_model_fname,
-                                             verbose=self.options.verbose,
-                                             robust=self.options.robust)
+                opf_vars = run_linear_opf_ts(
+                    grid=self.grid,
+                    time_indices=time_indices,
+                    solver_type=self.options.mip_solver,
+                    zonal_grouping=self.options.zonal_grouping,
+                    skip_generation_limits=self.options.skip_generation_limits,
+                    consider_contingencies=self.options.consider_contingencies,
+                    contingency_groups_used=self.options.contingency_groups_used,
+                    unit_commitment=self.options.unit_commitment,
+                    ramp_constraints=self.options.unit_commitment,
+                    generation_expansion_planning=self.options.generation_expansion_planning,
+                    all_generators_fixed=False,
+                    lodf_threshold=self.options.lodf_tolerance,
+                    maximize_inter_area_flow=self.options.maximize_flows,
+                    inter_aggregation_info=self.options.inter_aggregation_info,
+                    energy_0=energy_0,
+                    fluid_level_0=fluid_level_0,
+                    use_glsk_as_cost=self.options.use_glsk_as_cost,
+                    add_losses_approximation=self.options.add_losses_approximation,
+                    logger=self.logger,
+                    export_model_fname=self.options.export_model_fname,
+                    verbose=self.options.verbose,
+                    robust=self.options.robust
+                )
 
                 self.results.voltage[time_indices, :] = opf_vars.bus_vars.Vm * np.exp(1j * opf_vars.bus_vars.Va)
                 self.results.bus_shadow_prices[time_indices, :] = opf_vars.bus_vars.shadow_prices
@@ -345,6 +352,7 @@ class OptimalPowerFlowTimeSeriesDriver(TimeSeriesDriverTemplate):
                 self.results.overloads[time_indices, :] = (opf_vars.branch_vars.flow_slacks_pos
                                                            - opf_vars.branch_vars.flow_slacks_neg)
                 self.results.overloads_cost[time_indices, :] = opf_vars.branch_vars.overload_cost
+                self.results.losses[time_indices, :] = opf_vars.branch_vars.losses
 
                 self.results.loading[time_indices, :] = opf_vars.branch_vars.loading
                 self.results.phase_shift[time_indices, :] = opf_vars.branch_vars.tap_angles

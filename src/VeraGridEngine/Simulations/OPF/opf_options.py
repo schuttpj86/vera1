@@ -34,6 +34,7 @@ class OptimalPowerFlowOptions(OptionsTemplate):
                  inter_aggregation_info: InterAggregationInfo | None = None,
                  unit_commitment=False,
                  use_glsk_as_cost: bool = False,
+                 add_losses_approximation: bool = False,
                  generation_expansion_planning: bool = False,
                  export_model_fname: Union[None, str] = None,
                  generate_report=False,
@@ -105,6 +106,8 @@ class OptimalPowerFlowOptions(OptionsTemplate):
 
         self.use_glsk_as_cost = use_glsk_as_cost
 
+        self.add_losses_approximation = add_losses_approximation
+
         self.generation_expansion_planning = generation_expansion_planning
 
         self.max_va = 6.28
@@ -141,6 +144,8 @@ class OptimalPowerFlowOptions(OptionsTemplate):
         self.register(key="contingency_groups_used", tpe=SubObjectType.Array)
         self.register(key="lodf_tolerance", tpe=float)
         self.register(key="maximize_flows", tpe=bool)
+        self.register(key="add_losses_approximation", tpe=bool)
+        self.register(key="use_glsk_as_cost", tpe=bool)
         self.register(key="inter_aggregation_info", tpe=DeviceType.InterAggregationInfo)
         self.register(key="unit_commitment", tpe=bool)
         self.register(key="export_model_fname", tpe=str)
