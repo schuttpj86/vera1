@@ -665,6 +665,13 @@ class Assets:
     def lines(self, value: List[dev.Line]):
         self._lines = value
 
+    def get_lines_number(self) -> int:
+        """
+
+        :return:
+        """
+        return len(self._lines)
+
     def get_lines(self) -> List[dev.Line]:
         """
         get list of ac lines
@@ -1706,6 +1713,18 @@ class Assets:
         for k, elm in enumerate(self.get_generators()):
             gen_index_dict[elm.idtag] = k  # associate the idtag to the index
         return gen_index_dict
+
+    def get_generator_bus_index_dict(self, bus_index_dict: Dict[dev.Bus, int] = None):
+        """
+        Get a dictionary of generators related to their bus index
+        :param bus_index_dict: bus object to bus index dictionary (optional)
+        :return: generator object to bus index dictionary
+
+        """
+        if bus_index_dict is None:
+            bus_index_dict = self.get_bus_index_dict()
+
+        return {g.idtag: bus_index_dict[g.bus] for g in self.get_generators() if g.bus is not None}
 
     # ------------------------------------------------------------------------------------------------------------------
     # External grid
@@ -6152,6 +6171,8 @@ class Assets:
         elif obj.device_type == DeviceType.RmsModelTemplateDevice:
             self.add_rms_model(obj=obj)
 
+        elif obj.device_type == DeviceType.SwitchDevice:
+            self.add_switch(obj=obj)
         else:
             raise Exception('Element type not understood ' + str(obj.device_type))
 

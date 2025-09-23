@@ -489,7 +489,25 @@ class Generator(GeneratorParent):
         """
         self._Snom = val
 
+    def __iadd__(self, other: "Generator"):
+        """
+        Add another generator here
+        :param other: Generator to add
+        """
+
+        self.P += other.P
+        self.P_prof = self.P_prof.toarray() + other.P_prof.toarray()
+
+        self.Pmax += other.Pmax
+        self.Pmin += other.Pmin
+
+        self.Qmax += other.Qmax
+        self.Qmin += other.Qmin
+
     def initialize_rms(self):
+        """
+        Initialize the RMS model
+        """
         if self.rms_model.empty():
 
             delta = Var("delta")

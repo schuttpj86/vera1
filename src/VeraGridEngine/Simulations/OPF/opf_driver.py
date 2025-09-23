@@ -7,10 +7,9 @@ from typing import Union
 from VeraGridEngine.Devices.multi_circuit import MultiCircuit
 from VeraGridEngine.enumerations import SolverType, EngineType, SimulationTypes
 from VeraGridEngine.Simulations.OPF.opf_options import OptimalPowerFlowOptions
-from VeraGridEngine.Simulations.OPF.linear_opf_ts import run_linear_opf_ts
-from VeraGridEngine.Simulations.OPF.simple_dispatch_ts import run_simple_dispatch
+from VeraGridEngine.Simulations.OPF.Formulations.linear_opf_ts import run_linear_opf_ts
 from VeraGridEngine.Simulations.OPF.opf_results import OptimalPowerFlowResults
-from VeraGridEngine.Simulations.OPF.NumericalMethods.ac_opf import run_nonlinear_opf
+from VeraGridEngine.Simulations.OPF.ac_opf_worker import run_nonlinear_opf
 from VeraGridEngine.Simulations.PowerFlow.power_flow_options import PowerFlowOptions
 from VeraGridEngine.Simulations.driver_template import TimeSeriesDriverTemplate
 from VeraGridEngine.Simulations.OPF.simple_dispatch_ts import GreedyDispatchInputsSnapshot, greedy_dispatch2
@@ -145,6 +144,7 @@ class OptimalPowerFlowDriver(TimeSeriesDriverTemplate):
                                          inter_aggregation_info=self.options.inter_aggregation_info,
                                          energy_0=None,
                                          fluid_level_0=None,
+                                         use_glsk_as_cost=self.options.use_glsk_as_cost,
                                          logger=self.logger,
                                          export_model_fname=self.options.export_model_fname,
                                          verbose=self.options.verbose,
@@ -152,10 +152,15 @@ class OptimalPowerFlowDriver(TimeSeriesDriverTemplate):
 
             self.results.voltage = opf_vars.bus_vars.Vm[0, :] * np.exp(1j * opf_vars.bus_vars.Va[0, :])
             self.results.bus_shadow_prices = opf_vars.bus_vars.shadow_prices[0, :]
+
+            self.results.load_power = opf_vars.load_vars.p[0, :]
             self.results.load_shedding = opf_vars.load_vars.shedding[0, :]
+
             self.results.battery_power = opf_vars.batt_vars.p[0, :]
             # self.results.battery_energy = opf_vars.batt_vars.e[0, :]
+
             self.results.generator_power = opf_vars.gen_vars.p[0, :]
+
             self.results.Sf = opf_vars.branch_vars.flows[0, :]
             self.results.St = -opf_vars.branch_vars.flows[0, :]
             self.results.overloads = (opf_vars.branch_vars.flow_slacks_pos[0, :]
@@ -235,9 +240,9 @@ class OptimalPowerFlowDriver(TimeSeriesDriverTemplate):
 
             res = run_nonlinear_opf(grid=self.grid,
                                     opf_options=self.options,
-                                    pf_options=self.pf_options,
                                     t_idx=None,
                                     logger=self.logger)
+
             Sbase = self.grid.Sbase
             self.results.voltage = res.V
             self.results.Sbus = res.S * Sbase
@@ -258,6 +263,8 @@ class OptimalPowerFlowDriver(TimeSeriesDriverTemplate):
             self.results.hvdc_Pf = res.hvdc_Pf
             self.results.hvdc_loading = res.hvdc_loading
             self.results.converged = res.converged
+            self.results.error = res.error
+            self.results.non_linear = True
 
             msg = "Interior point solver"
             self.logger.add_info(msg=msg, device="Error", value=res.error, expected_value=self.options.ips_tolerance)

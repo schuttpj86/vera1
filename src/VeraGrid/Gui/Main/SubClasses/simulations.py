@@ -1993,6 +1993,8 @@ class SimulationsMain(TimeEventsMain):
         robust = self.ui.fixOpfCheckBox.isChecked()
         generation_expansion_planning = self.ui.opfGEPCheckBox.isChecked()
 
+        _, pf_results = self.session.power_flow
+
         if self.ui.save_mip_checkBox.isChecked():
             folder = opf_file_path()
             dte_str = str(datetime.datetime.now()).replace(":", "_").replace("/", "-")
@@ -2022,6 +2024,17 @@ class SimulationsMain(TimeEventsMain):
         ips_init_with_pf = self.ui.ips_initialize_with_pf_checkBox.isChecked()
         ips_control_q_limits = self.ui.ips_control_Qlimits_checkBox.isChecked()
 
+        if pf_results is not None:
+            acopf_v0 = pf_results.voltage
+            acopf_S0 = pf_results.Sbus
+        else:
+            if ips_init_with_pf:
+                self.show_warning_toast("Run a power flow first")
+                ips_init_with_pf = False
+
+            acopf_v0 = None
+            acopf_S0 = None
+
         verbose = self.ui.ips_verbose_spinBox.value()
 
         options = sim.OptimalPowerFlowOptions(solver=solver,
@@ -2045,6 +2058,8 @@ class SimulationsMain(TimeEventsMain):
                                               ips_trust_radius=ips_trust_radius,
                                               ips_init_with_pf=ips_init_with_pf,
                                               ips_control_q_limits=ips_control_q_limits,
+                                              acopf_v0=acopf_v0,
+                                              acopf_S0=acopf_S0,
                                               robust=robust,
                                               verbose=verbose)
 
@@ -2180,40 +2195,6 @@ class SimulationsMain(TimeEventsMain):
 
         if not self.session.is_anything_running():
             self.UNLOCK()
-
-    def copy_opf_to_time_series(self):
-        """
-        Copy the OPF generation values to the Time series object and execute a time series simulation
-        """
-        if self.circuit.valid_for_simulation():
-
-            if self.circuit.time_profile is not None:
-
-                _, results = self.session.optimal_power_flow_ts
-
-                if results is not None:
-
-                    quit_msg = ("Are you sure that you want overwrite the time events "
-                                "with the simulated by the OPF time series?")
-                    reply = QtWidgets.QMessageBox.question(self, 'Message', quit_msg,
-                                                           QtWidgets.QMessageBox.StandardButton.Yes,
-                                                           QtWidgets.QMessageBox.StandardButton.No)
-
-                    if reply == QtWidgets.QMessageBox.StandardButton.Yes:
-
-                        results.apply_lp_profiles(self.circuit)
-
-                    else:
-                        pass
-
-                else:
-                    info_msg('There are no OPF time series execution.'
-                             '\nRun OPF time series to be able to copy the value to the time series object.')
-
-            else:
-                self.show_warning_toast('There are no time series...')
-        else:
-            pass
 
     def get_opf_ntc_options(self) -> Union[None, sim.OptimalNetTransferCapacityOptions]:
         """
@@ -2612,13 +2593,14 @@ class SimulationsMain(TimeEventsMain):
                         self.circuit.investments_groups)
 
                     # compose the options
-                    options = sim.InvestmentsEvaluationOptions(solver=method,
-                                                               max_eval=max_eval,
-                                                               pf_options=self.get_selected_power_flow_options(),
-                                                               opf_options=self.get_opf_options(),
-                                                               obj_tpe=obj_fn_tpe,
-                                                               plugin_fcn_ptr=fn_ptr
-                                                               )
+                    options = sim.InvestmentsEvaluationOptions(
+                        solver=method,
+                        max_eval=max_eval,
+                        pf_options=self.get_selected_power_flow_options(),
+                        opf_options=self.get_opf_options(),
+                        obj_tpe=obj_fn_tpe,
+                        plugin_fcn_ptr=fn_ptr,
+                    )
 
                     if obj_fn_tpe == InvestmentsEvaluationObjectives.PowerFlow:
                         problem = sim.PowerFlowInvestmentProblem(
@@ -2658,6 +2640,8 @@ class SimulationsMain(TimeEventsMain):
                             problem = sim.AdequacyInvestmentProblem(
                                 grid=self.circuit,
                                 n_monte_carlo_sim=self.ui.max_iterations_reliability_spinBox.value(),
+                                use_firm_capacity_penalty=self.ui.firmCapacityShareSpinBox.value() > 0,
+                                minimum_firm_share=self.ui.firmCapacityShareSpinBox.value() / 100.0,
                                 use_monte_carlo=False,
                                 save_file=False,
                                 time_indices=self.get_time_indices()

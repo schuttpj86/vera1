@@ -74,9 +74,9 @@ class VideoExportWorker(QtCore.QThread):
 
         self.filename = filename
         self.diagram = diagram
-        self.fps = fps
-        self.start_idx = start_idx
-        self.end_idx = end_idx
+        self.fps: int = fps
+        self.start_idx: int = start_idx
+        self.end_idx: int = end_idx
         self.current_study = current_study
         self.grid_colour_function: Callable[[ALL_EDITORS, str, int, bool], None] = grid_colour_function
 
@@ -273,6 +273,7 @@ class DiagramsMain(CompiledArraysMain):
         self.ui.palette_comboBox.currentTextChanged.connect(self.set_diagrams_palette)
         self.ui.tile_provider_comboBox.currentTextChanged.connect(self.set_diagrams_map_tile_provider)
 
+        # TODO: this lambda calls to colour twice is the simulation is run the first time
         self.ui.available_results_to_color_comboBox.currentTextChanged.connect(lambda: self.colour_diagrams(False))
 
         # sliders
@@ -1231,6 +1232,8 @@ class DiagramsMain(CompiledArraysMain):
         """
         nbus = self.circuit.get_bus_number()
         nbr = self.circuit.get_branch_number(add_vsc=False, add_hvdc=False, add_switch=True)
+        nhvdc = self.circuit.get_hvdc_number()
+        nvsc = self.circuit.get_vsc_number()
 
         bus_active = self.circuit.get_bus_actives(t_idx=t_idx)
         br_active = self.circuit.get_branch_actives(t_idx=t_idx, add_vsc=False, add_hvdc=False, add_switch=True)
@@ -1245,6 +1248,14 @@ class DiagramsMain(CompiledArraysMain):
                                              loadings=np.zeros(nbr, dtype=complex),
                                              br_active=br_active,
                                              hvdc_active=hvdc_active,
+                                             hvdc_loading=np.zeros(nhvdc, dtype=float),
+                                             hvdc_Pf=np.zeros(nhvdc, dtype=float),
+                                             hvdc_Pt=np.zeros(nhvdc, dtype=float),
+                                             vsc_active=vsc_active,
+                                             vsc_loading=np.zeros(nvsc, dtype=float),
+                                             vsc_Pf=np.zeros(nvsc, dtype=float),
+                                             vsc_Pt=np.zeros(nvsc, dtype=float),
+                                             vsc_Qt=np.zeros(nvsc, dtype=float),
                                              use_flow_based_width=use_flow_based_width,
                                              min_branch_width=min_branch_width,
                                              max_branch_width=max_branch_width,

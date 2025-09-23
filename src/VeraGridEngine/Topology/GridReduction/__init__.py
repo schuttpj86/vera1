@@ -5,3 +5,4 @@
 
 from VeraGridEngine.Topology.GridReduction.ptdf_grid_reduction import ptdf_reduction
 from VeraGridEngine.Topology.GridReduction.di_shi_grid_reduction import di_shi_reduction
+from VeraGridEngine.Topology.GridReduction.ward_equivalents import ward_standard_reduction

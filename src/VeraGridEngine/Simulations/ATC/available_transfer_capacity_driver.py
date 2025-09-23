@@ -532,7 +532,8 @@ class AvailableTransferCapacityDriver(DriverTemplate):
             (Shvdc, Losses_hvdc, Pf_hvdc, Pt_hvdc,
              loading_hvdc, n_free) = nc.hvdc_data.get_power(Sbase=nc.Sbase, theta=np.zeros(nc.nbus))
 
-            flows = linear.get_flows(Sbus + Shvdc)
+            # flows in p.u.
+            flows = linear.get_flows(Sbus=Sbus, P_hvdc=Pf_hvdc)
 
         # base exchange
         base_exchange = (self.options.inter_area_branch_sense * flows[self.options.inter_area_branch_idx]).sum()

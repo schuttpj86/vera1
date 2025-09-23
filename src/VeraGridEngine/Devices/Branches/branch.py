@@ -418,7 +418,7 @@ class Branch(BranchParent):
         """
         return [self.bus_from.get_coordinates(), self.bus_to.get_coordinates()]
 
-    def get_equivalent_transformer(self) -> Transformer2W:
+    def get_equivalent_transformer(self, index: pd.DatetimeIndex | None = None) -> Transformer2W:
         """
         Convert this line into a transformer
         This is necessary if the buses' voltage differ too much
@@ -446,13 +446,19 @@ class Branch(BranchParent):
                             temp_oper=self.temp_oper,
                             alpha=self.alpha,
                             template=self.template)
-        elm.rate_prof = self.rate_prof
-        elm.Cost_prof = self.Cost_prof
-        elm.active_prof = self.active_prof
-        elm.temp_oper_prof = self.temp_oper_prof
+
+        if index is not None:
+            elm.ensure_profiles_exist(index=index)
+            elm.active_prof = self.active_prof
+            elm.rate_prof = self.rate_prof
+            elm.contingency_factor_prof = self.contingency_factor_prof
+            elm.protection_rating_factor_prof = self.protection_rating_factor_prof
+            elm.temp_oper_prof = self.temp_oper_prof
+            elm.Cost_prof = self.Cost_prof
+
         return elm
 
-    def get_equivalent_line(self) -> Line:
+    def get_equivalent_line(self, index: pd.DatetimeIndex | None = None) -> Line:
         """
         Get the equivalent line object
         :return:
@@ -477,10 +483,14 @@ class Branch(BranchParent):
                    temp_oper=self.temp_oper,
                    alpha=self.alpha)
 
-        elm.rate_prof = self.rate_prof
-        elm.Cost_prof = self.Cost_prof
-        elm.active_prof = self.active_prof
-        elm.temp_oper_prof = self.temp_oper_prof
+        if index is not None:
+            elm.ensure_profiles_exist(index=index)
+            elm.active_prof = self.active_prof
+            elm.rate_prof = self.rate_prof
+            elm.contingency_factor_prof = self.contingency_factor_prof
+            elm.protection_rating_factor_prof = self.protection_rating_factor_prof
+            elm.temp_oper_prof = self.temp_oper_prof
+            elm.Cost_prof = self.Cost_prof
 
         return elm
 

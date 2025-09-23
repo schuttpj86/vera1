@@ -213,7 +213,7 @@ def parse_buses(data_lst: List[List], substations_dict: Dict[int, dev.Substation
             area = None
 
         if area_dict is not None:
-            zone_idx = raw[9]  # or maybe 28
+            zone_idx = raw[10]  # or maybe 28
             zone = zone_dict[zone_idx]
         else:
             zone = None

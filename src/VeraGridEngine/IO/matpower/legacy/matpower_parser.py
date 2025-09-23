@@ -902,38 +902,39 @@ def get_generation(
     elm_list = circuit.get_generators() + circuit.get_batteries()
 
     for k, elm in enumerate(elm_list):
-        i = bus_dict[elm.bus]  # already accounts for the +1 of Matlab
+        if elm.bus is not None:
+            i = bus_dict[elm.bus]  # already accounts for the +1 of Matlab
 
-        data.append({'bus': i,
-                     'Pg': elm.P,
-                     'Qg': 0,
-                     'Qmax': elm.Qmax,
-                     'Qmin': elm.Qmin,
-                     'Vg': elm.Vset,
-                     'mBase': elm.Snom,
-                     'status': int(elm.active),
-                     'Pmax': elm.Pmax,
-                     'Pmin': elm.Pmin,
-                     'Pc1': 0,
-                     'Pc2': 0,
-                     'Qc1min': 0,
-                     'Qc1max': 0,
-                     'Qc2min': 0,
-                     'Qc2max': 0,
-                     'ramp_agc': 0,
-                     'ramp_10': 0,
-                     'ramp_30': 0,
-                     'ramp_q': 0,
-                     'apf': 0,
-                     })
+            data.append({'bus': i,
+                         'Pg': elm.P,
+                         'Qg': 0,
+                         'Qmax': elm.Qmax,
+                         'Qmin': elm.Qmin,
+                         'Vg': elm.Vset,
+                         'mBase': elm.Snom,
+                         'status': int(elm.active),
+                         'Pmax': elm.Pmax,
+                         'Pmin': elm.Pmin,
+                         'Pc1': 0,
+                         'Pc2': 0,
+                         'Qc1min': 0,
+                         'Qc1max': 0,
+                         'Qc2min': 0,
+                         'Qc2max': 0,
+                         'ramp_agc': 0,
+                         'ramp_10': 0,
+                         'ramp_30': 0,
+                         'ramp_q': 0,
+                         'apf': 0,
+                         })
 
-        cost_data.append({
-            'costtype': 2,
-            'startup': elm.StartupCost,
-            'shutdown': elm.ShutdownCost,
-            'n': 3,
-            'costvector': [elm.Cost2, elm.Cost, elm.Cost0]
-        })
+            cost_data.append({
+                'costtype': 2,
+                'startup': elm.StartupCost,
+                'shutdown': elm.ShutdownCost,
+                'n': 3,
+                'costvector': [elm.Cost2, elm.Cost, elm.Cost0]
+            })
 
     return data, cost_data
 

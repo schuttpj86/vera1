@@ -23,7 +23,7 @@ import VeraGridEngine.Devices as dev
 from VeraGridEngine.Devices.types import ALL_DEV_TYPES, INJECTION_DEVICE_TYPES, FLUID_TYPES, AREA_TYPES
 from VeraGridEngine.basic_structures import Logger
 from VeraGridEngine.Topology.topology import find_different_states
-from VeraGridEngine.enumerations import DeviceType, ActionType, SubObjectType, DynamicVarType
+from VeraGridEngine.enumerations import DeviceType, ActionType, SubObjectType, ConverterControlType
 
 
 if TYPE_CHECKING:
@@ -293,7 +293,9 @@ class MultiCircuit(Assets):
                  and that [5, 6, 7, 8] are represented by the topology of 5
         """
 
-        return find_different_states(states_array=self.get_branch_active_time_array())
+        groups, mapping = find_different_states(states_array=self.get_branch_active_time_array())
+
+        return groups
 
     def copy(self) -> "MultiCircuit":
         """
@@ -655,6 +657,74 @@ class MultiCircuit(Assets):
         self.delete_fluid_path(fluid_path)
 
         return line
+
+    def convert_hvdc_line_to_vsc_system(self, hvdc_line: dev.HvdcLine):
+        """
+        Convert a HvdcLine to the corresponding VSC-DcLine-VSC system
+        :param hvdc_line: HvdcLine
+        :return: ac_bus_1, ac_bus_2, dc_bus_1, dc_bus_2, conv1, conv2, dc_line
+        """
+        ac_bus_1 = hvdc_line.bus_from
+        ac_bus_2 = hvdc_line.bus_to
+
+        dc_bus_1 = dev.Bus(name=ac_bus_1.name + " DC",
+                           Vnom=hvdc_line.dc_link_voltage,
+                           is_dc=True,
+                           latitude=ac_bus_1.latitude,
+                           longitude=ac_bus_1.longitude,
+                           area=ac_bus_1.area,
+                           zone=ac_bus_1.zone,
+                           substation=ac_bus_1.substation,
+                           voltage_level=ac_bus_1.voltage_level,
+                           country=ac_bus_1.country)
+
+        dc_bus_2 = dev.Bus(name=ac_bus_2.name + " DC",
+                           Vnom=hvdc_line.dc_link_voltage,
+                           is_dc=True,
+                           latitude=ac_bus_2.latitude,
+                           longitude=ac_bus_2.longitude,
+                           area=ac_bus_2.area,
+                           zone=ac_bus_2.zone,
+                           substation=ac_bus_2.substation,
+                           voltage_level=ac_bus_2.voltage_level,
+                           country=ac_bus_2.country)
+
+        conv1 = dev.VSC(name=hvdc_line.name + " converter from",
+                        bus_from=dc_bus_1,
+                        bus_to=ac_bus_1,
+                        rate=hvdc_line.rate,
+                        control1=ConverterControlType.Pdc,
+                        control2=ConverterControlType.Vm_ac,
+                        control1_val=hvdc_line.Pset,
+                        control2_val=hvdc_line.Vset_f)
+
+        conv2 = dev.VSC(name=hvdc_line.name + " converter to",
+                        bus_from=dc_bus_2,
+                        bus_to=ac_bus_2,
+                        rate=hvdc_line.rate,
+                        control1=ConverterControlType.Vm_dc,
+                        control2=ConverterControlType.Vm_ac,
+                        control1_val=hvdc_line.Vset_t,
+                        control2_val=hvdc_line.Vset_t)
+
+        Ibase = self.Sbase / hvdc_line.dc_link_voltage
+        Zbase = hvdc_line.dc_link_voltage / Ibase
+
+        dc_line = dev.DcLine(name=hvdc_line.name,
+                             bus_from=dc_bus_1,
+                             bus_to=dc_bus_2,
+                             rate=hvdc_line.rate,
+                             r=hvdc_line.r / Zbase)
+
+        self.add_bus(dc_bus_1)
+        self.add_bus(dc_bus_2)
+        self.add_vsc(conv1)
+        self.add_vsc(conv2)
+        self.add_dc_line(dc_line)
+
+        self.delete_hvdc_line(hvdc_line)
+
+        return ac_bus_1, ac_bus_2, dc_bus_1, dc_bus_2, conv1, conv2, dc_line
 
     def plot_graph(self, ax=None):
         """
@@ -1618,8 +1688,9 @@ class MultiCircuit(Assets):
         bus_dict = self.get_bus_index_dict()
 
         for elm in self.get_injection_devices_iter():
-            k = bus_dict[elm.bus]
-            val[k] = elm.get_S()
+            if elm.bus is not None:
+                k = bus_dict[elm.bus]
+                val[k] += elm.get_S()
 
         return val
 
@@ -1633,8 +1704,9 @@ class MultiCircuit(Assets):
         bus_dict = self.get_bus_index_dict()
 
         for elm in self.get_injection_devices_iter():
-            k = bus_dict[elm.bus]
-            val[:, k] = elm.get_Sprof()
+            if elm.bus is not None:
+                k = bus_dict[elm.bus]
+                val[:, k] += elm.get_Sprof()
 
         return val
 
@@ -1648,13 +1720,15 @@ class MultiCircuit(Assets):
         bus_dict = self.get_bus_index_dict()
 
         for elm in self.get_load_like_devices():
-            k = bus_dict[elm.bus]
-            val[:, k] = elm.get_Sprof()
+            if elm.bus is not None:
+                k = bus_dict[elm.bus]
+                val[:, k] += elm.get_Sprof()
 
         for elm in self.get_generation_like_devices():
-            if not elm.enabled_dispatch:
-                k = bus_dict[elm.bus]
-                val[:, k] = elm.get_Sprof()
+            if elm.bus is not None:
+                if not elm.enabled_dispatch:
+                    k = bus_dict[elm.bus]
+                    val[:, k] += elm.get_Sprof()
 
         return val
 
@@ -1668,9 +1742,10 @@ class MultiCircuit(Assets):
         bus_dict = self.get_bus_index_dict()
 
         for elm in self.get_generation_like_devices():
-            if elm.enabled_dispatch:
-                k = bus_dict[elm.bus]
-                val[:, k] = elm.get_Sprof()
+            if elm.bus is not None:
+                if elm.enabled_dispatch:
+                    k = bus_dict[elm.bus]
+                    val[:, k] += elm.get_Sprof()
 
         return val
 
@@ -2090,7 +2165,7 @@ class MultiCircuit(Assets):
                 # not found in the base, add it
                 action = ActionType.Add
 
-            else:
+            elif type(new_elm) == type(elm_from_base):
                 # check differences
                 action, changed_props = elm_from_base.compare(
                     other=new_elm,
@@ -2098,6 +2173,12 @@ class MultiCircuit(Assets):
                     detailed_profile_comparison=detailed_profile_comparison,
                     nt=nt
                 )
+            else:
+                # Same iftag, different classes, probably some consequence of CGMES
+                logger.add_info(msg="Same idtag, different types",
+                                device_class=new_elm.device_type.value,
+                                device_property=new_elm.name,
+                                expected_value=elm_from_base.device_type.value)
 
             if action != ActionType.NoAction:
                 new_element = new_elm.copy(forced_new_idtag=False)
@@ -2674,6 +2755,9 @@ class MultiCircuit(Assets):
         for i, elm in enumerate(self.get_loads()):
             elm.P_prof.set(results.load_power[:, i])
 
+        for i, elm in enumerate(self.get_hvdc()):
+            elm.Pset_prof.set(results.hvdc_Pf[:, i])
+
     def set_opf_snapshot_results(self, results: OptimalPowerFlowResults):
         """
         Assign OptimalPowerFlowResults to the objects
@@ -2686,8 +2770,11 @@ class MultiCircuit(Assets):
         for i, elm in enumerate(self.get_batteries()):
             elm.P = results.battery_power[i]
 
-        # for i, elm in enumerate(self.get_loads()):
-        #     elm.P = results.load_power[i]
+        for i, elm in enumerate(self.get_loads()):
+            elm.P = results.load_power[i]
+
+        for i, elm in enumerate(self.get_hvdc()):
+            elm.Pset.set(results.hvdc_Pf[i])
 
     def get_reduction_sets(self, reduction_bus_indices: Sequence[int],
                            add_vsc=False, add_hvdc=False, add_switch=True) -> Tuple[IntVec, IntVec, IntVec, IntVec]:

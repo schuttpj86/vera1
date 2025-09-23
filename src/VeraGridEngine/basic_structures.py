@@ -706,8 +706,6 @@ class ConvergenceReport:
         return pd.DataFrame(data)
 
 
-
-
 def get_list_dim(a: List[Any]) -> int:
     """
     Get the dimensions of a List, this is for the case were a matrix is represented by lists of lists
@@ -917,3 +915,84 @@ class ListSet(list):
     def __deepcopy__(self, memo):
         copied_list = ListSet(copy.deepcopy(list(self), memo))
         return copied_list
+
+
+class Vector:
+    """
+    Python implementation of a C++ like std::vector
+    """
+
+    def __init__(self, size=0, value=None):
+        """
+        Initialize vector with a given size and optional fill value.
+        :param size: Size of the vector
+        :param value: Value to initilaize with:
+                      For immutable types (int, float, str, None), store directly.
+                      For objects, store independent deep copies.
+        """
+        if isinstance(value, (int, float, str, type(None), bool)):
+            self._data = [value] * size
+        elif isinstance(value, list):
+            self._data = [list()] * size
+        elif isinstance(value, set):
+            self._data = [set()] * size
+        elif isinstance(value, dict):
+            self._data = [dict()] * size
+        else:
+            self._data = [copy.deepcopy(value) for _ in range(size)]
+
+    def __getitem__(self, index):
+        return self._data[index]
+
+    def __setitem__(self, index, value):
+        self._data[index] = value
+
+    def __len__(self):
+        return len(self._data)
+
+    def push_back(self, value):
+        """Append a value at the end."""
+        self._data.append(value)
+
+    def pop_back(self):
+        """Remove and return the last element."""
+        if not self._data:
+            raise IndexError("pop_back from empty vector")
+        return self._data.pop()
+
+    def clear(self):
+        """Remove all elements."""
+        self._data.clear()
+
+    def resize(self, new_size, value=None):
+        """Resize the vector like in C++ std::vector."""
+        current_size = len(self._data)
+        if new_size < current_size:
+            self._data = self._data[:new_size]
+        else:
+            if isinstance(value, (int, float, str, type(None), bool)):
+                self._data.extend([value] * (new_size - current_size))
+            elif isinstance(value, list):
+                self._data = [list()] * (new_size - current_size)
+            elif isinstance(value, set):
+                self._data = [set()] * (new_size - current_size)
+            elif isinstance(value, dict):
+                self._data = [dict()] * (new_size - current_size)
+            else:
+                self._data.extend(copy.deepcopy(value) for _ in range(new_size - current_size))
+
+    def copy(self):
+        """Return a deep copy of the vector."""
+        return copy.deepcopy(self)
+
+    def __deepcopy__(self, memo):
+        """Support the copy.deepcopy protocol."""
+        new_vec = Vector()
+        new_vec._data = copy.deepcopy(self._data, memo)
+        return new_vec
+
+    def __iter__(self):
+        return iter(self._data)
+
+    def __repr__(self):
+        return f"Vector({self._data})"

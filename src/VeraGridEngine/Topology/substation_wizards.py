@@ -4,6 +4,7 @@
 # SPDX-License-Identifier: MPL-2.0
 
 from typing import Tuple, List
+import math
 import VeraGridEngine.Devices as dev
 from VeraGridEngine import Country, BusGraphicType, SwitchGraphicType
 from VeraGridEngine.Devices.multi_circuit import MultiCircuit
@@ -1203,697 +1204,118 @@ def create_ring(name, grid: MultiCircuit, n_lines: int, n_trafos: int, v_nom: fl
 
     bus_width = 80
     bus_height = 80
-    x_dist = bus_width * 3.5
-    y_dist = bus_width * 3.5
+    x_dist = bus_width * 6
+    y_dist = bus_width * 6
     l_x_pos = []
     l_y_pos = []
 
-    n_positions = max(n_lines, n_trafos, 2) * 2
+    n_positions = max(n_lines + n_trafos, 3)
+
+    radius = x_dist / (2 * math.sin(math.pi / n_positions))
+    cx = offset_x + radius
+    cy = offset_y + radius
 
     if include_disconnectors:
+        for n in range(n_positions):
 
-        if n_positions == 4:
+            angle1 = 2 * math.pi * n / n_positions
+            x1 = cx + radius * math.cos(angle1 + math.radians(25))
+            y1 = cy + radius * math.sin(angle1 + math.radians(25))
 
-            busL0 = dev.Bus(f"{name}_line_conn_0", substation=substation, Vnom=v_nom, voltage_level=vl,
-                            xpos=offset_x, ypos=offset_y, width=bus_width, height=bus_height, country=country,
-                            graphic_type=BusGraphicType.Connectivity)
-            busT0 = dev.Bus(f"{name}_trafo_conn_0", substation=substation, Vnom=v_nom, voltage_level=vl,
-                            xpos=offset_x, ypos=offset_y + y_dist * 3, width=bus_width, height=bus_height,
-                            country=country, graphic_type=BusGraphicType.Connectivity)
-            busL1 = dev.Bus(f"{name}_line_conn_1", substation=substation, Vnom=v_nom, voltage_level=vl,
-                            xpos=offset_x + x_dist * 3, ypos=offset_y + y_dist * 3, width=bus_width,
-                            height=bus_height, country=country, graphic_type=BusGraphicType.Connectivity)
-            busT1 = dev.Bus(f"{name}_trafo_conn_1", substation=substation, Vnom=v_nom, voltage_level=vl,
-                            xpos=offset_x + x_dist * 3, ypos=offset_y, width=bus_width,
-                            height=bus_height, country=country, graphic_type=BusGraphicType.Connectivity)
+            angle2 = 2 * math.pi * (n+1) / n_positions
+            x2 = cx + radius * math.cos(angle2 + math.radians(25))
+            y2 = cy + radius * math.sin(angle2 + math.radians(25))
 
-            grid.add_bus(busL0)
-            l_x_pos.append(busL0.x)
-            l_y_pos.append(busL0.y)
+            x13, y13 = (x1 + (x2 - x1) / 3, y1 + (y2 - y1) / 3)
+            x23, y23 = (x1 + 2 * (x2 - x1) / 3, y1 + 2 * (y2 - y1) / 3)
 
-            grid.add_bus(busT0)
-            l_x_pos.append(busT0.x)
-            l_y_pos.append(busT0.y)
+            bus1 = dev.Bus(f"{name}_position_{n}", substation=substation, Vnom=v_nom, voltage_level=vl,
+                          xpos=x1, ypos=y1, width=bus_width, height=bus_height, country=country,
+                          graphic_type=BusGraphicType.Connectivity)
+            bus2 = dev.Bus(f"{name}_cb_{n}.1", substation=substation, Vnom=v_nom, voltage_level=vl,
+                           xpos=x13, ypos=y13, width=bus_width, height=bus_height, country=country,
+                           graphic_type=BusGraphicType.Connectivity)
+            bus3 = dev.Bus(f"{name}_cb_{n}.2", substation=substation, Vnom=v_nom, voltage_level=vl,
+                           xpos=x23, ypos=y23, width=bus_width, height=bus_height, country=country,
+                           graphic_type=BusGraphicType.Connectivity)
 
-            grid.add_bus(busL1)
-            l_x_pos.append(busL1.x)
-            l_y_pos.append(busL1.y)
+            cb = dev.Switch(name=f"CB_{n}", bus_from=bus2, bus_to=bus3,
+                            graphic_type=SwitchGraphicType.CircuitBreaker)
+            dis1 = dev.Switch(name=f"dis_{n}.1", bus_from=bus1, bus_to=bus2,
+                            graphic_type=SwitchGraphicType.Disconnector)
 
-            grid.add_bus(busT1)
-            l_x_pos.append(busT1.x)
-            l_y_pos.append(busT1.y)
+            if n == 0:
+                first_bus = bus1
+            elif n + 1 == n_positions:
+                dis2 = dev.Switch(name=f"CB_{n}.2", bus_from=bus3, bus_to=first_bus,
+                                graphic_type=SwitchGraphicType.Disconnector)
+                grid.add_switch(dis2)
 
-            bus_L0_T1 = dev.Bus(f"Bus_L0_T1", substation=substation, Vnom=v_nom, voltage_level=vl,
-                                xpos=offset_x + x_dist * 1, ypos=offset_y, width=bus_width,
-                                height=bus_height, country=country, graphic_type=BusGraphicType.Connectivity)
-            bus_T1_L0 = dev.Bus(f"Bus_T1_L0", substation=substation, Vnom=v_nom, voltage_level=vl,
-                                xpos=offset_x + x_dist * 2, ypos=offset_y, width=bus_width,
-                                height=bus_height, country=country, graphic_type=BusGraphicType.Connectivity)
-            bus_L0_T0 = dev.Bus(f"bus_L0_T0", substation=substation, Vnom=v_nom, voltage_level=vl,
-                                xpos=offset_x, ypos=offset_y + y_dist * 1, width=bus_width,
-                                height=bus_height, country=country, graphic_type=BusGraphicType.Connectivity)
-            bus_T0_L0 = dev.Bus(f"bus_T0_L0", substation=substation, Vnom=v_nom, voltage_level=vl,
-                                xpos=offset_x, ypos=offset_y + y_dist * 2, width=bus_width,
-                                height=bus_height, country=country, graphic_type=BusGraphicType.Connectivity)
-            bus_T1_L1 = dev.Bus(f"Bus_T1_L1", substation=substation, Vnom=v_nom, voltage_level=vl,
-                                xpos=offset_x + x_dist * 3, ypos=offset_y + y_dist * 1, width=bus_width,
-                                height=bus_height, country=country, graphic_type=BusGraphicType.Connectivity)
-            bus_L1_T1 = dev.Bus(f"Bus_L1_T1", substation=substation, Vnom=v_nom, voltage_level=vl,
-                                xpos=offset_x + x_dist * 3, ypos=offset_y + y_dist * 2, width=bus_width,
-                                height=bus_height, country=country, graphic_type=BusGraphicType.Connectivity)
-            bus_T0_L1 = dev.Bus(f"Bus_T0_L1", substation=substation, Vnom=v_nom, voltage_level=vl,
-                                xpos=offset_x + x_dist * 1, ypos=offset_y + y_dist * 3, width=bus_width,
-                                height=bus_height, country=country, graphic_type=BusGraphicType.Connectivity)
-            bus_L1_T0 = dev.Bus(f"Bus_L1_T0", substation=substation, Vnom=v_nom, voltage_level=vl,
-                                xpos=offset_x + x_dist * 2, ypos=offset_y + y_dist * 3, width=bus_width,
-                                height=bus_height, country=country, graphic_type=BusGraphicType.Connectivity)
+                dis2 = dev.Switch(name=f"dis_{n-1}.2", bus_from=prev_bus, bus_to=bus1,
+                                  graphic_type=SwitchGraphicType.Disconnector)
+                grid.add_switch(dis2)
 
-            grid.add_bus(bus_L0_T1)
-            l_x_pos.append(bus_L0_T1.x)
-            l_y_pos.append(bus_L0_T1.y)
+            else:
+                dis2 = dev.Switch(name=f"dis_{n}12", bus_from=prev_bus, bus_to=bus1,
+                                graphic_type=SwitchGraphicType.Disconnector)
+                grid.add_switch(dis2)
 
-            grid.add_bus(bus_T1_L0)
-            l_x_pos.append(bus_T1_L0.x)
-            l_y_pos.append(bus_T1_L0.y)
 
-            grid.add_bus(bus_L0_T0)
-            l_x_pos.append(bus_L0_T0.x)
-            l_y_pos.append(bus_L0_T0.y)
+            grid.add_bus(bus1)
+            l_x_pos.append(bus1.x)
+            l_y_pos.append(bus1.y)
 
-            grid.add_bus(bus_T0_L0)
-            l_x_pos.append(bus_T0_L0.x)
-            l_y_pos.append(bus_T0_L0.y)
+            grid.add_bus(bus2)
+            l_x_pos.append(bus2.x)
+            l_y_pos.append(bus2.y)
 
-            grid.add_bus(bus_T1_L1)
-            l_x_pos.append(bus_T1_L1.x)
-            l_y_pos.append(bus_T1_L1.y)
+            grid.add_bus(bus3)
+            l_x_pos.append(bus3.x)
+            l_y_pos.append(bus3.y)
 
-            grid.add_bus(bus_L1_T1)
-            l_x_pos.append(bus_L1_T1.x)
-            l_y_pos.append(bus_L1_T1.y)
+            grid.add_switch(cb)
+            grid.add_switch(dis1)
 
-            grid.add_bus(bus_T0_L1)
-            l_x_pos.append(bus_T0_L1.x)
-            l_y_pos.append(bus_T0_L1.y)
-
-            grid.add_bus(bus_L1_T0)
-            l_x_pos.append(bus_L1_T0.x)
-            l_y_pos.append(bus_L1_T0.y)
-
-            cb_00 = dev.Switch(name=f"CB_00", bus_from=bus_L0_T0, bus_to=bus_T0_L0,
-                               graphic_type=SwitchGraphicType.CircuitBreaker)
-            cb_01 = dev.Switch(name=f"CB_01", bus_from=bus_L0_T1, bus_to=bus_T1_L0,
-                               graphic_type=SwitchGraphicType.CircuitBreaker)
-            cb_10 = dev.Switch(name=f"CB_10", bus_from=bus_T0_L1, bus_to=bus_L1_T0,
-                               graphic_type=SwitchGraphicType.CircuitBreaker)
-            cb_11 = dev.Switch(name=f"CB_11", bus_from=bus_L1_T1, bus_to=bus_T1_L1,
-                               graphic_type=SwitchGraphicType.CircuitBreaker)
-
-            dis_L0_T1 = dev.Switch(name=f"Dis_L0_T1", bus_from=busL0, bus_to=bus_L0_T1,
-                                   graphic_type=SwitchGraphicType.Disconnector)
-            dis_T1_L0 = dev.Switch(name=f"Dis_T1_L0", bus_from=bus_T1_L0, bus_to=busT1,
-                                   graphic_type=SwitchGraphicType.Disconnector)
-            dis_L0_T0 = dev.Switch(name=f"Dis_L0_T0", bus_from=busL0, bus_to=bus_L0_T0,
-                                   graphic_type=SwitchGraphicType.Disconnector)
-            dis_T0_L0 = dev.Switch(name=f"Dis_T0_L0", bus_from=bus_T0_L0, bus_to=busT0,
-                                   graphic_type=SwitchGraphicType.Disconnector)
-            dis_T1_L1 = dev.Switch(name=f"Dis_T1_L1", bus_from=busT1, bus_to=bus_T1_L1,
-                                   graphic_type=SwitchGraphicType.Disconnector)
-            dis_L1_T1 = dev.Switch(name=f"Dis_L1_T1", bus_from=bus_L1_T1, bus_to=busL1,
-                                   graphic_type=SwitchGraphicType.Disconnector)
-            dis_T0_L1 = dev.Switch(name=f"Dis_T0_L1", bus_from=busT0, bus_to=bus_T0_L1,
-                                   graphic_type=SwitchGraphicType.Disconnector)
-            dis_L1_T0 = dev.Switch(name=f"Dis_L1_T0", bus_from=bus_L1_T0, bus_to=busL1,
-                                   graphic_type=SwitchGraphicType.Disconnector)
-
-            grid.add_switch(cb_00)
-            grid.add_switch(cb_01)
-            grid.add_switch(cb_10)
-            grid.add_switch(cb_11)
-
-            grid.add_switch(dis_L0_T1)
-            grid.add_switch(dis_T1_L0)
-            grid.add_switch(dis_L0_T0)
-            grid.add_switch(dis_T0_L0)
-            grid.add_switch(dis_T1_L1)
-            grid.add_switch(dis_L1_T1)
-            grid.add_switch(dis_T0_L1)
-            grid.add_switch(dis_L1_T0)
-
-        elif n_positions == 6:
-            busL0 = dev.Bus(f"{name}_line_conn_0", substation=substation, Vnom=v_nom, voltage_level=vl,
-                            xpos=offset_x, ypos=offset_y, width=bus_width, height=bus_height, country=country,
-                            graphic_type=BusGraphicType.Connectivity)
-            busT0 = dev.Bus(f"{name}_trafo_conn_0", substation=substation, Vnom=v_nom, voltage_level=vl,
-                            xpos=offset_x, ypos=offset_y + y_dist * 3, width=bus_width, height=bus_height,
-                            country=country, graphic_type=BusGraphicType.Connectivity)
-            busL1 = dev.Bus(f"{name}_line_conn_1", substation=substation, Vnom=v_nom, voltage_level=vl,
-                            xpos=offset_x + x_dist * 3, ypos=offset_y + y_dist * 4, width=bus_width,
-                            height=bus_height, country=country, graphic_type=BusGraphicType.Connectivity)
-            busT1 = dev.Bus(f"{name}_trafo_conn_1", substation=substation, Vnom=v_nom, voltage_level=vl,
-                            xpos=offset_x + x_dist * 3, ypos=offset_y + y_dist * -1, width=bus_width,
-                            height=bus_height, country=country, graphic_type=BusGraphicType.Connectivity)
-            busL2 = dev.Bus(f"{name}_line_conn_2", substation=substation, Vnom=v_nom, voltage_level=vl,
-                            xpos=offset_x + x_dist * 6, ypos=offset_y, width=bus_width,
-                            height=bus_height, country=country, graphic_type=BusGraphicType.Connectivity)
-            busT2 = dev.Bus(f"{name}_trafo_conn_2", substation=substation, Vnom=v_nom, voltage_level=vl,
-                            xpos=offset_x + x_dist * 6, ypos=offset_y + y_dist * 3, width=bus_width,
-                            height=bus_height, country=country, graphic_type=BusGraphicType.Connectivity)
-
-            grid.add_bus(busL0)
-            l_x_pos.append(busL0.x)
-            l_y_pos.append(busL0.y)
-
-            grid.add_bus(busT0)
-            l_x_pos.append(busT0.x)
-            l_y_pos.append(busT0.y)
-
-            grid.add_bus(busL1)
-            l_x_pos.append(busL1.x)
-            l_y_pos.append(busL1.y)
-
-            grid.add_bus(busT1)
-            l_x_pos.append(busT1.x)
-            l_y_pos.append(busT1.y)
-
-            grid.add_bus(busL2)
-            l_x_pos.append(busL2.x)
-            l_y_pos.append(busL2.y)
-
-            grid.add_bus(busT2)
-            l_x_pos.append(busT2.x)
-            l_y_pos.append(busT2.y)
-
-            bus_L0_T1 = dev.Bus(f"Bus_L0_T1", substation=substation, Vnom=v_nom, voltage_level=vl,
-                                xpos=offset_x + x_dist * 1, ypos=offset_y - y_dist / 3, width=bus_width,
-                                height=bus_height, country=country, graphic_type=BusGraphicType.Connectivity)
-            bus_T1_L0 = dev.Bus(f"Bus_T1_L0", substation=substation, Vnom=v_nom, voltage_level=vl,
-                                xpos=offset_x + x_dist * 2, ypos=offset_y - y_dist * 2 / 3, width=bus_width,
-                                height=bus_height, country=country, graphic_type=BusGraphicType.Connectivity)
-            bus_L0_T0 = dev.Bus(f"bus_L0_T0", substation=substation, Vnom=v_nom, voltage_level=vl,
-                                xpos=offset_x, ypos=offset_y + y_dist * 1, width=bus_width,
-                                height=bus_height, country=country, graphic_type=BusGraphicType.Connectivity)
-            bus_T0_L0 = dev.Bus(f"bus_T0_L0", substation=substation, Vnom=v_nom, voltage_level=vl,
-                                xpos=offset_x, ypos=offset_y + y_dist * 2, width=bus_width,
-                                height=bus_height, country=country, graphic_type=BusGraphicType.Connectivity)
-            bus_T2_L2 = dev.Bus(f"Bus_T2_L2", substation=substation, Vnom=v_nom, voltage_level=vl,
-                                xpos=offset_x + x_dist * 6, ypos=offset_y + y_dist * 2, width=bus_width,
-                                height=bus_height, country=country, graphic_type=BusGraphicType.Connectivity)
-            bus_L2_T2 = dev.Bus(f"Bus_L2_T2", substation=substation, Vnom=v_nom, voltage_level=vl,
-                                xpos=offset_x + x_dist * 6, ypos=offset_y + y_dist * 1, width=bus_width,
-                                height=bus_height, country=country, graphic_type=BusGraphicType.Connectivity)
-            bus_T0_L1 = dev.Bus(f"Bus_T0_L1", substation=substation, Vnom=v_nom, voltage_level=vl,
-                                xpos=offset_x + x_dist * 1, ypos=offset_y + y_dist * (3 + 1 / 3), width=bus_width,
-                                height=bus_height, country=country, graphic_type=BusGraphicType.Connectivity)
-            bus_L1_T0 = dev.Bus(f"Bus_L1_T0", substation=substation, Vnom=v_nom, voltage_level=vl,
-                                xpos=offset_x + x_dist * 2, ypos=offset_y + y_dist * (3 + 2 / 3), width=bus_width,
-                                height=bus_height, country=country, graphic_type=BusGraphicType.Connectivity)
-            bus_T1_L2 = dev.Bus(f"Bus_T1_L2", substation=substation, Vnom=v_nom, voltage_level=vl,
-                                xpos=offset_x + x_dist * 4, ypos=offset_y - y_dist * 2 / 3, width=bus_width,
-                                height=bus_height, country=country, graphic_type=BusGraphicType.Connectivity)
-            bus_L2_T1 = dev.Bus(f"Bus_L2_T1", substation=substation, Vnom=v_nom, voltage_level=vl,
-                                xpos=offset_x + x_dist * 5, ypos=offset_y - y_dist * 1 / 3, width=bus_width,
-                                height=bus_height, country=country, graphic_type=BusGraphicType.Connectivity)
-            bus_L1_T2 = dev.Bus(f"Bus_L1_T2", substation=substation, Vnom=v_nom, voltage_level=vl,
-                                xpos=offset_x + x_dist * 4, ypos=offset_y + y_dist * (3 + 2 / 3), width=bus_width,
-                                height=bus_height, country=country, graphic_type=BusGraphicType.Connectivity)
-            bus_T2_L1 = dev.Bus(f"Bus_T2_L1", substation=substation, Vnom=v_nom, voltage_level=vl,
-                                xpos=offset_x + x_dist * 5, ypos=offset_y + y_dist * (3 + 1 / 3), width=bus_width,
-                                height=bus_height, country=country, graphic_type=BusGraphicType.Connectivity)
-
-            grid.add_bus(bus_L0_T1)
-            l_x_pos.append(bus_L0_T1.x)
-            l_y_pos.append(bus_L0_T1.y)
-
-            grid.add_bus(bus_T1_L0)
-            l_x_pos.append(bus_T1_L0.x)
-            l_y_pos.append(bus_T1_L0.y)
-
-            grid.add_bus(bus_L0_T0)
-            l_x_pos.append(bus_L0_T0.x)
-            l_y_pos.append(bus_L0_T0.y)
-
-            grid.add_bus(bus_T0_L0)
-            l_x_pos.append(bus_T0_L0.x)
-            l_y_pos.append(bus_T0_L0.y)
-
-            grid.add_bus(bus_T2_L2)
-            l_x_pos.append(bus_T2_L2.x)
-            l_y_pos.append(bus_T2_L2.y)
-
-            grid.add_bus(bus_L2_T2)
-            l_x_pos.append(bus_L2_T2.x)
-            l_y_pos.append(bus_L2_T2.y)
-
-            grid.add_bus(bus_T0_L1)
-            l_x_pos.append(bus_T0_L1.x)
-            l_y_pos.append(bus_T0_L1.y)
-
-            grid.add_bus(bus_L1_T0)
-            l_x_pos.append(bus_L1_T0.x)
-            l_y_pos.append(bus_L1_T0.y)
-
-            grid.add_bus(bus_T1_L2)
-            l_x_pos.append(bus_T1_L2.x)
-            l_y_pos.append(bus_T1_L2.y)
-
-            grid.add_bus(bus_L2_T1)
-            l_x_pos.append(bus_L2_T1.x)
-            l_y_pos.append(bus_L2_T1.y)
-
-            grid.add_bus(bus_L1_T2)
-            l_x_pos.append(bus_L1_T2.x)
-            l_y_pos.append(bus_L1_T2.y)
-
-            grid.add_bus(bus_T2_L1)
-            l_x_pos.append(bus_T2_L1.x)
-            l_y_pos.append(bus_T2_L1.y)
-
-            cb_00 = dev.Switch(name=f"CB_00", bus_from=bus_L0_T0, bus_to=bus_T0_L0,
-                               graphic_type=SwitchGraphicType.CircuitBreaker)
-            cb_01 = dev.Switch(name=f"CB_01", bus_from=bus_L0_T1, bus_to=bus_T1_L0,
-                               graphic_type=SwitchGraphicType.CircuitBreaker)
-            cb_10 = dev.Switch(name=f"CB_10", bus_from=bus_T0_L1, bus_to=bus_L1_T0,
-                               graphic_type=SwitchGraphicType.CircuitBreaker)
-            cb_12 = dev.Switch(name=f"CB_12", bus_from=bus_L1_T2, bus_to=bus_T2_L1,
-                               graphic_type=SwitchGraphicType.CircuitBreaker)
-            cb_21 = dev.Switch(name=f"CB_21", bus_from=bus_T1_L2, bus_to=bus_L2_T1,
-                               graphic_type=SwitchGraphicType.CircuitBreaker)
-            cb_22 = dev.Switch(name=f"CB_22", bus_from=bus_L2_T2, bus_to=bus_T2_L2,
-                               graphic_type=SwitchGraphicType.CircuitBreaker)
-
-            dis_L0_T1 = dev.Switch(name=f"Dis_L0_T1", bus_from=busL0, bus_to=bus_L0_T1,
-                                   graphic_type=SwitchGraphicType.Disconnector)
-            dis_T1_L0 = dev.Switch(name=f"Dis_T1_L0", bus_from=bus_T1_L0, bus_to=busT1,
-                                   graphic_type=SwitchGraphicType.Disconnector)
-            dis_L0_T0 = dev.Switch(name=f"Dis_L0_T0", bus_from=busL0, bus_to=bus_L0_T0,
-                                   graphic_type=SwitchGraphicType.Disconnector)
-            dis_T0_L0 = dev.Switch(name=f"Dis_T0_L0", bus_from=bus_T0_L0, bus_to=busT0,
-                                   graphic_type=SwitchGraphicType.Disconnector)
-            dis_T0_L1 = dev.Switch(name=f"Dis_T0_L1", bus_from=busT0, bus_to=bus_T0_L1,
-                                   graphic_type=SwitchGraphicType.Disconnector)
-            dis_L1_T0 = dev.Switch(name=f"Dis_L1_T0", bus_from=bus_L1_T0, bus_to=busL1,
-                                   graphic_type=SwitchGraphicType.Disconnector)
-            dis_L1_T2 = dev.Switch(name=f"Dis_L1_T2", bus_from=busL1, bus_to=bus_L1_T2,
-                                   graphic_type=SwitchGraphicType.Disconnector)
-            dis_T2_L1 = dev.Switch(name=f"Dis_T2_L1", bus_from=bus_T2_L1, bus_to=busT2,
-                                   graphic_type=SwitchGraphicType.Disconnector)
-            dis_T1_L2 = dev.Switch(name=f"Dis_T1_L2", bus_from=busT1, bus_to=bus_T1_L2,
-                                   graphic_type=SwitchGraphicType.Disconnector)
-            dis_L2_T1 = dev.Switch(name=f"Dis_L2_T1", bus_from=bus_L2_T1, bus_to=busL2,
-                                   graphic_type=SwitchGraphicType.Disconnector)
-            dis_T2_L2 = dev.Switch(name=f"Dis_T2_L2", bus_from=busT2, bus_to=bus_T2_L2,
-                                   graphic_type=SwitchGraphicType.Disconnector)
-            dis_L2_T2 = dev.Switch(name=f"Dis_L2_T2", bus_from=bus_L2_T2, bus_to=busL2,
-                                   graphic_type=SwitchGraphicType.Disconnector)
-
-            grid.add_switch(cb_00)
-            grid.add_switch(cb_01)
-            grid.add_switch(cb_10)
-            grid.add_switch(cb_21)
-            grid.add_switch(cb_12)
-            grid.add_switch(cb_22)
-
-            grid.add_switch(dis_L0_T1)
-            grid.add_switch(dis_T1_L0)
-            grid.add_switch(dis_L0_T0)
-            grid.add_switch(dis_T0_L0)
-            grid.add_switch(dis_T2_L2)
-            grid.add_switch(dis_L2_T2)
-            grid.add_switch(dis_T0_L1)
-            grid.add_switch(dis_L1_T0)
-            grid.add_switch(dis_L1_T2)
-            grid.add_switch(dis_T2_L1)
-            grid.add_switch(dis_T1_L2)
-            grid.add_switch(dis_L2_T1)
-
-        else:
-            pass
+            prev_bus = bus3
 
     else:
 
-        if n_positions == 4:
-            busL0 = dev.Bus(f"{name}_line_conn_0", substation=substation, Vnom=v_nom, voltage_level=vl,
-                            xpos=offset_x, ypos=offset_y, width=bus_width, height=bus_height, country=country,
-                            graphic_type=BusGraphicType.Connectivity)
-            busT0 = dev.Bus(f"{name}_trafo_conn_0", substation=substation, Vnom=v_nom, voltage_level=vl,
-                            xpos=offset_x, ypos=offset_y + y_dist * 2, width=bus_width, height=bus_height,
-                            country=country, graphic_type=BusGraphicType.Connectivity)
-            busL1 = dev.Bus(f"{name}_line_conn_1", substation=substation, Vnom=v_nom, voltage_level=vl,
-                            xpos=offset_x + x_dist * 2, ypos=offset_y + y_dist * 2, width=bus_width,
-                            height=bus_height, country=country, graphic_type=BusGraphicType.Connectivity)
-            busT1 = dev.Bus(f"{name}_trafo_conn_1", substation=substation, Vnom=v_nom, voltage_level=vl,
-                            xpos=offset_x + x_dist * 2, ypos=offset_y, width=bus_width,
-                            height=bus_height, country=country, graphic_type=BusGraphicType.Connectivity)
+        for n in range(n_positions):
 
-            grid.add_bus(busL0)
-            l_x_pos.append(busL0.x)
-            l_y_pos.append(busL0.y)
+            angle = 2 * math.pi * n / n_positions
+            x = cx + radius * math.cos(angle + math.radians(25))
+            y = cy + radius * math.sin(angle + math.radians(25))
 
-            grid.add_bus(busT0)
-            l_x_pos.append(busT0.x)
-            l_y_pos.append(busT0.y)
+            bus = dev.Bus(f"{name}_position_{n}", substation=substation, Vnom=v_nom, voltage_level=vl,
+                          xpos=x, ypos=y, width=bus_width, height=bus_height, country=country,
+                          graphic_type=BusGraphicType.Connectivity)
+            if n == 0:
+                first_bus = bus
+            elif n + 1 == n_positions:
+                cb = dev.Switch(name=f"CB_{n}", bus_from=bus, bus_to=first_bus,
+                                graphic_type=SwitchGraphicType.CircuitBreaker)
+                grid.add_switch(cb)
 
-            grid.add_bus(busL1)
-            l_x_pos.append(busL1.x)
-            l_y_pos.append(busL1.y)
+                cb = dev.Switch(name=f"CB_{n-1}", bus_from=prev_bus, bus_to=bus,
+                                graphic_type=SwitchGraphicType.CircuitBreaker)
+                grid.add_switch(cb)
+            else:
+                cb = dev.Switch(name=f"CB_{n}", bus_from=prev_bus, bus_to=bus,
+                                graphic_type=SwitchGraphicType.CircuitBreaker)
+                grid.add_switch(cb)
 
-            grid.add_bus(busT1)
-            l_x_pos.append(busT1.x)
-            l_y_pos.append(busT1.y)
 
-            cb_00 = dev.Switch(name=f"CB_00", bus_from=busL0, bus_to=busT0,
-                               graphic_type=SwitchGraphicType.CircuitBreaker)
-            cb_01 = dev.Switch(name=f"CB_01", bus_from=busL0, bus_to=busT1,
-                               graphic_type=SwitchGraphicType.CircuitBreaker)
-            cb_10 = dev.Switch(name=f"CB_10", bus_from=busL1, bus_to=busT0,
-                               graphic_type=SwitchGraphicType.CircuitBreaker)
-            cb_11 = dev.Switch(name=f"CB_11", bus_from=busL1, bus_to=busT1,
-                               graphic_type=SwitchGraphicType.CircuitBreaker)
+            grid.add_bus(bus)
+            l_x_pos.append(bus.x)
+            l_y_pos.append(bus.y)
 
-            grid.add_switch(cb_00)
-            grid.add_switch(cb_01)
-            grid.add_switch(cb_10)
-            grid.add_switch(cb_11)
-
-        elif n_positions == 6:
-            busL0 = dev.Bus(f"{name}_line_conn_0", substation=substation, Vnom=v_nom, voltage_level=vl,
-                            xpos=offset_x, ypos=offset_y, width=bus_width, height=bus_height, country=country,
-                            graphic_type=BusGraphicType.Connectivity)
-            busT0 = dev.Bus(f"{name}_trafo_conn_0", substation=substation, Vnom=v_nom, voltage_level=vl,
-                            xpos=offset_x, ypos=offset_y + y_dist * 2, width=bus_width, height=bus_height,
-                            country=country, graphic_type=BusGraphicType.Connectivity)
-            busL1 = dev.Bus(f"{name}_line_conn_1", substation=substation, Vnom=v_nom, voltage_level=vl,
-                            xpos=offset_x + x_dist * 2, ypos=offset_y + y_dist * 2 + y_dist, width=bus_width,
-                            height=bus_height, country=country, graphic_type=BusGraphicType.Connectivity)
-            busT1 = dev.Bus(f"{name}_trafo_conn_1", substation=substation, Vnom=v_nom, voltage_level=vl,
-                            xpos=offset_x + x_dist * 2, ypos=offset_y - y_dist, width=bus_width,
-                            height=bus_height, country=country, graphic_type=BusGraphicType.Connectivity)
-            busL2 = dev.Bus(f"{name}_line_conn_2", substation=substation, Vnom=v_nom, voltage_level=vl,
-                            xpos=offset_x + x_dist * 4, ypos=offset_y, width=bus_width,
-                            height=bus_height, country=country, graphic_type=BusGraphicType.Connectivity)
-            busT2 = dev.Bus(f"{name}_trafo_conn_2", substation=substation, Vnom=v_nom, voltage_level=vl,
-                            xpos=offset_x + x_dist * 4, ypos=offset_y + y_dist * 2, width=bus_width,
-                            height=bus_height, country=country, graphic_type=BusGraphicType.Connectivity)
-
-            grid.add_bus(busL0)
-            l_x_pos.append(busL0.x)
-            l_y_pos.append(busL0.y)
-
-            grid.add_bus(busT0)
-            l_x_pos.append(busT0.x)
-            l_y_pos.append(busT0.y)
-
-            grid.add_bus(busL1)
-            l_x_pos.append(busL1.x)
-            l_y_pos.append(busL1.y)
-
-            grid.add_bus(busT1)
-            l_x_pos.append(busT1.x)
-            l_y_pos.append(busT1.y)
-
-            grid.add_bus(busL2)
-            l_x_pos.append(busL1.x)
-            l_y_pos.append(busL1.y)
-
-            grid.add_bus(busT2)
-            l_x_pos.append(busT1.x)
-            l_y_pos.append(busT1.y)
-
-            cb_00 = dev.Switch(name=f"CB_00", bus_from=busL0, bus_to=busT0,
-                               graphic_type=SwitchGraphicType.CircuitBreaker)
-            cb_01 = dev.Switch(name=f"CB_01", bus_from=busL0, bus_to=busT1,
-                               graphic_type=SwitchGraphicType.CircuitBreaker)
-            cb_10 = dev.Switch(name=f"CB_10", bus_from=busL1, bus_to=busT0,
-                               graphic_type=SwitchGraphicType.CircuitBreaker)
-            cb_12 = dev.Switch(name=f"CB_12", bus_from=busL1, bus_to=busT2,
-                               graphic_type=SwitchGraphicType.CircuitBreaker)
-            cb_21 = dev.Switch(name=f"CB_21", bus_from=busT1, bus_to=busL2,
-                               graphic_type=SwitchGraphicType.CircuitBreaker)
-            cb_22 = dev.Switch(name=f"CB_22", bus_from=busL2, bus_to=busT2,
-                               graphic_type=SwitchGraphicType.CircuitBreaker)
-
-            grid.add_switch(cb_00)
-            grid.add_switch(cb_01)
-            grid.add_switch(cb_10)
-            grid.add_switch(cb_12)
-            grid.add_switch(cb_21)
-            grid.add_switch(cb_22)
-
-        else:
-            pass
+            prev_bus = bus
 
     offset_total_x = max(l_x_pos, default=0) + x_dist
     offset_total_y = max(l_y_pos, default=0) + y_dist
 
     return vl, offset_total_x, offset_total_y
 
-
-# def create_ring_v2(name, grid: MultiCircuit, n_lines: int, n_trafos: int, v_nom: float,
-#                    substation: dev.Substation, country: Country = None,
-#                    include_disconnectors: bool = True,
-#                    offset_x=0, offset_y=0) -> Tuple[dev.VoltageLevel, int, int]:
-#     """
-#
-#     :param name:
-#     :param grid:
-#     :param n_lines:
-#     :param n_trafos:
-#     :param v_nom:
-#     :param substation:
-#     :param country:
-#     :param include_disconnectors:
-#     :param offset_x:
-#     :param offset_y:
-#     :return:
-#     """
-#
-#     vl = dev.VoltageLevel(name=name, substation=substation, Vnom=v_nom)
-#     grid.add_voltage_level(vl)
-#
-#     bus_width = 80
-#     bus_height = 80
-#     x_dist = bus_width * 3
-#     y_dist = bus_width * 3.5
-#     l_x_pos = []
-#     l_y_pos = []
-#
-#     n_positions = max(n_lines, n_trafos, 2) * 2
-#
-#     if include_disconnectors:
-#
-#         busL0 = dev.Bus(f"{name}_line_conn_0", substation=substation, Vnom=v_nom, voltage_level=vl,
-#                         xpos=offset_x, ypos=offset_y, width=bus_width, height=bus_height, country=country,
-#                         graphic_type=BusGraphicType.Connectivity)
-#         busT0 = dev.Bus(f"{name}_trafo_conn_0", substation=substation, Vnom=v_nom, voltage_level=vl,
-#                         xpos=offset_x, ypos=offset_y + y_dist * 3, width=bus_width, height=bus_height, country=country,
-#                         graphic_type=BusGraphicType.Connectivity)
-#         busLn = dev.Bus(f"{name}_line_conn_{int(n_positions / 2) - 1}", substation=substation, Vnom=v_nom,
-#                         voltage_level=vl, xpos=offset_x + (n_positions - 1) * x_dist, ypos=offset_y, width=bus_width,
-#                         height=bus_height, country=country, graphic_type=BusGraphicType.Connectivity)
-#         busTn = dev.Bus(f"{name}_trafo_conn_{int(n_positions / 2) - 1}", substation=substation, Vnom=v_nom,
-#                         voltage_level=vl, xpos=offset_x + (n_positions - 1) * x_dist, ypos=offset_y + y_dist * 3,
-#                         width=bus_width, height=bus_height, country=country, graphic_type=BusGraphicType.Connectivity)
-#
-#         grid.add_bus(busL0)
-#         l_x_pos.append(busL0.x)
-#         l_y_pos.append(busL0.y)
-#
-#         grid.add_bus(busT0)
-#         l_x_pos.append(busT0.x)
-#         l_y_pos.append(busT0.y)
-#
-#         grid.add_bus(busLn)
-#         l_x_pos.append(busLn.x)
-#         l_y_pos.append(busLn.y)
-#
-#         grid.add_bus(busTn)
-#         l_x_pos.append(busTn.x)
-#         l_y_pos.append(busTn.y)
-#
-#         bus0 = dev.Bus(f"Bus0", substation=substation, Vnom=v_nom, voltage_level=vl,
-#                        xpos=offset_x, ypos=offset_y + y_dist * 1, width=bus_width, height=bus_height, country=country,
-#                        graphic_type=BusGraphicType.Connectivity)
-#         bus1 = dev.Bus(f"Bus1", substation=substation, Vnom=v_nom, voltage_level=vl,
-#                        xpos=offset_x, ypos=offset_y + y_dist * 2, width=bus_width, height=bus_height, country=country,
-#                        graphic_type=BusGraphicType.Connectivity)
-#         bus2 = dev.Bus(f"Bus2", substation=substation, Vnom=v_nom, voltage_level=vl,
-#                        xpos=offset_x + (n_positions - 1) * x_dist, ypos=offset_y + y_dist * 1, width=bus_width,
-#                        height=bus_height, country=country, graphic_type=BusGraphicType.Connectivity)
-#         bus3 = dev.Bus(f"Bus3", substation=substation, Vnom=v_nom, voltage_level=vl,
-#                        xpos=offset_x + (n_positions - 1) * x_dist, ypos=offset_y + y_dist * 2, width=bus_width,
-#                        height=bus_height, country=country, graphic_type=BusGraphicType.Connectivity)
-#
-#         grid.add_bus(bus0)
-#         l_x_pos.append(bus0.x)
-#         l_y_pos.append(bus0.y)
-#
-#         grid.add_bus(bus1)
-#         l_x_pos.append(bus1.x)
-#         l_y_pos.append(bus1.y)
-#
-#         grid.add_bus(bus2)
-#         l_x_pos.append(bus2.x)
-#         l_y_pos.append(bus2.y)
-#
-#         grid.add_bus(bus3)
-#         l_x_pos.append(bus3.x)
-#         l_y_pos.append(bus3.y)
-#
-#         bus5 = dev.Bus(f"Bus5", substation=substation, Vnom=v_nom, voltage_level=vl,
-#                        xpos=offset_x + x_dist, ypos=offset_y, width=bus_width, height=bus_height, country=country,
-#                        graphic_type=BusGraphicType.Connectivity)
-#         bus6 = dev.Bus(f"Bus6", substation=substation, Vnom=v_nom, voltage_level=vl,
-#                        xpos=offset_x + x_dist * 2, ypos=offset_y, width=bus_width, height=bus_height, country=country,
-#                        graphic_type=BusGraphicType.Connectivity)
-#         bus7 = dev.Bus(f"Bus7", substation=substation, Vnom=v_nom, voltage_level=vl,
-#                        xpos=offset_x + x_dist, ypos=offset_y + y_dist * 3, width=bus_width, height=bus_height,
-#                        country=country, graphic_type=BusGraphicType.Connectivity)
-#         bus8 = dev.Bus(f"Bus8", substation=substation, Vnom=v_nom, voltage_level=vl,
-#                        xpos=offset_x + x_dist * 2, ypos=offset_y + y_dist * 3, width=bus_width, height=bus_height,
-#                        country=country, graphic_type=BusGraphicType.Connectivity)
-#
-#         grid.add_bus(bus5)
-#         l_x_pos.append(bus5.x)
-#         l_y_pos.append(bus5.y)
-#
-#         grid.add_bus(bus6)
-#         l_x_pos.append(bus6.x)
-#         l_y_pos.append(bus6.y)
-#
-#         grid.add_bus(bus7)
-#         l_x_pos.append(bus7.x)
-#         l_y_pos.append(bus7.y)
-#
-#         grid.add_bus(bus8)
-#         l_x_pos.append(bus8.x)
-#         l_y_pos.append(bus8.y)
-#
-#         if n_positions > 4:
-#             bus9 = dev.Bus(f"Bus9", substation=substation, Vnom=v_nom, voltage_level=vl,
-#                            xpos=offset_x + (n_positions - 2) * x_dist, ypos=offset_y, width=bus_width,
-#                            height=bus_height,
-#                            country=country, graphic_type=BusGraphicType.Connectivity)
-#             bus10 = dev.Bus(f"Bus10", substation=substation, Vnom=v_nom, voltage_level=vl,
-#                             xpos=offset_x + (n_positions - 2) * x_dist, ypos=offset_y + y_dist * 3, width=bus_width,
-#                             height=bus_height,
-#                             country=country, graphic_type=BusGraphicType.Connectivity)
-#
-#             grid.add_bus(bus9)
-#             l_x_pos.append(bus9.x)
-#             l_y_pos.append(bus9.y)
-#
-#             grid.add_bus(bus10)
-#             l_x_pos.append(bus10.x)
-#             l_y_pos.append(bus10.y)
-#
-#             dis6 = dev.Switch(name=f"Dis5", bus_from=bus9, bus_to=busLn, graphic_type=SwitchGraphicType.Disconnector)
-#             dis7 = dev.Switch(name=f"Dis5", bus_from=bus10, bus_to=busTn, graphic_type=SwitchGraphicType.Disconnector)
-#
-#         else:
-#             dis6 = dev.Switch(name=f"Dis5", bus_from=bus6, bus_to=busLn, graphic_type=SwitchGraphicType.Disconnector)
-#             dis7 = dev.Switch(name=f"Dis5", bus_from=bus8, bus_to=busTn, graphic_type=SwitchGraphicType.Disconnector)
-#
-#         dis0 = dev.Switch(name=f"Dis0", bus_from=busL0, bus_to=bus0, graphic_type=SwitchGraphicType.Disconnector)
-#         cb0 = dev.Switch(name=f"CB_0", bus_from=bus0, bus_to=bus1, graphic_type=SwitchGraphicType.CircuitBreaker)
-#         dis1 = dev.Switch(name=f"Dis1", bus_from=bus1, bus_to=busT0, graphic_type=SwitchGraphicType.Disconnector)
-#
-#         dis2 = dev.Switch(name=f"Dis2", bus_from=busLn, bus_to=bus2, graphic_type=SwitchGraphicType.Disconnector)
-#         cb1 = dev.Switch(name=f"CB_1", bus_from=bus2, bus_to=bus3, graphic_type=SwitchGraphicType.CircuitBreaker)
-#         dis3 = dev.Switch(name=f"Dis3", bus_from=bus3, bus_to=busTn, graphic_type=SwitchGraphicType.Disconnector)
-#
-#         dis4 = dev.Switch(name=f"Dis4", bus_from=busL0, bus_to=bus5, graphic_type=SwitchGraphicType.Disconnector)
-#         cb2 = dev.Switch(name=f"CB_2", bus_from=bus5, bus_to=bus6, graphic_type=SwitchGraphicType.CircuitBreaker)
-#
-#         dis5 = dev.Switch(name=f"Dis5", bus_from=busT0, bus_to=bus7, graphic_type=SwitchGraphicType.Disconnector)
-#         cb3 = dev.Switch(name=f"CB_3", bus_from=bus7, bus_to=bus8, graphic_type=SwitchGraphicType.CircuitBreaker)
-#
-#         grid.add_switch(dis0)
-#         grid.add_switch(cb0)
-#         grid.add_switch(dis1)
-#         grid.add_switch(dis2)
-#         grid.add_switch(cb1)
-#         grid.add_switch(dis3)
-#         grid.add_switch(dis4)
-#         grid.add_switch(cb2)
-#         grid.add_switch(dis5)
-#         grid.add_switch(cb3)
-#         grid.add_switch(dis6)
-#         grid.add_switch(dis7)
-#
-#         for i in range(int(n_positions / 2 - 2)):
-#             print('Hola')
-#
-#         busL0 = dev.Bus(f"{name}_line_conn_0", substation=substation, Vnom=v_nom, voltage_level=vl,
-#                         xpos=offset_x, ypos=offset_y, width=bus_width, height=bus_height, country=country,
-#                         graphic_type=BusGraphicType.Connectivity)
-#         busT0 = dev.Bus(f"{name}_trafo_conn_0", substation=substation, Vnom=v_nom, voltage_level=vl,
-#                         xpos=offset_x, ypos=offset_y + y_dist * 3, width=bus_width, height=bus_height, country=country,
-#                         graphic_type=BusGraphicType.Connectivity)
-#         # if i + 1 < n_positions:
-#         #
-#         #     dis1 = dev.Switch(name=f"Dis1_{i}", bus_from=bus1, bus_to=bus2,
-#         #                       graphic_type=SwitchGraphicType.Disconnector)
-#         #     cb1 = dev.Switch(name=f"CB_{i}", bus_from=bus2, bus_to=bus3,
-#         #                      graphic_type=SwitchGraphicType.CircuitBreaker)
-#         #     dis2 = dev.Switch(name=f"Dis2_{i}", bus_from=bar, bus_to=bus3,
-#         #                       graphic_type=SwitchGraphicType.Disconnector)
-#         #
-#         # grid.add_bus(bus1)
-#         # l_x_pos.append(bus1.x)
-#         # l_y_pos.append(bus1.y)
-#         #
-#         # grid.add_bus(bus2)
-#         # l_x_pos.append(bus2.x)
-#         # l_y_pos.append(bus2.y)
-#         #
-#         # grid.add_bus(bus3)
-#         # l_x_pos.append(bus3.x)
-#         # l_y_pos.append(bus3.y)
-#         #
-#         # grid.add_switch(dis1)
-#         # grid.add_switch(cb1)
-#         # grid.add_switch(dis2)
-#
-#     else:
-#
-#         bar = dev.Bus(f"{name} bar", substation=substation, Vnom=v_nom, voltage_level=vl,
-#                       width=max(n_lines, n_trafos) * bus_width + bus_width * 2 + (x_dist - bus_width) * (
-#                           max(n_lines, n_trafos) - 1),
-#                       xpos=offset_x - bus_width, ypos=offset_y + y_dist, country=country,
-#                       graphic_type=BusGraphicType.BusBar)
-#         grid.add_bus(bar)
-#         l_x_pos.append(bar.x)
-#         l_y_pos.append(bar.y)
-#
-#         for i in range(n_lines):
-#             bus1 = dev.Bus(f"{name}_line_conn_{i}", substation=substation, Vnom=v_nom, voltage_level=vl,
-#                            xpos=offset_x + i * x_dist, ypos=offset_y, width=bus_width, country=country,
-#                            graphic_type=BusGraphicType.Connectivity)
-#         cb1 = dev.Switch(name=f"CB_{i}", bus_from=bus1, bus_to=bar, graphic_type=SwitchGraphicType.CircuitBreaker)
-#
-#         grid.add_bus(bus1)
-#         l_x_pos.append(bus1.x)
-#         l_y_pos.append(bus1.y)
-#
-#         grid.add_switch(cb1)
-#
-#         for i in range(n_trafos):
-#             bus1 = dev.Bus(f"{name}_trafo_conn_{i}", substation=substation, Vnom=v_nom, voltage_level=vl,
-#                            xpos=offset_x + i * x_dist, ypos=offset_y + y_dist * 2, width=bus_width, country=country,
-#                            graphic_type=BusGraphicType.Connectivity)
-#         cb1 = dev.Switch(name=f"CB_{i}", bus_from=bar, bus_to=bus1, graphic_type=SwitchGraphicType.CircuitBreaker)
-#
-#         grid.add_bus(bus1)
-#         l_x_pos.append(bus1.x)
-#         l_y_pos.append(bus1.y)
-#
-#         grid.add_switch(cb1)
-#
-#         offset_total_x = max(l_x_pos, default=0) + x_dist
-#         offset_total_y = max(l_y_pos, default=0) + y_dist
-#
-#     return vl, offset_total_x, offset_total_y
 
 
 def create_substation(grid: MultiCircuit,

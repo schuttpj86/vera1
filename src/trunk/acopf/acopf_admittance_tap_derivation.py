@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: MPL-2.0
 import VeraGridEngine.api as gce
 from VeraGridEngine.Compilers.circuit_to_data import compile_numerical_circuit_at, NumericalCircuit
-from VeraGridEngine.Simulations.OPF.NumericalMethods.ac_opf import run_nonlinear_opf
+from VeraGridEngine.Simulations.OPF.ac_opf_worker import run_nonlinear_opf
 from VeraGridEngine.Simulations.OPF.opf_options import OptimalPowerFlowOptions
 from VeraGridEngine.enumerations import TapPhaseControl
 from scipy import sparse as sp
@@ -65,7 +65,6 @@ def example_3bus_acopf():
     pf_options = gce.PowerFlowOptions(solver_type=gce.SolverType.NR, verbose=3)
     run_nonlinear_opf(grid=grid,
                       opf_options=opf_options,
-                      pf_options=pf_options,
                       plot_error=True)
 
 

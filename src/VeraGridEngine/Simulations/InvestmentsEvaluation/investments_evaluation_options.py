@@ -11,7 +11,6 @@ from typing import Union
 from VeraGridEngine.enumerations import SolverType
 
 
-
 class InvestmentsEvaluationOptions(OptionsTemplate):
     """
     Investments Evaluation Options
@@ -22,7 +21,7 @@ class InvestmentsEvaluationOptions(OptionsTemplate):
                  opf_options: Union[OptimalPowerFlowOptions, None] = None,
                  solver: InvestmentEvaluationMethod = InvestmentEvaluationMethod.NSGA3,
                  obj_tpe: InvestmentsEvaluationObjectives = InvestmentsEvaluationObjectives.PowerFlow,
-                 plugin_fcn_ptr: Callable = None,):
+                 plugin_fcn_ptr: Callable = None):
         """
 
         :param max_eval: Maximum number of evaluations
@@ -37,7 +36,8 @@ class InvestmentsEvaluationOptions(OptionsTemplate):
 
         self.pf_options: PowerFlowOptions = pf_options if pf_options else PowerFlowOptions()
 
-        self.opf_options: OptimalPowerFlowOptions = opf_options if opf_options else OptimalPowerFlowOptions(solver=SolverType.NONLINEAR_OPF)
+        self.opf_options: OptimalPowerFlowOptions = opf_options if opf_options else OptimalPowerFlowOptions(
+            solver=SolverType.NONLINEAR_OPF)
 
         self.solver = solver
 
@@ -50,4 +50,3 @@ class InvestmentsEvaluationOptions(OptionsTemplate):
         self.register(key="opf_options", tpe=DeviceType.SimulationOptionsDevice)
         self.register(key="solver", tpe=InvestmentEvaluationMethod)
         self.register(key="objf_tpe", tpe=InvestmentsEvaluationObjectives)
-

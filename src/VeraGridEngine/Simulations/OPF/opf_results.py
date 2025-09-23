@@ -6,6 +6,8 @@
 
 import numpy as np
 import pandas as pd
+from matplotlib import pyplot as plt
+import matplotlib.colors as plt_colors
 from VeraGridEngine.Simulations.results_table import ResultsTable
 from VeraGridEngine.Simulations.results_template import ResultsTemplate
 from VeraGridEngine.basic_structures import IntVec, Vec, StrVec, CxVec
@@ -66,7 +68,8 @@ class OptimalPowerFlowResults(ResultsTemplate):
 
                                                     ResultTypes.BatteryResults: [ResultTypes.BatteryPower],
 
-                                                    ResultTypes.LoadResults: [ResultTypes.LoadShedding,
+                                                    ResultTypes.LoadResults: [ResultTypes.LoadPower,
+                                                                              ResultTypes.LoadShedding,
                                                                               ResultTypes.LoadSheddingCost],
 
                                                     ResultTypes.BranchResults: [ResultTypes.BranchActivePowerFrom,
@@ -89,7 +92,10 @@ class OptimalPowerFlowResults(ResultsTemplate):
                                                                               ResultTypes.ActivePowerFlowPerArea,
                                                                               ResultTypes.LossesPerArea,
                                                                               ResultTypes.LossesPercentPerArea,
-                                                                              ResultTypes.LossesPerGenPerArea]
+                                                                              ResultTypes.LossesPerGenPerArea],
+                                                    ResultTypes.SpecialPlots: [
+                                                        ResultTypes.BusVoltagePolarPlot
+                                                    ]
                                                     },
                                  time_array=None,
                                  clustering_results=None,
@@ -124,6 +130,7 @@ class OptimalPowerFlowResults(ResultsTemplate):
         self.Sbus = np.zeros(n, dtype=complex)
         self.bus_shadow_prices = np.zeros(n, dtype=float)
 
+        self.load_power = np.zeros(nload, dtype=float)
         self.load_shedding = np.zeros(nload, dtype=float)
         self.load_shedding_cost = np.zeros(nload, dtype=float)
 
@@ -165,7 +172,9 @@ class OptimalPowerFlowResults(ResultsTemplate):
         self.contingency_indices_list = list()  # [(t, m, c), ...]
         self.contingency_flows_slacks_list = list()
 
+        self.non_linear = False
         self.converged = False
+        self.error = 0.0
 
         # vars for the inter-area computation
         self.F = F
@@ -193,6 +202,7 @@ class OptimalPowerFlowResults(ResultsTemplate):
         self.register(name='Sbus', tpe=CxVec)
         self.register(name='bus_shadow_prices', tpe=Vec)
 
+        self.register(name='load_power', tpe=Vec)
         self.register(name='load_shedding', tpe=Vec)
         self.register(name='load_shedding_cost', tpe=Vec)
 
@@ -230,7 +240,9 @@ class OptimalPowerFlowResults(ResultsTemplate):
         self.register(name='fluid_path_flow', tpe=Vec)
         self.register(name='fluid_injection_flow', tpe=Vec)
 
+        self.register(name='non_linear', tpe=bool)
         self.register(name='converged', tpe=bool)
+        self.register(name='error', tpe=float)
         self.register(name='contingency_flows_list', tpe=list)
         self.register(name='contingency_indices_list', tpe=list)
         self.register(name='contingency_flows_slacks_list', tpe=list)
@@ -249,38 +261,75 @@ class OptimalPowerFlowResults(ResultsTemplate):
         Get a DataFrame with the buses results
         :return: DataFrame
         """
-        return pd.DataFrame(data={'Va': np.angle(self.voltage, deg=True),
-                                  'P': self.Sbus.real,
-                                  'Shadow price': self.bus_shadow_prices},
-                            index=self.bus_names)
+        if self.non_linear:
+            return pd.DataFrame(data={'Vm': np.abs(self.voltage),
+                                      'Va': np.angle(self.voltage, deg=True),
+                                      'P': self.Sbus.real,
+                                      'Q': self.Sbus.imag,
+                                      'Shadow price': self.bus_shadow_prices},
+                                index=self.bus_names)
+        else:
+            return pd.DataFrame(data={'Va': np.angle(self.voltage, deg=True),
+                                      'P': self.Sbus.real,
+                                      'Shadow price': self.bus_shadow_prices},
+                                index=self.bus_names)
 
     def get_branch_df(self) -> pd.DataFrame:
         """
         Get a DataFrame with the branches results
         :return: DataFrame
         """
-        return pd.DataFrame(data={'Pf': self.Sf.real,
-                                  'Pt': self.St.real,
-                                  'Tap angle': self.phase_shift,
-                                  'loading': self.loading.real * 100.0},
-                            index=self.branch_names)
+        if self.non_linear:
+            return pd.DataFrame(data={'Pf': self.Sf.real,
+                                      'Pt': self.St.real,
+                                      'Qf': self.Sf.imag,
+                                      'Qt': self.St.imag,
+                                      'Tap angle': self.phase_shift,
+                                      'loading': self.loading.real * 100.0},
+                                index=self.branch_names)
+        else:
+            return pd.DataFrame(data={'Pf': self.Sf.real,
+                                      'Pt': self.St.real,
+                                      'Tap angle': self.phase_shift,
+                                      'loading': self.loading.real * 100.0},
+                                index=self.branch_names)
 
     def get_gen_df(self) -> pd.DataFrame:
         """
         Get a DataFrame with the generator results
         :return: DataFrame
         """
-        return pd.DataFrame(data={'P': self.generator_power,
-                                  'P shedding': self.generator_shedding},
-                            index=self.generator_names)
+        if self.non_linear:
+            return pd.DataFrame(
+                data={
+                    'P': self.generator_power,
+                    'Q': self.generator_reactive_power,
+                    'P shedding': self.generator_shedding,
+                },
+                index=self.generator_names
+            )
+        else:
+            return pd.DataFrame(
+                data={'P': self.generator_power,
+                      'P shedding': self.generator_shedding},
+                index=self.generator_names
+            )
 
     def get_batt_df(self) -> pd.DataFrame:
         """
         Get a DataFrame with the battery results
         :return: DataFrame
         """
-        return pd.DataFrame(data={'P': self.generator_power},
-                            index=self.battery_power)
+        if self.non_linear:
+            return pd.DataFrame(
+                data={
+                    'P': self.battery_power,
+                },
+                index=self.battery_names
+            )
+        else:
+            return pd.DataFrame(data={'P': self.battery_power},
+                                index=self.battery_names)
 
     def get_hvdc_df(self) -> pd.DataFrame:
         """
@@ -440,6 +489,18 @@ class OptimalPowerFlowResults(ResultsTemplate):
                                 ylabel='(deg)',
                                 xlabel='',
                                 units='(deg)')
+
+        elif result_type == ResultTypes.LoadPower:
+
+            return ResultsTable(data=self.load_power,
+                                index=self.load_names,
+                                idx_device_type=DeviceType.LoadLikeDevice,
+                                columns=[result_type.value],
+                                cols_device_type=DeviceType.NoDevice,
+                                title=str(result_type.value),
+                                ylabel='(MW)',
+                                xlabel='',
+                                units='(MW)')
 
         elif result_type == ResultTypes.LoadShedding:
 
@@ -694,6 +755,31 @@ class OptimalPowerFlowResults(ResultsTemplate):
                                 cols_device_type=DeviceType.AreaDevice,
                                 title=str(result_type.value),
                                 units='(MW)')
+
+        elif result_type == ResultTypes.BusVoltagePolarPlot:
+            vm = np.abs(self.voltage)
+            va = np.angle(self.voltage, deg=True)
+            va_rad = np.angle(self.voltage, deg=False)
+            data = np.c_[vm, va]
+
+            if self.plotting_allowed():
+                plt.ion()
+                color_norm = plt_colors.LogNorm()
+                fig = plt.figure(figsize=(8, 6))
+                ax3 = plt.subplot(1, 1, 1, projection='polar')
+                sc3 = ax3.scatter(va_rad, vm, c=vm, norm=color_norm)
+                fig.suptitle(result_type.value)
+                plt.tight_layout()
+                plt.show()
+
+            return ResultsTable(data=data,
+                                index=self.bus_names,
+                                idx_device_type=DeviceType.BusDevice,
+                                columns=np.array(['Voltage module', 'Voltage angle (deg)']),
+                                cols_device_type=DeviceType.NoDevice,
+                                title=result_type.value,
+                                ylabel='(p.u., deg)',
+                                units='(p.u., deg)')
 
         else:
             raise Exception('Result type not understood:' + str(result_type))
