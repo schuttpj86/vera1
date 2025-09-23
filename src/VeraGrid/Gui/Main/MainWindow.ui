@@ -5596,24 +5596,28 @@
                <string>Linear settings</string>
               </property>
               <layout class="QGridLayout" name="gridLayout_18">
-               <item row="8" column="0" colspan="2">
-                <widget class="QCheckBox" name="opfGEPCheckBox">
-                 <property name="font">
-                  <font>
-                   <pointsize>9</pointsize>
-                   <bold>false</bold>
-                  </font>
-                 </property>
-                 <property name="toolTip">
-                  <string>Apply generation expansion planning</string>
-                 </property>
+               <item row="4" column="0" colspan="2">
+                <widget class="QLabel" name="label_132">
                  <property name="text">
-                  <string>Generation expansion planning</string>
+                  <string/>
                  </property>
                 </widget>
                </item>
-               <item row="9" column="0" colspan="2">
-                <widget class="QCheckBox" name="fixOpfCheckBox">
+               <item row="14" column="0">
+                <spacer name="verticalSpacer_18">
+                 <property name="orientation">
+                  <enum>Qt::Orientation::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="13" column="0" colspan="2">
+                <widget class="QCheckBox" name="save_mip_checkBox">
                  <property name="font">
                   <font>
                    <pointsize>9</pointsize>
@@ -5621,10 +5625,23 @@
                   </font>
                  </property>
                  <property name="toolTip">
-                  <string>Fix infeasible problems and rey with the relaxed problem. Applies to OPF and NTC</string>
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The program will save the MIP file in .lp format in the user VeraGrid folder before running a linear optimization study.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
                  <property name="text">
-                  <string>Fix infeasibilities and retry</string>
+                  <string>Save MIP file</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="0">
+                <widget class="QLabel" name="label_103">
+                 <property name="font">
+                  <font>
+                   <pointsize>9</pointsize>
+                   <bold>false</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>Zone grouping</string>
                  </property>
                 </widget>
                </item>
@@ -5641,8 +5658,8 @@
                  </property>
                 </widget>
                </item>
-               <item row="5" column="0">
-                <widget class="QCheckBox" name="opfUnitCommitmentCheckBox">
+               <item row="0" column="1">
+                <widget class="QComboBox" name="mip_solver_comboBox">
                  <property name="font">
                   <font>
                    <pointsize>9</pointsize>
@@ -5650,10 +5667,17 @@
                   </font>
                  </property>
                  <property name="toolTip">
-                  <string>Apply unit commitment technique</string>
+                  <string>Choose the external mixed integer programming solver</string>
                  </property>
-                 <property name="text">
-                  <string>Unit commitment</string>
+                </widget>
+               </item>
+               <item row="2" column="1">
+                <widget class="QComboBox" name="opfZonalGroupByComboBox">
+                 <property name="font">
+                  <font>
+                   <pointsize>9</pointsize>
+                   <bold>false</bold>
+                  </font>
                  </property>
                 </widget>
                </item>
@@ -5679,8 +5703,8 @@
                  </property>
                 </widget>
                </item>
-               <item row="6" column="0" colspan="2">
-                <widget class="QCheckBox" name="considerContingenciesOpfCheckBox">
+               <item row="9" column="0" colspan="2">
+                <widget class="QCheckBox" name="opfGEPCheckBox">
                  <property name="font">
                   <font>
                    <pointsize>9</pointsize>
@@ -5688,25 +5712,15 @@
                   </font>
                  </property>
                  <property name="toolTip">
-                  <string>Consider the contingencies when dispatching</string>
+                  <string>Apply generation expansion planning</string>
                  </property>
                  <property name="text">
-                  <string>Compute contingencies</string>
+                  <string>Generation expansion planning</string>
                  </property>
                 </widget>
                </item>
-               <item row="2" column="1">
-                <widget class="QComboBox" name="opfZonalGroupByComboBox">
-                 <property name="font">
-                  <font>
-                   <pointsize>9</pointsize>
-                   <bold>false</bold>
-                  </font>
-                 </property>
-                </widget>
-               </item>
-               <item row="12" column="0" colspan="2">
-                <widget class="QCheckBox" name="save_mip_checkBox">
+               <item row="5" column="0">
+                <widget class="QCheckBox" name="opfUnitCommitmentCheckBox">
                  <property name="font">
                   <font>
                    <pointsize>9</pointsize>
@@ -5714,95 +5728,10 @@
                   </font>
                  </property>
                  <property name="toolTip">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The program will save the MIP file in .lp format in the user VeraGrid folder before running a linear optimization study.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  <string>Apply unit commitment technique</string>
                  </property>
                  <property name="text">
-                  <string>Save MIP file</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="4" column="0" colspan="2">
-                <widget class="QLabel" name="label_132">
-                 <property name="text">
-                  <string/>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="0">
-                <widget class="QLabel" name="label_4">
-                 <property name="font">
-                  <font>
-                   <pointsize>9</pointsize>
-                   <bold>false</bold>
-                  </font>
-                 </property>
-                 <property name="text">
-                  <string>Time grouping</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="0">
-                <widget class="QLabel" name="label_103">
-                 <property name="font">
-                  <font>
-                   <pointsize>9</pointsize>
-                   <bold>false</bold>
-                  </font>
-                 </property>
-                 <property name="text">
-                  <string>Zone grouping</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="1">
-                <widget class="QComboBox" name="mip_solver_comboBox">
-                 <property name="font">
-                  <font>
-                   <pointsize>9</pointsize>
-                   <bold>false</bold>
-                  </font>
-                 </property>
-                 <property name="toolTip">
-                  <string>Choose the external mixed integer programming solver</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="0">
-                <widget class="QLabel" name="label_104">
-                 <property name="font">
-                  <font>
-                   <pointsize>9</pointsize>
-                   <bold>false</bold>
-                  </font>
-                 </property>
-                 <property name="text">
-                  <string>Contingency tolerance</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="13" column="0">
-                <spacer name="verticalSpacer_18">
-                 <property name="orientation">
-                  <enum>Qt::Orientation::Vertical</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>20</width>
-                   <height>40</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item row="1" column="1">
-                <widget class="QComboBox" name="opf_time_grouping_comboBox">
-                 <property name="font">
-                  <font>
-                   <pointsize>9</pointsize>
-                   <bold>false</bold>
-                  </font>
-                 </property>
-                 <property name="toolTip">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Choose the time grouping to possibly shorten the solution time.&lt;/p&gt;&lt;p&gt;This splits the time series by week, month, etc. and the subproblems are solved sequentially.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  <string>Unit commitment</string>
                  </property>
                 </widget>
                </item>
@@ -5819,6 +5748,93 @@
                  </property>
                  <property name="text">
                   <string>Use GSLK as costs</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QLabel" name="label_4">
+                 <property name="font">
+                  <font>
+                   <pointsize>9</pointsize>
+                   <bold>false</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>Time grouping</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="10" column="0" colspan="2">
+                <widget class="QCheckBox" name="fixOpfCheckBox">
+                 <property name="font">
+                  <font>
+                   <pointsize>9</pointsize>
+                   <bold>false</bold>
+                  </font>
+                 </property>
+                 <property name="toolTip">
+                  <string>Fix infeasible problems and rey with the relaxed problem. Applies to OPF and NTC</string>
+                 </property>
+                 <property name="text">
+                  <string>Fix infeasibilities and retry</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="6" column="0" colspan="2">
+                <widget class="QCheckBox" name="considerContingenciesOpfCheckBox">
+                 <property name="font">
+                  <font>
+                   <pointsize>9</pointsize>
+                   <bold>false</bold>
+                  </font>
+                 </property>
+                 <property name="toolTip">
+                  <string>Consider the contingencies when dispatching</string>
+                 </property>
+                 <property name="text">
+                  <string>Compute contingencies</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QComboBox" name="opf_time_grouping_comboBox">
+                 <property name="font">
+                  <font>
+                   <pointsize>9</pointsize>
+                   <bold>false</bold>
+                  </font>
+                 </property>
+                 <property name="toolTip">
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Choose the time grouping to possibly shorten the solution time.&lt;/p&gt;&lt;p&gt;This splits the time series by week, month, etc. and the subproblems are solved sequentially.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="0">
+                <widget class="QLabel" name="label_104">
+                 <property name="font">
+                  <font>
+                   <pointsize>9</pointsize>
+                   <bold>false</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>Contingency tolerance</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="8" column="0" colspan="2">
+                <widget class="QCheckBox" name="approximateLossesOpfCheckBox">
+                 <property name="font">
+                  <font>
+                   <pointsize>9</pointsize>
+                   <bold>false</bold>
+                  </font>
+                 </property>
+                 <property name="toolTip">
+                  <string>When checked, the branch losses will be aproximated by a factor r * rate / (V^2)</string>
+                 </property>
+                 <property name="text">
+                  <string>Approximate losses</string>
                  </property>
                 </widget>
                </item>
@@ -10566,7 +10582,7 @@ QProgressBar::chunk{
      <x>0</x>
      <y>0</y>
      <width>1390</width>
-     <height>37</height>
+     <height>21</height>
     </rect>
    </property>
    <property name="font">

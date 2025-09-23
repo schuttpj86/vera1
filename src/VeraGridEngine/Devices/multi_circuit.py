@@ -20,7 +20,7 @@ from VeraGridEngine.Devices.Parents.editable_device import EditableDevice
 from VeraGridEngine.basic_structures import IntVec, Vec, Mat, CxVec, IntMat, CxMat
 
 import VeraGridEngine.Devices as dev
-from VeraGridEngine.Devices.types import ALL_DEV_TYPES, INJECTION_DEVICE_TYPES, FLUID_TYPES, AREA_TYPES
+from VeraGridEngine.Devices.types import ALL_DEV_TYPES, INJECTION_DEVICE_TYPES, FLUID_TYPES, AREA_TYPES, BRANCH_TYPES
 from VeraGridEngine.basic_structures import Logger
 from VeraGridEngine.Topology.topology import find_different_states
 from VeraGridEngine.enumerations import DeviceType, ActionType, SubObjectType, ConverterControlType
@@ -852,6 +852,20 @@ class MultiCircuit(Assets):
         :return: snapshot datetime string
         """
         return self.snapshot_time.strftime("%Y-%m-%d %H:%M:%S")
+
+    def get_bus_branch_dict(self) -> Dict[dev.Bus, List[BRANCH_TYPES]]:
+        """
+        Get the branch-bus dictionary
+        :return: dict[bus] -> list of branches
+        """
+        d: Dict[dev.Bus, List[dev.BranchType]] = {b: list() for b in self._buses}
+
+        for branch_list in self.get_branch_lists(add_vsc=True, add_hvdc=True, add_switch=True):
+            for br in branch_list:
+                d[br.bus_from].append(br)
+                d[br.bus_to].append(br)
+
+        return d
 
     def get_bus_branch_connectivity_matrix(self) -> Tuple[csc_matrix, csc_matrix, csc_matrix]:
         """

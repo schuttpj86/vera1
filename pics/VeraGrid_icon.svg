@@ -7,7 +7,7 @@
    viewBox="0 0 512 512"
    id="svg2"
    version="1.1"
-   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   inkscape:version="1.4.2 (ebf0e940, 2025-05-08)"
    sodipodi:docname="VeraGrid_icon.svg"
    inkscape:export-filename="VeraGrid_icon.png"
    inkscape:export-xdpi="90"
@@ -42,7 +42,8 @@
        y1="987.94413"
        x2="118.0807"
        y2="987.94413"
-       gradientUnits="userSpaceOnUse" />
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(0,-8.3103904)" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -52,16 +53,16 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.39774756"
-     inkscape:cx="-422.37846"
-     inkscape:cy="65.368094"
+     inkscape:cx="-82.967197"
+     inkscape:cy="64.111016"
      inkscape:document-units="px"
      inkscape:current-layer="g4541"
      showgrid="false"
      units="px"
-     inkscape:window-width="2509"
-     inkscape:window-height="1012"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:window-width="1464"
+     inkscape:window-height="916"
+     inkscape:window-x="55"
+     inkscape:window-y="38"
      inkscape:window-maximized="1"
      inkscape:showpageshadow="2"
      inkscape:pagecheckerboard="0"
@@ -92,16 +93,16 @@
          transform="translate(177.72284,-30.851643)"
          style="fill:#066b75;fill-opacity:1">
         <rect
-           style="opacity:1;fill:url(#linearGradient4001);fill-opacity:1;stroke:#ffffff;stroke-width:3.42260671;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           style="opacity:1;fill:url(#linearGradient4001);fill-opacity:1;stroke:#ffffff;stroke-width:3.42261;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
            id="rect4862-9"
            width="102.96761"
            height="102.96761"
            x="13.401784"
-           y="936.46033"
+           y="928.15021"
            ry="14.891859" />
         <path
-           style="fill:none;fill-rule:evenodd;stroke:#205a70;stroke-width:2.55670834;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;fill-opacity:1"
-           d="m 13.799443,1006.1765 c 0,0 2.190698,-46.77138 6.176144,-46.84038 4.125325,-0.0715 3.318087,55.85258 7.698377,55.86228 3.245415,0.01 3.640897,-44.25398 7.143441,-44.37053 2.466569,-0.082 4.008643,35.96363 7.308336,35.89873 2.319133,-0.046 4.554836,-28.55476 8.039476,-28.5991 2.501206,-0.0318 4.328651,25.8757 7.501062,25.798 2.663764,-0.066 5.477277,-21.28662 8.140798,-21.1928 2.315079,0.0815 3.394469,17.05166 6.247406,17.07392 2.183064,0.017 4.355591,-13.58 7.092777,-13.65792 1.976158,-0.0565 2.727108,9.48279 4.812952,9.4304 1.46143,-0.0363 2.72769,-6.04859 4.914286,-5.96179 1.540797,0.0613 2.53687,2.35577 4.053016,2.38478 1.977175,0.0383 3.900719,-0.78826 5.876856,-0.86723 2.16432,-0.0862 4.32006,0.36128 6.48483,0.43356 1.75544,0.0584 5.26891,0 5.26891,0 l 5.72489,-0.0546"
+           style="fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#205a70;stroke-width:2.55671;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           d="m 13.799443,997.86665 c 0,0 2.190698,-46.77198 6.176144,-46.84098 4.125325,-0.0715 3.318087,55.85343 7.698377,55.86313 3.245415,0.01 3.640897,-44.25483 7.143441,-44.37138 2.466569,-0.082 4.008643,35.96428 7.308336,35.89938 2.319133,-0.046 4.554836,-28.55541 8.039476,-28.59975 2.501206,-0.0318 4.328651,25.8761 7.501062,25.7984 2.663764,-0.066 5.477277,-21.28702 8.140798,-21.1932 2.315079,0.0815 3.394469,17.05166 6.247406,17.07392 2.183064,0.017 4.355591,-13.58 7.092777,-13.65792 1.976158,-0.0565 2.727108,9.48279 4.812952,9.4304 1.46143,-0.0363 2.72769,-6.04859 4.914286,-5.96179 1.540797,0.0613 2.53687,2.35577 4.053016,2.38478 1.977175,0.0383 3.900719,-0.78826 5.876856,-0.86723 2.16432,-0.0862 4.32006,0.36128 6.48483,0.43356 1.75544,0.0584 5.26891,0 5.26891,0 l 5.72489,-0.0546"
            id="path4166-1"
            inkscape:connector-curvature="0"
            sodipodi:nodetypes="cssssssssssssaacc" />
@@ -111,9 +112,20 @@
            width="102.96761"
            height="102.96761"
            x="13.401781"
-           y="936.46033"
+           y="928.15021"
            ry="14.891859"
            rx="14.891859" />
+        <text
+           xml:space="preserve"
+           style="font-size:16.6774px;text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#00203f;fill-opacity:0.941176;stroke-width:1.38978"
+           x="134.23387"
+           y="990.11597"
+           id="text1"><tspan
+             sodipodi:role="line"
+             id="tspan1"
+             style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-family:'.Lucida Grande UI';-inkscape-font-specification:'.Lucida Grande UI Medium';fill:#00203f;fill-opacity:0.941176;stroke:none;stroke-width:1.38978"
+             x="134.23387"
+             y="990.11597">VeraGrid</tspan></text>
       </g>
     </g>
     <rect

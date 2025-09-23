@@ -129,26 +129,29 @@ class OptimalPowerFlowDriver(TimeSeriesDriverTemplate):
                 self.report_text('Formulating problem...')
 
             # DC optimal power flow
-            opf_vars = run_linear_opf_ts(grid=self.grid,
-                                         time_indices=None,
-                                         solver_type=self.options.mip_solver,
-                                         zonal_grouping=self.options.zonal_grouping,
-                                         skip_generation_limits=self.options.skip_generation_limits,
-                                         consider_contingencies=self.options.consider_contingencies,
-                                         contingency_groups_used=self.options.contingency_groups_used,
-                                         unit_commitment=self.options.unit_commitment,
-                                         ramp_constraints=False,
-                                         all_generators_fixed=False,
-                                         lodf_threshold=self.options.lodf_tolerance,
-                                         maximize_inter_area_flow=self.options.maximize_flows,
-                                         inter_aggregation_info=self.options.inter_aggregation_info,
-                                         energy_0=None,
-                                         fluid_level_0=None,
-                                         use_glsk_as_cost=self.options.use_glsk_as_cost,
-                                         logger=self.logger,
-                                         export_model_fname=self.options.export_model_fname,
-                                         verbose=self.options.verbose,
-                                         robust=self.options.robust)
+            opf_vars = run_linear_opf_ts(
+                grid=self.grid,
+                time_indices=None,
+                solver_type=self.options.mip_solver,
+                zonal_grouping=self.options.zonal_grouping,
+                skip_generation_limits=self.options.skip_generation_limits,
+                consider_contingencies=self.options.consider_contingencies,
+                contingency_groups_used=self.options.contingency_groups_used,
+                unit_commitment=self.options.unit_commitment,
+                ramp_constraints=False,
+                all_generators_fixed=False,
+                lodf_threshold=self.options.lodf_tolerance,
+                maximize_inter_area_flow=self.options.maximize_flows,
+                inter_aggregation_info=self.options.inter_aggregation_info,
+                energy_0=None,
+                fluid_level_0=None,
+                use_glsk_as_cost=self.options.use_glsk_as_cost,
+                add_losses_approximation=self.options.add_losses_approximation,
+                logger=self.logger,
+                export_model_fname=self.options.export_model_fname,
+                verbose=self.options.verbose,
+                robust=self.options.robust
+            )
 
             self.results.voltage = opf_vars.bus_vars.Vm[0, :] * np.exp(1j * opf_vars.bus_vars.Va[0, :])
             self.results.bus_shadow_prices = opf_vars.bus_vars.shadow_prices[0, :]
@@ -167,6 +170,8 @@ class OptimalPowerFlowDriver(TimeSeriesDriverTemplate):
                                       - opf_vars.branch_vars.flow_slacks_neg[0, :])
             self.results.loading = opf_vars.branch_vars.loading[0, :]
             self.results.phase_shift = opf_vars.branch_vars.tap_angles[0, :]
+            self.results.losses = opf_vars.branch_vars.losses[0, :]
+
             # self.results.Sbus = problem.get_power_injections()[0, :]
             self.results.hvdc_Pf = opf_vars.hvdc_vars.flows[0, :]
             self.results.hvdc_loading = opf_vars.hvdc_vars.loading[0, :]

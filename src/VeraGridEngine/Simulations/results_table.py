@@ -121,7 +121,7 @@ class ResultsTable:
         """
         Transpose the results in-place
         """
-        self.data_c = self.data_c.transpose()
+        self.data_c = self.data_c.copy().transpose()
         self.r, self.c = self.data_c.shape
         self.x_label, self.y_label = self.y_label, self.x_label
         self.cols_c, self.index_c = self.index_c, self.cols_c
@@ -302,7 +302,7 @@ class ResultsTable:
             self.index_c = np.arange(n, dtype=float)
 
         for i in range(self.data_c.shape[1]):
-            self.data_c[:, i] = np.sort(self.data_c[:, i], axis=0)
+            self.data_c[:, i] = np.sort(self.data_c[:, i].copy(), axis=0)
 
         self.x_label = 'Probability of value<=x'
 
