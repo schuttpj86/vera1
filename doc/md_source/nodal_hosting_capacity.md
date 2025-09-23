@@ -18,8 +18,6 @@ The key parameters are:
 - capacity_nodes_idx: array of bus indices to optimize.
 
 ```python
-import os
-import numpy as np
 import VeraGridEngine as gce
 
 fname = os.path.join('data', 'grids', 'IEEE 14 zip costs.veragrid')
@@ -45,30 +43,30 @@ Observe that we are using the more complex objects formation of the code instead
 Here, the key parameters are passed onto the `OptimalPowerFlowOptions object.
 
 ```python
-import os
-import numpy as np
-import VeraGridEngine as vg
+import VeraGridEngine as gce
 
 fname = os.path.join('data', 'grids', 'IEEE 14 zip costs.veragrid')
-grid = vg.FileOpen(fname).open()
+grid = gce.FileOpen(fname).open()
 
 # Nonlinear OPF
-pf_options = vg.PowerFlowOptions(solver_type=vg.SolverType.NR)
+pf_options = gce.PowerFlowOptions(solver_type=gce.SolverType.NR)
 
-# declare the optimal power flow options
-opf_options = vg.OptimalPowerFlowOptions(
-    solver=vg.SolverType.NONLINEAR_OPF,
+# declate the optimal power flow options
+opf_options = gce.OptimalPowerFlowOptions(
+    solver=gce.SolverType.NONLINEAR_OPF,
     ips_tolerance=1e-8,
     ips_iterations=50,
     verbose=0,
-    acopf_mode=vg.AcOpfMode.ACOPFstd
+    acopf_mode=AcOpfMode.ACOPFstd
 )
 
 # Run a non-linear ACOPF to get the hosting capacity
-res = vg.run_nonlinear_opf(
+res = run_nonlinear_opf(
     grid=grid,
+    pf_options=pf_options,
     opf_options=opf_options,
     plot_error=False,
+    pf_init=True,
     optimize_nodal_capacity=True,
     nodal_capacity_sign=-1.0,
     capacity_nodes_idx=np.array([10, 11])

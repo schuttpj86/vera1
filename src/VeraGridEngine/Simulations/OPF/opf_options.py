@@ -11,7 +11,6 @@ from VeraGridEngine.Simulations.PowerFlow.power_flow_options import PowerFlowOpt
 from VeraGridEngine.Devices.Aggregation.contingency_group import ContingencyGroup
 from VeraGridEngine.Devices.Aggregation.inter_aggregation_info import InterAggregationInfo
 from VeraGridEngine.Simulations.options_template import OptionsTemplate
-from VeraGridEngine.basic_structures import Vec
 
 
 class OptimalPowerFlowOptions(OptionsTemplate):
@@ -33,8 +32,6 @@ class OptimalPowerFlowOptions(OptionsTemplate):
                  maximize_flows=False,
                  inter_aggregation_info: InterAggregationInfo | None = None,
                  unit_commitment=False,
-                 use_glsk_as_cost: bool = False,
-                 add_losses_approximation: bool = False,
                  generation_expansion_planning: bool = False,
                  export_model_fname: Union[None, str] = None,
                  generate_report=False,
@@ -45,8 +42,6 @@ class OptimalPowerFlowOptions(OptionsTemplate):
                  ips_init_with_pf: bool = False,
                  ips_control_q_limits: bool = False,
                  acopf_mode: AcOpfMode = AcOpfMode.ACOPFstd,
-                 acopf_v0: Vec | None = None,
-                 acopf_S0: Vec | None = None,
                  robust: bool = False,):
         """
         Optimal power flow options
@@ -63,7 +58,6 @@ class OptimalPowerFlowOptions(OptionsTemplate):
         :param maximize_flows:
         :param inter_aggregation_info:
         :param unit_commitment:
-        :param use_glsk_as_cost: if true, the GLSK values are used instead of the traditional costs
         :param export_model_fname:
         :param generate_report:
         :param ips_method:
@@ -73,8 +67,6 @@ class OptimalPowerFlowOptions(OptionsTemplate):
         :param ips_init_with_pf:
         :param ips_control_q_limits:
         :param acopf_mode:
-        :param acopf_S0: Sbus initial solution
-        :param acopf_v0: Voltage initial solution
         """
         OptionsTemplate.__init__(self, name="Optimal power flow options")
 
@@ -104,10 +96,6 @@ class OptimalPowerFlowOptions(OptionsTemplate):
 
         self.unit_commitment = unit_commitment
 
-        self.use_glsk_as_cost = use_glsk_as_cost
-
-        self.add_losses_approximation = add_losses_approximation
-
         self.generation_expansion_planning = generation_expansion_planning
 
         self.max_va = 6.28
@@ -130,9 +118,6 @@ class OptimalPowerFlowOptions(OptionsTemplate):
         self.ips_init_with_pf = ips_init_with_pf
         self.ips_control_q_limits = ips_control_q_limits
 
-        self.acopf_v0 = acopf_v0
-        self.acopf_S0 = acopf_S0
-
         self.register(key="verbose", tpe=int)
         self.register(key="solver", tpe=SolverType)
         self.register(key="time_grouping", tpe=TimeGrouping)
@@ -144,8 +129,6 @@ class OptimalPowerFlowOptions(OptionsTemplate):
         self.register(key="contingency_groups_used", tpe=SubObjectType.Array)
         self.register(key="lodf_tolerance", tpe=float)
         self.register(key="maximize_flows", tpe=bool)
-        self.register(key="add_losses_approximation", tpe=bool)
-        self.register(key="use_glsk_as_cost", tpe=bool)
         self.register(key="inter_aggregation_info", tpe=DeviceType.InterAggregationInfo)
         self.register(key="unit_commitment", tpe=bool)
         self.register(key="export_model_fname", tpe=str)
@@ -159,6 +142,3 @@ class OptimalPowerFlowOptions(OptionsTemplate):
         self.register(key="ips_init_with_pf", tpe=bool)
         self.register(key="ips_control_q_limits", tpe=bool)
         self.register(key="robust", tpe=bool)
-
-        self.register(key="acopf_v0", tpe=Vec)
-        self.register(key="acopf_S0", tpe=Vec)

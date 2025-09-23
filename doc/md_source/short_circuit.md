@@ -101,7 +101,7 @@ of the fault. The generator could be modelled during the short-circuit using the
 as an ideal voltage source in series with the generator’s impedance, as shown in the electrical circuit of figure bellow:
 
 <div style="text-align: center;">
-    <img src="https://github.com/SanPen/VeraGrid/blob/master/doc/md_source/figures/3ph_thevenin.png?raw=true"
+    <img src="figures/3ph_thevenin.png"
     alt="Generator's Thevenin"
     title="Generator's Thevenin"
     width="50%"/>
@@ -123,7 +123,7 @@ these connections would be more difficult to handle. Therefore, the generator is
 that is, an ideal current source in parallel with the generator’s impedance, as shown in the following schematic:
 
 <div style="text-align: center;">
-    <img src="https://github.com/SanPen/VeraGrid/blob/master/doc/md_source/figures/3ph_norton.png?raw=true"
+    <img src="figures/3ph_norton.png"
     alt="Generator's Norton"
     title="Generator's Norton"
     width="40%"/>
@@ -159,7 +159,7 @@ $$
 $$
 
 <div style="text-align: center;">
-    <img src="https://github.com/SanPen/VeraGrid/blob/master/doc/md_source/figures/3ph_SLG.png?raw=true"
+    <img src="figures/3ph_SLG.png"
     alt="Single Line-to-Ground Fault (SLG)"
     title="Single Line-to-Ground Fault (SLG)"
     width="30%"/>
@@ -190,7 +190,7 @@ $$
 $$
 
 <div style="text-align: center;">
-    <img src="https://github.com/SanPen/VeraGrid/blob/master/doc/md_source/figures/3ph_LL.png?raw=true"
+    <img src="figures/3ph_LL.png"
     alt="Line-to-Line Fault (LL)"
     title="Line-to-Line Fault (LL)"
     width="30%"/>
@@ -222,7 +222,7 @@ $$
 $$
 
 <div style="text-align: center;">
-    <img src="https://github.com/SanPen/VeraGrid/blob/master/doc/md_source/figures/3ph_DLG.png?raw=true"
+    <img src="figures/3ph_DLG.png"
     alt="Double Line-to-Ground Fault (DLG)"
     title="Double Line-to-Ground Fault (DLG)"
     width="40%"/>
@@ -252,10 +252,8 @@ $$
 \end{bmatrix}
 $$
 
-
-
 <div style="text-align: center;">
-    <img src="https://github.com/SanPen/VeraGrid/blob/master/doc/md_source/figures/3ph_LLL.png?raw=true"
+    <img src="figures/3ph_LLL.png"
     alt="Three-Phase Fault (LLL)"
     title="Three-Phase Fault (LLL)"
     width="40%"/>
@@ -287,7 +285,7 @@ $$
 $$
 
 <div style="text-align: center;">
-    <img src="https://github.com/SanPen/VeraGrid/blob/master/doc/md_source/figures/3ph_LLLG.png?raw=true"
+    <img src="figures/3ph_LLLG.png"
     alt="Three-Phase-to-Ground Fault (LLLG)"
     title="Three-Phase-to-Ground Fault (LLLG)"
     width="40%"/>
@@ -310,10 +308,10 @@ the power flow. As shown in the schematic of the figure bellow, a fault will be 
 at bus 634 with two fault impedance values.
 
 <div style="text-align: center;">
-    <img src="https://github.com/SanPen/VeraGrid/blob/master/doc/md_source/figures/3ph_SC_IEEE_13.png?raw=true"
+    <img src="figures/3ph_SC_IEEE_13.png"
     alt="Short-Circuit at the IEEE 13 Node Test Feeder"
     title="Short-Circuit at the IEEE 13 Node Test Feeder"
-    width="99%"/>
+    width="90%"/>
 </div>
 
 A generator has been added to bus 632, providing an equivalent power to the network to which the system was connected.
@@ -715,10 +713,10 @@ phase a. As expected, there is a sharp voltage drop at the affected bus (634), a
 the bus immediately upstream of the fault (633), which becomes more pronounced as the fault resistance decreases.
 
 <div style="text-align: center;">
-    <img src="https://github.com/SanPen/VeraGrid/blob/master/doc/md_source/figures/3ph_SC_phaseA.png?raw=true"
+    <img src="figures/3ph_SC_phaseA.png"
     alt="Short-Circuit results for phase a"
     title="Short-Circuit results for phase a"
-    width="75%"/>
+    width="60%"/>
 </div>
 
 On the other hand, the following figures present the voltage profiles for the healthy phases b and c.
@@ -726,17 +724,17 @@ A slight voltage rise can be observed at the most affected buses (634 and 633), 
 remaining buses in the network.
 
 <div style="text-align: center;">
-    <img src="https://github.com/SanPen/VeraGrid/blob/master/doc/md_source/figures/3ph_SC_phaseB.png?raw=true"
+    <img src="figures/3ph_SC_phaseB.png"
     alt="Short-Circuit results for phase b"
     title="Short-Circuit results for phase b"
-    width="75%"/>
+    width="60%"/>
 </div>
 
 <div style="text-align: center;">
-    <img src="https://github.com/SanPen/VeraGrid/blob/master/doc/md_source/figures/3ph_SC_phaseC.png?raw=true"
+    <img src="figures/3ph_SC_phaseC.png"
     alt="Short-Circuit results for phase c"
     title="Short-Circuit results for phase c"
-    width="75%"/>
+    width="60%"/>
 </div>
 
 ## Short-Circuit in the Sequence Components

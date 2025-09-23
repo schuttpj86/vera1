@@ -7,9 +7,10 @@ from typing import Union
 from VeraGridEngine.Devices.multi_circuit import MultiCircuit
 from VeraGridEngine.enumerations import SolverType, EngineType, SimulationTypes
 from VeraGridEngine.Simulations.OPF.opf_options import OptimalPowerFlowOptions
-from VeraGridEngine.Simulations.OPF.Formulations.linear_opf_ts import run_linear_opf_ts
+from VeraGridEngine.Simulations.OPF.linear_opf_ts import run_linear_opf_ts
+from VeraGridEngine.Simulations.OPF.simple_dispatch_ts import run_simple_dispatch
 from VeraGridEngine.Simulations.OPF.opf_results import OptimalPowerFlowResults
-from VeraGridEngine.Simulations.OPF.ac_opf_worker import run_nonlinear_opf
+from VeraGridEngine.Simulations.OPF.NumericalMethods.ac_opf import run_nonlinear_opf
 from VeraGridEngine.Simulations.PowerFlow.power_flow_options import PowerFlowOptions
 from VeraGridEngine.Simulations.driver_template import TimeSeriesDriverTemplate
 from VeraGridEngine.Simulations.OPF.simple_dispatch_ts import GreedyDispatchInputsSnapshot, greedy_dispatch2
@@ -129,49 +130,38 @@ class OptimalPowerFlowDriver(TimeSeriesDriverTemplate):
                 self.report_text('Formulating problem...')
 
             # DC optimal power flow
-            opf_vars = run_linear_opf_ts(
-                grid=self.grid,
-                time_indices=None,
-                solver_type=self.options.mip_solver,
-                zonal_grouping=self.options.zonal_grouping,
-                skip_generation_limits=self.options.skip_generation_limits,
-                consider_contingencies=self.options.consider_contingencies,
-                contingency_groups_used=self.options.contingency_groups_used,
-                unit_commitment=self.options.unit_commitment,
-                ramp_constraints=False,
-                all_generators_fixed=False,
-                lodf_threshold=self.options.lodf_tolerance,
-                maximize_inter_area_flow=self.options.maximize_flows,
-                inter_aggregation_info=self.options.inter_aggregation_info,
-                energy_0=None,
-                fluid_level_0=None,
-                use_glsk_as_cost=self.options.use_glsk_as_cost,
-                add_losses_approximation=self.options.add_losses_approximation,
-                logger=self.logger,
-                export_model_fname=self.options.export_model_fname,
-                verbose=self.options.verbose,
-                robust=self.options.robust
-            )
+            opf_vars = run_linear_opf_ts(grid=self.grid,
+                                         time_indices=None,
+                                         solver_type=self.options.mip_solver,
+                                         zonal_grouping=self.options.zonal_grouping,
+                                         skip_generation_limits=self.options.skip_generation_limits,
+                                         consider_contingencies=self.options.consider_contingencies,
+                                         contingency_groups_used=self.options.contingency_groups_used,
+                                         unit_commitment=self.options.unit_commitment,
+                                         ramp_constraints=False,
+                                         all_generators_fixed=False,
+                                         lodf_threshold=self.options.lodf_tolerance,
+                                         maximize_inter_area_flow=self.options.maximize_flows,
+                                         inter_aggregation_info=self.options.inter_aggregation_info,
+                                         energy_0=None,
+                                         fluid_level_0=None,
+                                         logger=self.logger,
+                                         export_model_fname=self.options.export_model_fname,
+                                         verbose=self.options.verbose,
+                                         robust=self.options.robust)
 
             self.results.voltage = opf_vars.bus_vars.Vm[0, :] * np.exp(1j * opf_vars.bus_vars.Va[0, :])
             self.results.bus_shadow_prices = opf_vars.bus_vars.shadow_prices[0, :]
-
-            self.results.load_power = opf_vars.load_vars.p[0, :]
             self.results.load_shedding = opf_vars.load_vars.shedding[0, :]
-
             self.results.battery_power = opf_vars.batt_vars.p[0, :]
             # self.results.battery_energy = opf_vars.batt_vars.e[0, :]
-
             self.results.generator_power = opf_vars.gen_vars.p[0, :]
-
             self.results.Sf = opf_vars.branch_vars.flows[0, :]
             self.results.St = -opf_vars.branch_vars.flows[0, :]
             self.results.overloads = (opf_vars.branch_vars.flow_slacks_pos[0, :]
                                       - opf_vars.branch_vars.flow_slacks_neg[0, :])
             self.results.loading = opf_vars.branch_vars.loading[0, :]
             self.results.phase_shift = opf_vars.branch_vars.tap_angles[0, :]
-            self.results.losses = opf_vars.branch_vars.losses[0, :]
-
             # self.results.Sbus = problem.get_power_injections()[0, :]
             self.results.hvdc_Pf = opf_vars.hvdc_vars.flows[0, :]
             self.results.hvdc_loading = opf_vars.hvdc_vars.loading[0, :]
@@ -245,9 +235,9 @@ class OptimalPowerFlowDriver(TimeSeriesDriverTemplate):
 
             res = run_nonlinear_opf(grid=self.grid,
                                     opf_options=self.options,
+                                    pf_options=self.pf_options,
                                     t_idx=None,
                                     logger=self.logger)
-
             Sbase = self.grid.Sbase
             self.results.voltage = res.V
             self.results.Sbus = res.S * Sbase
@@ -268,8 +258,6 @@ class OptimalPowerFlowDriver(TimeSeriesDriverTemplate):
             self.results.hvdc_Pf = res.hvdc_Pf
             self.results.hvdc_loading = res.hvdc_loading
             self.results.converged = res.converged
-            self.results.error = res.error
-            self.results.non_linear = True
 
             msg = "Interior point solver"
             self.logger.add_info(msg=msg, device="Error", value=res.error, expected_value=self.options.ips_tolerance)

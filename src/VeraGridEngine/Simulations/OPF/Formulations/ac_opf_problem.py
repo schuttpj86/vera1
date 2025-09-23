@@ -150,6 +150,7 @@ class NonlinearOPFResults:
         return self.Vm * np.exp(1j * self.Va)
 
 
+
 class NonLinearOptimalPfProblem:
 
     def __init__(self,
@@ -300,9 +301,9 @@ class NonLinearOptimalPfProblem:
         self.Cdispgen_t = self.Cdispgen.T
 
         self.Cdispgen_sh = csc_matrix((np.ones(self.n_gen_disp_sh),
-                                       (self.gen_bus_idx[self.gen_disp_idx_sh],
-                                        np.arange(self.n_gen_disp_sh))),
-                                      shape=(self.nbus, self.n_gen_disp_sh))
+                                    (self.gen_bus_idx[self.gen_disp_idx_sh],
+                                     np.arange(self.n_gen_disp_sh))),
+                                   shape=(self.nbus, self.n_gen_disp_sh))
         self.Cdispgen_sh_t = self.Cdispgen.T
 
         self.Inom = nc.generator_data.snom / self.Sbase
@@ -408,7 +409,7 @@ class NonLinearOptimalPfProblem:
                 np.zeros(self.nsh)
             ]
             self.Qg = np.r_[
-                (self.Qg_max[self.gen_disp_idx] + self.Qg_min[self.gen_disp_idx]) / 2,
+                (self.Qg_max[self.gen_disp_idx] + self.Qg_min[self.gen_disp_idx]) / 2 ,
                 np.zeros(self.nsh)
             ]
             self.Va = np.angle(nc.bus_data.Vbus)
@@ -726,7 +727,7 @@ class NonLinearOptimalPfProblem:
         :param mu:
         :param lam:
         :param compute_hessians:
-        :return: fx, Gx, Hx, fxx, Gxx, Hxx
+        :return:
         """
 
         # Number of variables of the typical power flow (V, th, P, Q). Used to ease readability
@@ -829,11 +830,12 @@ class NonLinearOptimalPfProblem:
         GSpg = - self.Cdispgen_sh
         GSqg = -1j * self.Cdispgen_sh
 
-        GTH = lil_matrix((len(self.slack), self.NV))
+        GTH = csc((len(self.slack), self.NV))
         for i, ss in enumerate(self.slack):
             GTH[i, ss] = 1.
 
-        Gvm = lil_matrix((len(self.pv), self.NV))
+
+        Gvm = csc((len(self.pv), self.NV))
         for i, ss in enumerate(self.pv):
             Gvm[i, self.nbus + ss] = 1.
 
@@ -850,14 +852,14 @@ class NonLinearOptimalPfProblem:
         else:
             Gtapt = csc((self.nbus, self.ntapt), dtype=complex)
 
-        GSpfdc = lil_matrix((self.nbus, self.n_disp_hvdc), dtype=complex)
+        GSpfdc = csc((self.nbus, self.n_disp_hvdc), dtype=complex)
         for k_link in range(self.n_disp_hvdc):
             GSpfdc[self.f_disp_hvdc[k_link], k_link] = 1.0  # TODO: check that this is correct
             GSpfdc[self.t_disp_hvdc[k_link], k_link] = -1.0  # TODO: check that this is correct
 
         Gslack = csc((self.nbus, self.nsl), dtype=complex)
 
-        Gslcap = lil_matrix((self.nbus, self.nslcap), dtype=complex)
+        Gslcap = csc((self.nbus, self.nslcap), dtype=complex)
         if self.nslcap != 0:
             for idslcap, capbus in enumerate(self.capacity_nodes_idx):
                 Gslcap[capbus, idslcap] = -1
@@ -1106,31 +1108,15 @@ class NonLinearOptimalPfProblem:
                  lil_matrix((nqct, self.nsl + self.nslcap + self.ntapm + self.ntapt + self.n_disp_hvdc))])
         else:
             Hqmax = lil_matrix((nqct, self.NV))
+            Hqmaxv = lil_matrix((nqct, self.nbus))
 
-        Hdcu = sp.hstack([lil_matrix((self.n_disp_hvdc, self.NV - self.n_disp_hvdc)), diags_disp_hvdc_ones])
-        Hdcl = sp.hstack([lil_matrix((self.n_disp_hvdc, self.NV - self.n_disp_hvdc)), - diags_disp_hvdc_ones])
+        Hdcu = sp.hstack(
+            [lil_matrix((self.n_disp_hvdc, self.NV - self.n_disp_hvdc)), diags_disp_hvdc_ones])
+        Hdcl = sp.hstack(
+            [lil_matrix((self.n_disp_hvdc, self.NV - self.n_disp_hvdc)), - diags_disp_hvdc_ones])
 
-        Hx = sp.vstack([
-            HSf,
-            HSt,
-            Hvu,
-            Hpu,
-            Hqu,
-            Hvl,
-            Hpl,
-            Hql,
-            Hslsf,
-            Hslst,
-            Hslvmax,
-            Hslvmin,
-            Htapmu,
-            Htapml,
-            Htaptu,
-            Htaptl,
-            Hqmax,
-            Hdcu,
-            Hdcl
-        ])
+        Hx = sp.vstack([HSf, HSt, Hvu, Hpu, Hqu, Hvl, Hpl, Hql, Hslsf, Hslst, Hslvmax,
+                        Hslvmin, Htapmu, Htapml, Htaptu, Htaptl, Hqmax, Hdcu, Hdcl])
 
         Hx = Hx.tocsc()
         te_hx = timeit.default_timer()
@@ -1311,21 +1297,17 @@ class NonLinearOptimalPfProblem:
                 if self.n_disp_hvdc != 0:
                     b = - 2 * self.n_disp_hvdc
 
-                Hqpgpg = diags(
-                    np.r_[np.array([2] * self.n_gen_disp) * mu[- self.n_gen_disp - 2 * self.n_disp_hvdc:b],
-                    np.zeros(self.nsh)]
-                )
-
-                Hqqgqg = diags(
-                    np.r_[np.array([2] * self.n_gen_disp) * mu[- self.n_gen_disp - 2 * self.n_disp_hvdc:b],
-                    np.zeros(self.nsh)]
-                )
-
+                Hqpgpg = diags(np.r_[np.array([2] * self.n_gen_disp) * mu[
+                                                                       - self.n_gen_disp - 2 * self.n_disp_hvdc:b], np.zeros(
+                    self.nsh)])
+                Hqqgqg = diags(np.r_[np.array([2] * self.n_gen_disp) * mu[
+                                                                       - self.n_gen_disp - 2 * self.n_disp_hvdc:b], np.zeros(
+                    self.nsh)])
                 Hqvmvm = (self.Cdispgen @ diags(mu[- self.n_gen_disp - 2 * self.n_disp_hvdc: b])
                           @ (- 2 * diags(np.power(self.Inom, 2.0)) * self.Cdispgen_t))
             else:
-                Hqpgpg = lil_matrix((self.n_gen_disp_sh, self.n_gen_disp_sh))
-                Hqqgqg = lil_matrix((self.n_gen_disp_sh, self.n_gen_disp_sh))
+                Hqpgpg = lil_matrix((self.n_gen_disp, self.n_gen_disp))
+                Hqqgqg = lil_matrix((self.n_gen_disp, self.n_gen_disp))
                 Hqvmvm = lil_matrix((self.nbus, self.nbus))
 
             Hfvava = 2 * (Sfvava + Sfva.T @ muf_mat @ np.conj(Sfva)).real
@@ -1386,17 +1368,13 @@ class NonLinearOptimalPfProblem:
                          self.n_gen_disp_sh + self.nsl + self.nslcap + self.ntapm + self.ntapt + self.n_disp_hvdc))])
 
                 H4 = sp.hstack(
-                    [lil_matrix((self.n_gen_disp_sh,
-                                 2 * self.nbus + self.n_gen_disp_sh)),
-                     Hqqgqg,
-                     lil_matrix((self.n_gen_disp_sh,
-                                 self.nsl + self.nslcap + self.ntapm + self.ntapt + self.n_disp_hvdc))])
+                    [lil_matrix((self.n_gen_disp_sh, 2 * self.nbus + self.n_gen_disp_sh)), Hqqgqg,
+                     lil_matrix(
+                         (self.n_gen_disp_sh, self.nsl + self.nslcap + self.ntapm + self.ntapt + self.n_disp_hvdc))])
 
-                H5 = sp.hstack([Hftapmva + Httapmva,
-                                Hftapmvm + Httapmvm,
+                H5 = sp.hstack([Hftapmva + Httapmva, Hftapmvm + Httapmvm,
                                 lil_matrix((self.ntapm, 2 * self.n_gen_disp_sh + self.nsl + self.nslcap)),
-                                Hftapmtapm + Httapmtapm,
-                                Hftapmtapt + Httapmtapt,
+                                Hftapmtapm + Httapmtapm, Hftapmtapt + Httapmtapt,
                                 lil_matrix((self.ntapm, self.n_disp_hvdc))])
 
                 H6 = sp.hstack([Hftaptva + Httaptva,
@@ -1410,26 +1388,22 @@ class NonLinearOptimalPfProblem:
                                  lil_matrix((self.n_disp_hvdc, self.NV))]).tocsc()
 
             else:
-                H1 = sp.hstack([Hfvava + Htvava,
-                                Hfvavm + Htvavm,
-                                lil_matrix((self.nbus,
-                                            2 * self.n_gen_disp_sh + self.nsl + self.nslcap + self.n_disp_hvdc))])
-
-                H2 = sp.hstack([Hfvmva + Htvmva,
-                                Hfvmvm + Htvmvm + Hqvmvm,
-                                lil_matrix((self.nbus,
-                                            2 * self.n_gen_disp_sh + self.nsl + self.nslcap + self.n_disp_hvdc))])
-
-                H3 = sp.hstack([lil_matrix((self.n_gen_disp_sh, 2 * self.nbus)),
-                                Hqpgpg,
-                                lil_matrix((self.n_gen_disp_sh,
-                                            self.n_gen_disp_sh + self.nsl + self.nslcap + self.n_disp_hvdc))])
-
+                H1 = sp.hstack([Hfvava + Htvava, Hfvavm + Htvavm,
+                                lil_matrix(
+                                    (self.nbus, 2 * self.n_gen_disp_sh + self.nsl + self.nslcap + self.n_disp_hvdc))])
+                H2 = sp.hstack(
+                    [Hfvmva + Htvmva, Hfvmvm + Htvmvm + Hqvmvm,
+                     lil_matrix((self.nbus, 2 * self.n_gen_disp_sh + self.nsl + self.nslcap + self.n_disp_hvdc))])
+                H3 = sp.hstack([lil_matrix((self.n_gen_disp_sh, 2 * self.nbus)), Hqpgpg,
+                                lil_matrix(
+                                    (
+                                        self.n_gen_disp_sh,
+                                        self.n_gen_disp_sh + self.nsl + self.nslcap + self.n_disp_hvdc))])
                 H4 = sp.hstack([lil_matrix((self.n_gen_disp_sh, 2 * self.nbus + self.n_gen_disp_sh)), Hqqgqg,
                                 lil_matrix((self.n_gen_disp_sh, self.nsl + self.nslcap + self.n_disp_hvdc))])
 
-                Hxx = sp.vstack([H1, H2, H3, H4,
-                                 lil_matrix((self.nsl + self.nslcap + self.n_disp_hvdc, self.NV))]).tocsc()
+                Hxx = sp.vstack(
+                    [H1, H2, H3, H4, lil_matrix((self.nsl + self.nslcap + self.n_disp_hvdc, self.NV))]).tocsc()
 
             te_hxx = timeit.default_timer()
         else:
@@ -1716,8 +1690,8 @@ class NonLinearOptimalPfProblem:
         # pd.DataFrame(Pg_dis).transpose().to_csv('REEresP.csv')
         # pd.DataFrame(Qg_dis).transpose().to_csv('REEresQ.csv')
 
-        Pg = np.zeros(self.ngen + self.nsh)
-        Qg = np.zeros(self.ngen + self.nsh)
+        Pg = np.zeros(self.n_gen_disp_sh)
+        Qg = np.zeros(self.n_gen_disp_sh)
 
         Pg[self.gen_disp_idx_sh] = self.Pg
         Qg[self.gen_disp_idx_sh] = self.Qg
@@ -1749,7 +1723,7 @@ class NonLinearOptimalPfProblem:
         Pcost = np.zeros(self.ngen + self.nsh)
 
         Pcost[self.gen_disp_idx_sh] = (self.c0 + self.c1 * Pg[self.gen_disp_idx_sh]
-                                       + self.c2 * np.power(Pg[self.gen_disp_idx_sh], 2.0))
+                                    + self.c2 * np.power(Pg[self.gen_disp_idx_sh], 2.0))
 
         Pcost[self.gen_nondisp_idx] = (self.c0n + self.c1n * np.real(self.Sg_undis)
                                        + self.c2n * np.power(np.real(self.Sg_undis), 2.0))

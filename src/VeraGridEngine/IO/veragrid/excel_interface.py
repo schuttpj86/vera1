@@ -2,16 +2,14 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.  
 # SPDX-License-Identifier: MPL-2.0
-from __future__ import annotations
 
-from typing import List, Dict, Any, Sequence
+from typing import List, Dict, Any
 from warnings import warn
 import numpy as np
 import pandas as pd
 from VeraGridEngine.basic_structures import Logger
 from VeraGridEngine.Devices.multi_circuit import MultiCircuit
 import VeraGridEngine.Devices as dev
-from VeraGridEngine.Devices.types import ALL_DEV_TYPES
 from VeraGridEngine.enumerations import DeviceType
 from VeraGridEngine.IO.veragrid.pack_unpack import gather_model_as_data_frames, get_objects_dictionary
 
@@ -649,15 +647,12 @@ def interprete_excel_v2(circuit: MultiCircuit, data):
     circuit.logger += circuit.apply_all_branch_types()
 
 
-def interpret_excel_v3(circuit: MultiCircuit,
-                       data: Dict[str, pd.DataFrame],
-                       logger: Logger = Logger()):
+def interpret_excel_v3(circuit: MultiCircuit, data):
     """
     Interpret the file version 3
     In this file version there are no complex numbers saved
     :param circuit:
     :param data: Dictionary with the excel file sheet labels and the corresponding DataFrame
-    :param logger: Loger object
     :return: Nothing, just applies the loaded data to this MultiCircuit instance
     """
 
@@ -677,10 +672,10 @@ def interpret_excel_v3(circuit: MultiCircuit,
     # Set comments
     circuit.comments = data['Comments'] if 'Comments' in data.keys() else ''
 
+    circuit.logger = Logger()
+
     # common function
-    def set_object_attributes(obj_: ALL_DEV_TYPES,
-                              attr_list: List[str],
-                              values: Sequence[float | int | str]):
+    def set_object_attributes(obj_, attr_list, values):
         """
 
         :param obj_:
@@ -718,13 +713,9 @@ def interpret_excel_v3(circuit: MultiCircuit,
                     else:
                         setattr(obj_, attr, conv(values[a]))
                 else:
-                    logger.add_warning("No registered property",
-                                       device=str(obj),
-                                       value=attr)
+                    warn(str(obj_) + ' has no ' + attr + ' registered property.')
             else:
-                logger.add_warning("No registered property",
-                                   device=str(obj),
-                                   value=attr)
+                warn(str(obj_) + ' has no ' + attr + ' property.')
 
     # time profile #################################################################################################
     if 'time' in data.keys():
@@ -745,7 +736,7 @@ def interpret_excel_v3(circuit: MultiCircuit,
             bus_dict[obj.name] = obj
             circuit.add_bus(obj)
     else:
-        logger.add_error("No buses in this file")
+        circuit.logger.add_warning('No buses in the file!')
 
     # add the loads ################################################################################################
     if 'load' in data.keys():
@@ -774,7 +765,7 @@ def interpret_excel_v3(circuit: MultiCircuit,
                     val = data[sheet_name].values[:, i]
                     idx = data[sheet_name].index
                     # setattr(obj, load_attr, pd.DataFrame(data=val, index=idx))
-                    obj.set_snapshot_value(load_attr, val)
+                    setattr(obj, load_attr, val)
 
                     if circuit.time_profile is None or len(circuit.time_profile) < len(idx):
                         circuit.time_profile = idx
@@ -782,7 +773,7 @@ def interpret_excel_v3(circuit: MultiCircuit,
             try:
                 bus = bus_dict[str(bus_from[i])]
             except KeyError as ex:
-                logger.add_error("Load bus is not in the buses list", device=str(i))
+                raise Exception(str(i) + ': Load bus is not in the buses list.\n' + str(ex))
 
             if obj.name == 'Load':
                 obj.name += f"{circuit.get_loads_number()} @{bus.name}"
@@ -790,7 +781,7 @@ def interpret_excel_v3(circuit: MultiCircuit,
             obj.bus = bus
             circuit.add_load(bus=bus, api_obj=obj)
     else:
-        logger.add_warning('No loads in the file!')
+        circuit.logger.add_warning('No loads in the file!')
 
     # add the controlled generators ################################################################################
     if 'generator' in data.keys():
@@ -836,7 +827,7 @@ def interpret_excel_v3(circuit: MultiCircuit,
             try:
                 bus = bus_dict[str(bus_from[i])]
             except KeyError as ex:
-                logger.add_error("Controlled generator bus is not in the buses list", device=str(i))
+                raise Exception(str(i) + ': Controlled generator bus is not in the buses list.\n' + str(ex))
 
             if obj.name == 'gen':
                 obj.name += str(circuit.get_generators_number() + 1) + '@' + bus.name
@@ -844,7 +835,7 @@ def interpret_excel_v3(circuit: MultiCircuit,
             obj.bus = bus
             circuit.add_generator(bus=bus, api_obj=obj)
     else:
-        logger.add_warning('No controlled generator in the file!')
+        circuit.logger.add_warning('No controlled generator in the file!')
 
     # add the batteries ############################################################################################
     if 'battery' in data.keys():
@@ -882,7 +873,7 @@ def interpret_excel_v3(circuit: MultiCircuit,
             try:
                 bus = bus_dict[str(bus_from[i])]
             except KeyError as ex:
-                logger.add_error("Battery bus is not in the buses list", device=str(i))
+                raise Exception(str(i) + ': Battery bus is not in the buses list.\n' + str(ex))
 
             if obj.name == 'batt':
                 obj.name += str(circuit.get_batteries_number() + 1) + '@' + bus.name
@@ -890,7 +881,7 @@ def interpret_excel_v3(circuit: MultiCircuit,
             obj.bus = bus
             circuit.add_battery(bus=bus, api_obj=obj)
     else:
-        logger.add_warning('No battery in the file!')
+        circuit.logger.add_warning('No battery in the file!')
 
     # add the static generators ####################################################################################
     if 'static_generator' in data.keys():
@@ -932,7 +923,7 @@ def interpret_excel_v3(circuit: MultiCircuit,
             try:
                 bus = bus_dict[str(bus_from[i])]
             except KeyError as ex:
-                logger.add_error("Static generator bus is not in the buses list", device=str(i))
+                raise Exception(str(i) + ': Static generator bus is not in the buses list.\n' + str(ex))
 
             if obj.name == 'StaticGen':
                 obj.name += str(circuit.get_static_generators_number() + 1) + '@' + bus.name
@@ -940,7 +931,7 @@ def interpret_excel_v3(circuit: MultiCircuit,
             obj.bus = bus
             circuit.add_static_generator(bus=bus, api_obj=obj)
     else:
-        logger.add_warning('No static generator in the file!')
+        circuit.logger.add_warning('No static generator in the file!')
 
     # add the shunts ###############################################################################################
     if 'shunt' in data.keys():
@@ -982,7 +973,7 @@ def interpret_excel_v3(circuit: MultiCircuit,
             try:
                 bus = bus_dict[str(bus_from[i])]
             except KeyError as ex:
-                logger.add_error("Shunt bus is not in the buses list", device=str(i))
+                raise Exception(str(i) + ': Shunt bus is not in the buses list.\n' + str(ex))
 
             if obj.name == 'shunt':
                 obj.name += str(circuit.get_shunts_number() + 1) + '@' + bus.name
@@ -990,7 +981,7 @@ def interpret_excel_v3(circuit: MultiCircuit,
             obj.bus = bus
             circuit.add_shunt(bus=bus, api_obj=obj)
     else:
-        logger.add_warning('No shunt in the file!')
+        circuit.logger.add_warning('No shunt in the file!')
 
     # Add the wires ################################################################################################
     if 'wires' in data.keys():
@@ -1002,7 +993,7 @@ def interpret_excel_v3(circuit: MultiCircuit,
             set_object_attributes(obj, hdr, vals[i, :])
             circuit.add_wire(obj)
     else:
-        logger.add_warning('No wires in the file!')
+        circuit.logger.add_warning('No wires in the file!')
 
     # Add the overhead_line_types ##################################################################################
     if 'overhead_line_types' in data.keys():
@@ -1038,7 +1029,7 @@ def interpret_excel_v3(circuit: MultiCircuit,
         else:
             pass
     else:
-        logger.add_warning('No overhead_line_types in the file!')
+        circuit.logger.add_warning('No overhead_line_types in the file!')
 
     # Add the wires ################################################################################################
     if 'underground_cable_types' in data.keys():
@@ -1051,7 +1042,7 @@ def interpret_excel_v3(circuit: MultiCircuit,
         #     circuit.underground_cable_types.append(obj)
         #     branch_types[str(obj)] = obj
     else:
-        logger.add_warning('No underground_cable_types in the file!')
+        circuit.logger.add_warning('No underground_cable_types in the file!')
 
     # Add the sequence line types ##################################################################################
     if 'sequence_line_types' in data.keys():
@@ -1064,7 +1055,7 @@ def interpret_excel_v3(circuit: MultiCircuit,
             circuit.add_sequence_line(obj)
             branch_types[str(obj)] = obj
     else:
-        logger.add_warning('No sequence_line_types in the file!')
+        circuit.logger.add_warning('No sequence_line_types in the file!')
 
     # Add the transformer types ####################################################################################
     if 'transformer_types' in data.keys():
@@ -1077,7 +1068,7 @@ def interpret_excel_v3(circuit: MultiCircuit,
             circuit.add_transformer_type(obj)
             branch_types[str(obj)] = obj
     else:
-        logger.add_warning('No transformer_types in the file!')
+        circuit.logger.add_warning('No transformer_types in the file!')
 
     # Add the Branches #############################################################################################
     if 'branch' in data.keys():
@@ -1098,7 +1089,7 @@ def interpret_excel_v3(circuit: MultiCircuit,
             try:
                 obj = dev.Branch(bus_from=bus_dict[str(bus_from[i])], bus_to=bus_dict[str(bus_to[i])])
             except KeyError as ex:
-                logger.add_error("Static generator bus is not in the buses list", device=str(i))
+                raise Exception(str(i) + ': Branch bus is not in the buses list.\n' + str(ex))
 
             set_object_attributes(obj, hdr, vals[i, :])
 
@@ -1127,10 +1118,10 @@ def interpret_excel_v3(circuit: MultiCircuit,
                 circuit.logger.add_info('Updated template', template_name)
 
     else:
-        logger.add_warning('No Branches in the file!')
+        circuit.logger.add_warning('No Branches in the file!')
 
     # Other actions ################################################################################################
-    logger += circuit.apply_all_branch_types()
+    circuit.logger += circuit.apply_all_branch_types()
 
 
 def save_excel(circuit: MultiCircuit, file_path):
@@ -1149,7 +1140,7 @@ def save_excel(circuit: MultiCircuit, file_path):
         for key in dfs.keys():
             key2 = str(key)
             if len(key2) > 30:
-                key2 = key2[:30]  # excel sheet names have a max of 30 chars
+                key2 = key2[:30] # excel sheet names have a max of 30 chars
             dfs[key].to_excel(excel_writer=writer, sheet_name=key2)
 
     return logger

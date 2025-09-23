@@ -4,60 +4,41 @@
 # SPDX-License-Identifier: MPL-2.0
 import os
 
-import VeraGridEngine as vg
-from VeraGridEngine import power_flow, SolverType
-from VeraGridEngine.IO.file_handler import FileOpen
+from VeraGridEngine import FileOpen
 from VeraGridEngine.IO.others.pandapower_parser import Panda2VeraGrid, PANDAPOWER_AVAILABLE
 from VeraGridEngine.Simulations.StateEstimation.state_stimation_driver import StateEstimation, StateEstimationOptions
+import VeraGridEngine as gce
 
 
 def test_state_estimation_pandapower():
     if PANDAPOWER_AVAILABLE:
         import pandapower
         # tests/data/grids/state-estimation /small_grid_gb_hv_estimate_raw_expected.json
-        #fname = os.path.join("src", "tests", "data", "grids", "state-estimation", "small_grid_gb_hv_estimate_raw_expected.json")
-        #fname = os.path.join("data", "grids", "state-estimation", "test_net_tng_unreduced_with_measurements.json")
-        fname = os.path.join("data", "grids", "state-estimation", "finalized.json")
+        # fname = os.path.join("src", "tests", "data", "grids", "state-estimation", "small_grid_gb_hv_estimate_raw_expected.json")
+        fname = os.path.join("data", "grids", "state-estimation", "small_grid_gb_hv_estimate_raw_expected.json")
         net_wns = pandapower.from_json(fname)
-        net_wns.bus['uuid'] = net_wns.bus['uuid'].str.replace('_', '').str.replace('-', '')
-        # net_wns.bus.loc[1519,"uuid"] = net_wns.bus.loc[1519].uuid.strip("DUMMY_BUS_")
-        # net_wns.bus.loc[1517,"uuid"] = net_wns.bus.loc[1517].uuid.strip("DUMMY_BUS_")
-        # net_wns.bus.loc[1518,"uuid"]= net_wns.bus.loc[1518].uuid.strip("DUMMY_BUS_")
-        # net_wns.trafo.loc[23, "uuid"] = net_wns.trafo.loc[23].uuid.strip("DUMMY_PST__")
-        # net_wns.trafo.loc[22, "uuid"] = net_wns.trafo.loc[22].uuid.strip("DUMMY_PST__")
-        # net_wns.trafo.loc[21, "uuid"] = net_wns.trafo.loc[21].uuid.strip("DUMMY_PST__")
-        # net_wns.ext_grid.loc[0, "in_service"] = False
-        # net_wns.gen.loc[:,"in_service"]=True
-        # net_wns.measurement.loc[:, "std_dev"] = 0.00001
-        pandapower.to_pickle(net_wns, "finalized.p")
-        # net_wns.bus.loc[net_wns.bus[net_wns.bus.name.isna()].index, "name"] = "bus_named"
+
+        # pandapower.to_pickle(net_wns, "small_grid_gb_hv_estimate_raw_expected.p")
+
         g = Panda2VeraGrid(net_wns)
-        grid = g.get_multicircuit(convert_switches=False)
+        grid = g.get_multicircuit()
 
         print()
         g.logger.print("PandaPower conversion logs")
 
-        # vg.save_file(grid, os.path.join("data", "grids", "state-estimation", "finalized.veragrid"))
+        # gce.save_file(grid, 'small_grid_gb_hv_estimate_raw_expected.gridcal')
 
-        pf_res = power_flow(grid)
+        pf_res = gce.power_flow(grid)
         print(pf_res.get_bus_df())
         print(pf_res.get_branch_df())
 
-        for solver in [
-            #SolverType.Decoupled_LU,
-            #SolverType.GN,
-            SolverType.LM
-        ]:
+        for solver in [gce.SolverType.LU,gce.SolverType.GN,gce.SolverType.LM]:
             se_opt = StateEstimationOptions(
-                prefer_correct=True,
-                fixed_slack=False,
+                prefer_correct=False,
+                fixed_slack=True,
                 solver=solver,
-                verbose=1,
-                run_observability_analyis=True,
-                run_measurement_profiling=False,
-                max_iter=200,
-                tol=1e-04,
-                add_pseudo_measurements=True
+                verbose=2,
+                run_observability_analyis=True
             )
             se = StateEstimation(circuit=grid, options=se_opt)
             se.run()
@@ -78,9 +59,8 @@ def test_network_objects_consistency():
         import pandapower
         # tests/data/grids/state-estimation /small_grid_gb_hv_estimate_raw_expected.json
         # fname = os.path.join("src", "tests", "data", "grids", "state-estimation", "small_grid_gb_hv_estimate_raw_expected.json")
-        #fname_pp = os.path.join("data", "grids", "state-estimation", "test_net_tng_raw_expected.json")
-        fname_pp =  os.path.join("data", "grids", "state-estimation", "finalized.json")
-        fname = os.path.join("data", "grids", "state-estimation", "19700101T0000Z_.zip")
+        fname_pp = os.path.join("data", "grids", "state-estimation", "without_pre_processing_and_meas.json")
+        fname = os.path.join("data", "grids", "state-estimation", "20250605T1315Z_RT_SmallGridTestConfiguration_.zip")
         net_wns = pandapower.from_json(fname_pp)
         if "max_i_ka" not in net_wns.line:
             net_wns.line.loc[:, "max_i_ka"] = 10.
@@ -88,7 +68,6 @@ def test_network_objects_consistency():
         # pandapower.to_pickle(net_wns, "small_grid_gb_hv_estimate_raw_expected.p")
         file_handler = FileOpen(fname)
         circuit_cim = file_handler.open()
-        pf_res_cim = power_flow(circuit_cim)
 
         g = Panda2VeraGrid(net_wns)
         grid = g.get_multicircuit()
@@ -103,7 +82,7 @@ def test_network_objects_consistency():
         # assert ok
         # gce.save_file(grid, 'small_grid_gb_hv_estimate_raw_expected.gridcal')
 
-        pf_res = power_flow(grid)
+        pf_res = gce.power_flow(grid)
         print(pf_res.get_bus_df())
         print(pf_res.get_branch_df())
 
@@ -120,7 +99,7 @@ def test_network_objects_consistency():
 
         se.logger.print("SE Logger:")
 
-        pf_res_cim =power_flow(circuit_cim)
+        pf_res_cim = gce.power_flow(circuit_cim)
         print(pf_res_cim.get_bus_df())
         print(pf_res_cim.get_branch_df())
 

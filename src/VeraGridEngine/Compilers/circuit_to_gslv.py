@@ -21,7 +21,7 @@ from VeraGridEngine.Devices.multi_circuit import MultiCircuit
 import VeraGridEngine.Devices as dev
 from VeraGridEngine.Simulations.PowerFlow.power_flow_options import PowerFlowOptions
 from VeraGridEngine.Simulations.PowerFlow.power_flow_results import PowerFlowResults
-from VeraGridEngine.enumerations import TapModuleControl, TapPhaseControl
+from VeraGridEngine import TapModuleControl, TapPhaseControl
 from VeraGridEngine.enumerations import SolverType
 from VeraGridEngine.DataStructures.numerical_circuit import NumericalCircuit
 
@@ -319,13 +319,13 @@ def add_municipalities(circuit: MultiCircuit,
     return d
 
 
-def convert_region(country: dev.Municipality) -> "pg.Region":
+def convert_region(country: dev.Municipality) -> "pg.Municipality":
     """
 
     :param country:
     :return:
     """
-    return pg.Region(idtag=country.idtag, code=str(country.code), name=country.name)
+    return pg.Municipality(idtag=country.idtag, code=str(country.code), name=country.name)
 
 
 def add_regions(circuit: MultiCircuit,
@@ -676,7 +676,7 @@ def convert_bus(elm: dev.Bus, n_time: int,
     :return:
     """
     bus = pg.Bus(nt=n_time,
-                 name=str(elm.name),
+                 name=elm.name,
                  idtag=elm.idtag,
                  code=str(elm.code),
                  Vnom=elm.Vnom,
@@ -781,7 +781,7 @@ def convert_load(k: int, elm: dev.Load, bus_dict: Dict[str, "pg.Bus"], n_time: i
 
     load = pg.Load(
         nt=n_time,
-        bus=None if elm.bus is None else bus_dict[elm.bus.idtag],
+        bus=bus_dict[elm.bus.idtag],
         name=elm.name,
         idtag=elm.idtag,
         code=str(elm.code),
@@ -912,7 +912,7 @@ def convert_static_generator(elm: dev.StaticGenerator,
         idtag=elm.idtag,
         code=str(elm.code),
         name=elm.name,
-        bus=None if elm.bus is None else bus_dict[elm.bus.idtag],
+        calc_node=bus_dict[elm.bus.idtag],
         nt=n_time,
         P=elm.P,
         Q=elm.Q,
@@ -984,7 +984,7 @@ def convert_shunt(elm: dev.Shunt, bus_dict: Dict[str, "pg.Bus"], n_time: int,
     """
     sh = pg.Shunt(
         nt=n_time,
-        bus=None if elm.bus is None else bus_dict[elm.bus.idtag],
+        bus=bus_dict[elm.bus.idtag],
         name=elm.name,
         idtag=elm.idtag,
         code=str(elm.code),
@@ -1062,7 +1062,7 @@ def convert_generator(k: int, elm: dev.Generator, bus_dict: Dict[str, "pg.Bus"],
     """
     gen = pg.Generator(
         nt=n_time,
-        bus=None if elm.bus is None else bus_dict[elm.bus.idtag],
+        bus=bus_dict[elm.bus.idtag],
         name=elm.name,
         idtag=elm.idtag,
         active=elm.active,
@@ -1183,7 +1183,7 @@ def convert_battery(k: int, elm: dev.Battery, bus_dict: Dict[str, "pg.Bus"], n_t
     """
     gen = pg.Battery(
         nt=n_time,
-        bus=None if elm.bus is None else bus_dict[elm.bus.idtag],
+        bus=bus_dict[elm.bus.idtag],
         name=elm.name,
         idtag=elm.idtag,
         P=elm.P,

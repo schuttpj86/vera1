@@ -315,7 +315,9 @@ def find_gen_relocation(grid: MultiCircuit,
 
 def di_shi_reduction(grid: MultiCircuit,
                      reduction_bus_indices: IntVec,
-                     V0: CxVec,
+                     pf_res: PowerFlowResults | None = None,
+                     add_power_loads: bool = True,
+                     use_linear: bool = False,
                      tol=1e-8) -> Tuple[MultiCircuit, Logger]:
     """
     In-place Grid reduction using the Di-Shi equivalent model
@@ -323,7 +325,9 @@ def di_shi_reduction(grid: MultiCircuit,
     and Optimal Generation Investment Planning: Pt 1: Network Equivalents
     :param grid: MultiCircuit
     :param reduction_bus_indices: Bus indices of the buses to delete
-    :param V0: Array of voltages for the non-reduced system
+    :param pf_res: PowerFlowResults
+    :param add_power_loads: If true Ward currents are converted to loads, else currents are added instead
+    :param use_linear: if true, the admittance matrix is used and no voltages are required
     :param tol: Tolerance, any equivalent power value under this is omitted
     """
     logger = Logger()
@@ -352,7 +356,12 @@ def di_shi_reduction(grid: MultiCircuit,
         logger.add_info(msg="The reducible and non reducible sets are disjoint and cannot be reduced")
         return logger
 
+    indices = nc.get_simulation_indices()
     adm = nc.get_admittance_matrices()
+
+    if not use_linear and pf_res is None:
+        logger.add_warning("Cannot uses non linear since power flow results are None")
+        use_linear = True
 
     Yeq_1, Ybbp_1 = ward_reduction_linear(Ybus=adm.Ybus, e_buses=e_buses, b_buses=b_buses, i_buses=i_buses)
 
@@ -401,14 +410,12 @@ def di_shi_reduction(grid: MultiCircuit,
     # This will provide us with a vector of new loads that we need
     # to add at the corresponding reduced grid buses in order to have a final equivalent.
 
-    nc2 = compile_numerical_circuit_at(grid, t_idx=None)
-    adm2 = nc2.get_admittance_matrices()
+    nc_red = compile_numerical_circuit_at(grid, t_idx=0)
+    adm = nc_red.get_admittance_matrices()
 
-    red_bus_idx = np.sort(np.r_[i_buses, b_buses])
+    Vred = np.delete(pf_res.voltage, e_buses)
 
-    Vred = V0[red_bus_idx]
-
-    S_expected = (Vred * np.conj(adm2.Ybus @ Vred)) * grid.Sbase
+    S_expected = (Vred * np.conj(adm.Ybus @ Vred)) * grid.Sbase
 
     Sred_current = grid.get_Sbus()
 
@@ -435,7 +442,9 @@ if __name__ == '__main__':
 
     grid_red, logger_ = di_shi_reduction(grid=grid_.copy(),
                                          reduction_bus_indices=reduction_bus_indices_,
-                                         V0=gce.power_flow(grid_).voltage,
+                                         pf_res=gce.power_flow(grid_),
+                                         add_power_loads=True,
+                                         use_linear=True,
                                          tol=1e-8)
 
     logger_.print()

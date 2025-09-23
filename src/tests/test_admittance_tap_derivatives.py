@@ -10,7 +10,7 @@ from scipy import sparse as sp
 from VeraGridEngine.enumerations import TapPhaseControl, TapModuleControl
 from VeraGridEngine.Compilers.circuit_to_data import compile_numerical_circuit_at
 from VeraGridEngine.DataStructures.numerical_circuit import NumericalCircuit
-from VeraGridEngine.Simulations.OPF.ac_opf_worker import run_nonlinear_opf
+from VeraGridEngine.Simulations.OPF.NumericalMethods.ac_opf import run_nonlinear_opf
 from VeraGridEngine.Simulations.OPF.opf_options import OptimalPowerFlowOptions
 
 
@@ -65,8 +65,10 @@ def example_3bus_acopf():
     # print('\tConv:\n', power_flow.results.get_branch_df())
     opf_options = OptimalPowerFlowOptions()
 
+    pf_options = gce.PowerFlowOptions(solver_type=gce.SolverType.NR, verbose=3)
     run_nonlinear_opf(grid=grid,
                       opf_options=opf_options,
+                      pf_options=pf_options,
                       plot_error=True)
 
 

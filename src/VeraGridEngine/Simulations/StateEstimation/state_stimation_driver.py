@@ -254,8 +254,6 @@ class StateEstimation(DriverTemplate):
             se_input_island = se_input.slice(bus_idx=island.bus_data.original_idx,
                                              branch_idx=island.passive_branch_data.original_idx)
 
-            bus_dict = {i:self.grid.buses[idx] for i, idx in enumerate(island.bus_data.original_idx)}
-
             conn = island.get_connectivity_matrices()
 
             report = StateEstimationConvergenceReport()
@@ -291,9 +289,9 @@ class StateEstimation(DriverTemplate):
                     include_line_measurements_on_both_ends=self.options.include_line_measurements_on_both_ends,
                     logger=self.logger)
                 if unobservable_buses and self.options.add_pseudo_measurements:
-                    se_input_island = add_pseudo_measurements_for_unobservable_buses(bus_dict=bus_dict,
+                    se_input_island = add_pseudo_measurements_for_unobservable_buses(bus_dict=nc.bus_dict,
                                                                                      unobservable_buses=unobservable_buses,
-                                                                                     se_input=se_input_island, V=V,
+                                                                                     se_input=se_input, V=V,
                                                                                      Ybus=adm.Ybus,
                                                                                      Cf=conn.Cf,
                                                                                      Ct=conn.Ct,
@@ -367,7 +365,7 @@ class StateEstimation(DriverTemplate):
                                                  c_threshold=self.options.c_threshold,
                                                  fixed_slack=self.options.fixed_slack,
                                                  logger=self.logger)
-            elif self.options.solver == SolverType.Decoupled_LU:
+            elif self.options.solver == SolverType.LU:
                 solution = decoupled_state_estimation(nc=island,
                                                       Ybus=adm.Ybus,
                                                       Yf=adm.Yf,
@@ -415,16 +413,14 @@ class StateEstimation(DriverTemplate):
 
             # Scale power results from per-unit to MVA before applying
             island_sbase = island.Sbase
-            if solution is not None:
-                solution.Scalc *= island_sbase
+            solution.Scalc *= island_sbase
 
-                self.results.apply_from_island(
-                    results=solution,
-                    b_idx=island.bus_data.original_idx,
-                    br_idx=island.passive_branch_data.original_idx,
-                    hvdc_idx=island.hvdc_data.original_idx,
-                    vsc_idx=island.vsc_data.original_idx
-                )
-            # export unobservable buses, bus_contrib and/or measurement profiling to json
+            self.results.apply_from_island(
+                results=solution,
+                b_idx=island.bus_data.original_idx,
+                br_idx=island.passive_branch_data.original_idx,
+                hvdc_idx=island.hvdc_data.original_idx,
+                vsc_idx=island.vsc_data.original_idx
+            )
 
         self.toc()

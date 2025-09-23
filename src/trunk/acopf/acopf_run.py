@@ -1,11 +1,11 @@
 import os
 import VeraGridEngine.api as gce
 from VeraGridEngine.Compilers.circuit_to_data import compile_numerical_circuit_at
-# from VeraGridEngine.Simulations.OPF.NumericalMethods.ac_opf import ac_optimal_power_flow
-from VeraGridEngine.Simulations.OPF.ac_opf_worker import run_nonlinear_opf
+from VeraGridEngine.Simulations.OPF.NumericalMethods.acopf_old import ac_optimal_power_flow
+from VeraGridEngine.Simulations.OPF.NumericalMethods.ac_opf_new import run_nonlinear_opf
 from VeraGridEngine.enumerations import TapPhaseControl, TapModuleControl
 
-from VeraGridEngine.Simulations.OPF.Formulations.linear_opf_ts import run_linear_opf_ts
+from VeraGridEngine.Simulations.OPF.linear_opf_ts import run_linear_opf_ts
 # from VeraGridEngine.enumerations import TransformerControlType
 from VeraGridEngine.Simulations.NodalCapacity.nodal_capacity_ts_driver import NodalCapacityTimeSeriesDriver
 from VeraGridEngine.Simulations.NodalCapacity.nodal_capacity_options import NodalCapacityOptions
@@ -220,8 +220,12 @@ def two_grids_of_3bus():
     # run_nonlinear_opf(grid=grid, pf_options=pf_options, plot_error=True)
     island = compile_numerical_circuit_at(circuit=grid, t_idx=None)
 
-
-    island_res = run_nonlinear_opf(grid=grid, pf_options=pf_options, opf_options=opf_options, plot_error=True)
+    island_res = ac_optimal_power_flow(nc=island,
+                                       pf_options=pf_options,
+                                       opf_options=opf_options,
+                                       debug=False,
+                                       use_autodiff=False,
+                                       plot_error=True)
 
 
 def case9():
@@ -260,21 +264,9 @@ def case14_linear_vs_nonlinear():
 
     # Nonlinear OPF
     pf_options = gce.PowerFlowOptions(solver_type=gce.SolverType.NR, verbose=1)
-    pf_drv = gce.PowerFlowDriver(grid=grid, options=pf_options)
-    pf_drv.run()
-
-    opf_options = gce.OptimalPowerFlowOptions(solver=gce.SolverType.NONLINEAR_OPF,
-                                              ips_tolerance=1e-8,
-                                              ips_iterations=50,
-                                              verbose=1,
-                                              acopf_mode=gce.AcOpfMode.ACOPFstd,
-                                              ips_init_with_pf=True,
-                                              acopf_v0=pf_drv.results.voltage,
-                                              acopf_S0=pf_drv.results.Sbus)
-
-    res = run_nonlinear_opf(grid=grid,
-                            opf_options=opf_options,
-                            plot_error=True,
+    opf_options = gce.OptimalPowerFlowOptions(solver=gce.SolverType.NONLINEAR_OPF, ips_tolerance=1e-8,
+                                              ips_iterations=50, verbose=1, acopf_mode=gce.AcOpfMode.ACOPFstd)
+    res = run_nonlinear_opf(grid=grid, pf_options=pf_options, opf_options=opf_options, plot_error=True, pf_init=True,
                             optimize_nodal_capacity=True,
                             nodal_capacity_sign=-1.0,
                             capacity_nodes_idx=np.array([10, 11]))
@@ -316,12 +308,8 @@ def case14():
         grid.lines[ll].monitor_loading = True
 
     pf_options = gce.PowerFlowOptions(solver_type=gce.SolverType.NR, control_q=True)
-    opf_options = gce.OptimalPowerFlowOptions(solver=gce.SolverType.NONLINEAR_OPF,
-                                              acopf_mode=gce.AcOpfMode.ACOPFstd,
-                                              ips_tolerance=1e-8,
-                                              ips_iterations=50,
-                                              ips_control_q_limits=False,
-                                              verbose=1)
+    opf_options = gce.OptimalPowerFlowOptions(solver=gce.SolverType.NONLINEAR_OPF, acopf_mode=gce.AcOpfMode.ACOPFstd,
+                                              ips_tolerance=1e-8, ips_iterations=50, ips_control_q_limits=False, verbose=1)
     # res = run_nonlinear_opf(grid=grid, pf_options=pf_options, opf_options=opf_options, plot_error=True, pf_init=True)
     print('')
     opf_options.acopf_mode = gce.AcOpfMode.ACOPFslacks
@@ -342,7 +330,7 @@ def case14():
         grid.buses[b].Vm_cost *= 10000
 
     opf_options.acopf_mode = gce.AcOpfMode.ACOPFstd
-    tap_sol = run_nonlinear_opf(grid=grid, opf_options=opf_options)
+    tap_sol = run_nonlinear_opf(grid=grid, pf_options=pf_options, opf_options=opf_options)
 
     opf_options.acopf_mode = gce.AcOpfMode.ACOPFslacks
     # tap_slack_sol = run_nonlinear_opf(grid=grid, pf_options=pf_options, opf_options=opf_options)
@@ -578,6 +566,7 @@ def superconductor():
     opf_options = gce.OptimalPowerFlowOptions(ips_method=gce.SolverType.NR, ips_tolerance=1e-8, verbose=1)
 
     run_nonlinear_opf(grid=grid, pf_options=pf_options, opf_options=opf_options, plot_error=True, pf_init=False)
+    return ac_optimal_power_flow(nc=nc, pf_options=pf_options, opf_options=opf_options)
 
 
 if __name__ == '__main__':

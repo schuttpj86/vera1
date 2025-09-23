@@ -52,13 +52,11 @@ class IoMain(ConfigurationMain):
 
         self.rosetta_gui: Union[RosetaExplorerGUI, None] = None
 
-        self.accepted_extensions = ['.veragrid', '.dveragrid',
-                                    '.gridcal', '.dgridcal',
-                                    '.xlsx', '.xls', '.sqlite', '.gch5',
+        self.accepted_extensions = ['.gridcal', '.dgridcal', '.xlsx', '.xls', '.sqlite', '.gch5',
                                     '.dgs', '.m', '.raw', '.RAW', '.json', '.uct',
                                     '.ejson2', '.ejson3', '.p', '.nc', '.hdf5',
                                     '.xml', '.rawx', '.zip', '.dpx', '.epc', '.EPC',
-                                    '.vgplugin']
+                                    '.gcplugin']
 
         self.cgmes_version_dict = {x.value: x for x in [CGMESVersions.v2_4_15,
                                                         CGMESVersions.v3_0_0]}
@@ -139,7 +137,7 @@ class IoMain(ConfigurationMain):
 
                         if file_name.endswith('.dgridcal') or file_name.endswith('.dveragrid'):
                             any_grid_delta = True
-                        elif file_name.endswith('.vgplugin'):
+                        elif file_name.endswith('.gcplugin'):
                             self.install_plugin_now(file_name)
                             return
                         else:
@@ -255,10 +253,10 @@ class IoMain(ConfigurationMain):
         :param title: Title of the open window
         """
 
-        files_types = "*.gridcal *.veragrid "
+        files_types = "*.gridcal *.veragrid"
 
         if allow_diff_file_format:
-            files_types += "*.dgridcal *.dveragrid "
+            files_types += "*.dgridcal *.dveragrid"
 
         files_types += "*.gch5 *.xlsx *.xls *.sqlite *.dgs "
         files_types += "*.m *.raw *.RAW *.rawx *.uct *.json *.ejson2 *.ejson3 *.xml "
@@ -445,7 +443,7 @@ class IoMain(ConfigurationMain):
         Install plugin
         :param fname: name of the plugin
         """
-        if fname.endswith('.vgplugin'):
+        if fname.endswith('.gcplugin'):
             info = get_plugin_info(fname)
 
             if info is not None:

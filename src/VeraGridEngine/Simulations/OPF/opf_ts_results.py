@@ -315,6 +315,34 @@ class OptimalPowerFlowTimeSeriesResults(ResultsTemplate):
 
         self.Sf[t, :] = res.Sf
 
+    def apply_lp_profiles(self, circuit: MultiCircuit):
+        """
+        Apply the LP results as device profiles.
+        """
+        generators = circuit.get_generators()
+        for i, elm in enumerate(generators):
+            pr = self.generator_power[:, i]
+            if len(pr) == circuit.get_time_number():
+                elm.P_prof = pr
+
+        batteries = circuit.get_batteries()
+        for i, elm in enumerate(batteries):
+            pr = self.battery_power[:, i]
+            if len(pr) == circuit.get_time_number():
+                elm.P_prof = pr
+
+        loads = circuit.get_load_like_devices()
+        for i, elm in enumerate(loads):
+            pr = self.load_shedding[:, i]
+            if len(pr) == circuit.get_time_number():
+                elm.P_prof -= pr
+
+        hvdc = circuit.get_hvdc()
+        for i, elm in enumerate(hvdc):
+            pr = self.hvdc_Pf[:, i]
+            if len(pr) == circuit.get_time_number():
+                elm.Pset_prof = pr
+
     def mdl(self, result_type) -> ResultsTable:
         """
         Plot the results
@@ -839,5 +867,31 @@ class OptimalPowerFlowTimeSeriesResults(ResultsTemplate):
                                 ylabel='(MW)',
                                 units='(MW)')
 
+        # elif result_type == ResultTypes.OpfTechnologyPlot:
+        #     # the generation already accounts for the shedding
+        #     generation = self.generator_power.sum(axis=1) + self.battery_power.sum(axis=1)
+        #     load = self.load_power.sum(axis=1) - self.load_shedding.sum(axis=1)
+        #
+        #     if self.plotting_allowed():
+        #         plt.ion()
+        #         fig = plt.figure(figsize=(8, 6))
+        #         ax3 = plt.subplot(1, 1, 1)
+        #
+        #         # for i in range(self.power_by_technology.shape[1]):
+        #         ax3.stackplot(x=self.time_array, y=self.power_by_technology, labels=self.technology_names)
+        #
+        #         ax3.legend()
+        #         fig.suptitle(str(result_type.value))
+        #         plt.tight_layout()
+        #         plt.show()
+        #
+        #     return ResultsTable(data=np.c_[generation, load],
+        #                         index=pd.to_datetime(self.time_array),
+        #                         idx_device_type=DeviceType.TimeDevice,
+        #                         columns=np.array(['Generation (MW)', 'Load (MW)']),
+        #                         cols_device_type=DeviceType.NoDevice,
+        #                         title=result_type.value,
+        #                         ylabel='(MW)',
+        #                         units='(MW)')
         else:
             raise Exception('Result type not understood:' + str(result_type))

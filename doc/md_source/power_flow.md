@@ -171,7 +171,7 @@ Branch results:
 ## Benchmark
 
 
-### Matpower grids
+### Running Matpower grids
 
 ![VeraGrid](figures/n_buses_vs_time.png)
 
@@ -407,12 +407,7 @@ and finally to compute the x-axis interception of this tangent line.
 As shown in the following figure, the $x_1$ interception will typically be a better approximation to the
 function's real zero $x_n$ than the initial guess $x_0$, and the method can be iterated.
 
-<div style="text-align: center;">
-    <img src="https://github.com/SanPen/VeraGrid/blob/master/doc/md_source/figures/3ph_newton_raphson.png?raw=true"
-    alt="Newton-Raphson Method"
-    title="Newton-Raphson Method"
-    width="75%"/>
-</div>
+![Newton-Raphson Method](figures/3ph_newton_raphson.png "Newton-Raphson Method")
 
 If a function $y=f(x)$ is expanded about an operating point $x_0$ using a Taylor series expansion and ignoring all
 terms of higher order than 1, the following equation can be obtained:
@@ -514,12 +509,7 @@ Considering a simple example of two buses connected through a line that only has
 cannot exist at the second bus. Therefore, the bus mask will contain a zero in that position, effectively removing the
 corresponding rows and columns from the admittance matrix:
 
-<div style="text-align: center;">
-    <img src="https://github.com/SanPen/VeraGrid/blob/master/doc/md_source/figures/3ph_mask.png?raw=true"
-    alt="Bus Mask"
-    title="Bus Mask"
-    width="90%"/>
-</div>
+![Bus Mask](figures/3ph_mask.png "Bus Mask")
 
 Naturally, the bus mask must also be applied to the voltage vector at each bus in order to eliminate the entries
 corresponding to non-existent buses:
@@ -548,12 +538,7 @@ To validate the implementation in VeraGrid of the three-phase power flow algorit
 been selected as a reference benchmark. This distribution system model, published by the IEEE Distribution System
 Analysis Subcommittee, represents a typical North American urban radial distribution network.
 
-<div style="text-align: center;">
-    <img src="https://github.com/SanPen/VeraGrid/blob/master/doc/md_source/figures/3ph_IEEE_13_Node_Test_Feeder.png?raw=true"
-    alt="IEEE 13 Node Test Feeder"
-    title="IEEE 13 Node Test Feeder"
-    width="99%"/>
-</div>
+![IEEE 13 Node Test Feeder](figures/3ph_IEEE_13_Node_Test_Feeder.png "IEEE 13 Node Test Feeder")
 
 The network, depicted in the figure above, includes a variety of distribution elements such as:
 
@@ -959,59 +944,23 @@ gce.save_file(grid, "IEEE 13 Node Test Feeder.veragrid")
 #### Phase A
 
 Voltage magnitude:
-
-<div style="text-align: center;">
-    <img src="https://github.com/SanPen/VeraGrid/blob/master/doc/md_source/figures/3ph_U_a_results.png?raw=true"
-    alt="Phase A Voltage Magnitude"
-    title="Phase A Voltage Magnitude"
-    width="75%"/>
-</div>
+![Phase A Voltage Magnitude](figures/3ph_U_a_results.png "Phase A Voltage Magnitude")
 
 Voltage angle:
-
-<div style="text-align: center;">
-    <img src="https://github.com/SanPen/VeraGrid/blob/master/doc/md_source/figures/3ph_delta_a_results.png?raw=true"
-    alt="Phase A Voltage Angle"
-    title="Phase A Voltage Angle"
-    width="75%"/>
-</div>
+![Phase A Voltage Angle](figures/3ph_delta_a_results.png "Phase A Voltage Angle")
 
 #### Phase B:
 
 Voltage magnitude:
-
-<div style="text-align: center;">
-    <img src="https://github.com/SanPen/VeraGrid/blob/master/doc/md_source/figures/3ph_U_b_results.png?raw=true"
-    alt="Phase B Voltage Magnitude"
-    title="Phase B Voltage Magnitude"
-    width="75%"/>
-</div>
+![Phase A Voltage Magnitude](figures/3ph_U_b_results.png "Phase A Voltage Magnitude")
 
 Voltage angle:
-
-<div style="text-align: center;">
-    <img src="https://github.com/SanPen/VeraGrid/blob/master/doc/md_source/figures/3ph_delta_b_results.png?raw=true"
-    alt="Phase B Voltage Angle"
-    title="Phase B Voltage Angle"
-    width="75%"/>
-</div>
+![Phase A Voltage Angle](figures/3ph_delta_b_results.png "Phase A Voltage Angle")
 
 #### Phase C:
 
 Voltage magnitude:
-
-<div style="text-align: center;">
-    <img src="https://github.com/SanPen/VeraGrid/blob/master/doc/md_source/figures/3ph_U_c_results.png?raw=true"
-    alt="Phase C Voltage Magnitude"
-    title="Phase C Voltage Magnitude"
-    width="75%"/>
-</div>
+![Phase A Voltage Magnitude](figures/3ph_U_c_results.png "Phase A Voltage Magnitude")
 
 Voltage angle:
-
-<div style="text-align: center;">
-    <img src="https://github.com/SanPen/VeraGrid/blob/master/doc/md_source/figures/3ph_delta_c_results.png?raw=true"
-    alt="Phase C Voltage Angle"
-    title="Phase C Voltage Angle"
-    width="75%"/>
-</div>
+![Phase A Voltage Angle](figures/3ph_delta_c_results.png "Phase A Voltage Angle")

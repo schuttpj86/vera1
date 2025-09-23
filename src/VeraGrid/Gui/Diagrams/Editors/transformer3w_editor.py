@@ -161,10 +161,6 @@ class Transformer3WEditor(QDialog):
 
     @property
     def api_object(self) -> Transformer3W:
-        """
-
-        :return:
-        """
         return self._api_object
 
     def accept_click(self):
