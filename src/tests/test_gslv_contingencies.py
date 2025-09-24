@@ -1,0 +1,41 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+# SPDX-License-Identifier: MPL-2.0
+import os
+import numpy as np
+import VeraGridEngine.api as vg
+from VeraGridEngine.Compilers.circuit_to_gslv import GSLV_AVAILABLE, pg, to_gslv, compare_nc, CheckArr
+
+
+def test_gslv_contingencies():
+    """
+
+    :return:
+    """
+
+    if not GSLV_AVAILABLE:
+        return
+
+    fname = os.path.join('data', 'grids', "IEEE39_1W.gridcal")
+
+    print(f"Testing: {fname}")
+
+    grid_gc = vg.open_file(filename=fname)
+
+    opts = vg.ContingencyAnalysisOptions()
+
+    # Native engine
+    driver1 = vg.ContingencyAnalysisTimeSeriesDriver(grid=grid_gc,
+                                                     options=opts,
+                                                     engine=vg.EngineType.VeraGrid)
+    driver1.run()
+    Pf1 = driver1.results.max_flows.real
+
+    driver2 = vg.ContingencyAnalysisTimeSeriesDriver(grid=grid_gc,
+                                                     options=opts,
+                                                     engine=vg.EngineType.GSLV)
+    driver2.run()
+    Pf2 = driver2.results.max_flows.real
+
+    print()

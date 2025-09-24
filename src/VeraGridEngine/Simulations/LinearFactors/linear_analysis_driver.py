@@ -15,6 +15,7 @@ from VeraGridEngine.Simulations.LinearFactors.linear_analysis import LinearAnaly
 from VeraGridEngine.Simulations.driver_template import DriverTemplate
 from VeraGridEngine.Compilers.circuit_to_bentayga import BENTAYGA_AVAILABLE, bentayga_linear_matrices
 from VeraGridEngine.Compilers.circuit_to_newton_pa import NEWTON_PA_AVAILABLE, newton_pa_linear_matrices
+from VeraGridEngine.Compilers.circuit_to_gslv import GSLV_AVAILABLE, gslv_linear_matrices
 from VeraGridEngine.enumerations import EngineType, SimulationTypes
 from VeraGridEngine.Simulations.LinearFactors.linear_analysis_results import LinearAnalysisResults
 from VeraGridEngine.Simulations.LinearFactors.linear_analysis_options import LinearAnalysisOptions
@@ -91,6 +92,10 @@ class LinearAnalysisDriver(DriverTemplate):
             self.engine = EngineType.VeraGrid
             self.logger.add_warning('Failed, back to VeraGrid')
 
+        if self.engine == EngineType.GSLV and not GSLV_AVAILABLE:
+            self.engine = EngineType.VeraGrid
+            self.logger.add_warning('Failed, back to VeraGrid')
+
         if self.engine == EngineType.VeraGrid:
 
             nc: NumericalCircuit = compile_numerical_circuit_at(
@@ -141,6 +146,20 @@ class LinearAnalysisDriver(DriverTemplate):
         elif self.engine == EngineType.NewtonPA:
 
             lin_mat = newton_pa_linear_matrices(circuit=self.grid, distributed_slack=self.options.distribute_slack)
+            self.results.PTDF = lin_mat.PTDF
+            self.results.LODF = lin_mat.LODF
+            # TODO: figure this out
+            self.results.Sbus = self.grid.get_Pbus()
+            rates = self.grid.get_branch_rates()
+            self.results.Sf = np.dot(lin_mat.PTDF, self.results.Sbus)
+            self.results.loading = self.results.Sf / (rates + 1e-20)
+
+        elif self.engine == EngineType.GSLV:
+
+            lin_mat = gslv_linear_matrices(circuit=self.grid,
+                                           distributed_slack=self.options.distribute_slack,
+                                           correctValues=self.options.correct_values)
+
             self.results.PTDF = lin_mat.PTDF
             self.results.LODF = lin_mat.LODF
             # TODO: figure this out
