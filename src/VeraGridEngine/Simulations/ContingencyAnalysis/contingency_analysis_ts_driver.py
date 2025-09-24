@@ -9,8 +9,13 @@ from typing import Union
 from VeraGridEngine.basic_structures import IntVec, StrVec
 from VeraGridEngine.enumerations import EngineType, ContingencyMethod
 from VeraGridEngine.Devices.multi_circuit import MultiCircuit
+from VeraGridEngine.Compilers.circuit_to_data import compile_numerical_circuit_at
+from VeraGridEngine.Simulations.LinearFactors.linear_analysis import LinearMultiContingencies, LinearAnalysisTs
 from VeraGridEngine.Simulations.LinearFactors.linear_analysis_options import LinearAnalysisOptions
-from VeraGridEngine.Simulations.LinearFactors.linear_analysis_ts_driver import LinearAnalysisTimeSeriesDriver
+from VeraGridEngine.Simulations.ContingencyAnalysis.Methods.linear_contingency_analysis import (
+    linear_contingency_analysis, linear_contingency_scan_numba)
+from VeraGridEngine.Simulations.ContingencyAnalysis.Methods.nonlinear_contingency_analysis import (
+    nonlinear_contingency_analysis)
 from VeraGridEngine.Simulations.ContingencyAnalysis.contingency_analysis_driver import (ContingencyAnalysisOptions,
                                                                                         ContingencyAnalysisDriver)
 from VeraGridEngine.Simulations.ContingencyAnalysis.contingency_analysis_ts_results import (
@@ -18,8 +23,9 @@ from VeraGridEngine.Simulations.ContingencyAnalysis.contingency_analysis_ts_resu
 from VeraGridEngine.enumerations import SimulationTypes
 from VeraGridEngine.Simulations.driver_template import TimeSeriesDriverTemplate
 from VeraGridEngine.Simulations.Clustering.clustering_results import ClusteringResults
-from VeraGridEngine.Compilers.circuit_to_newton_pa import newton_pa_contingencies, translate_contingency_report
-from VeraGridEngine.Compilers.circuit_to_gslv import (gslv_contingencies)
+from VeraGridEngine.Compilers.circuit_to_newton_pa import newton_pa_contingencies, translate_contingency_report, \
+    NEWTON_PA_AVAILABLE
+from VeraGridEngine.Compilers.circuit_to_gslv import (gslv_contingencies, GSLV_AVAILABLE)
 from VeraGridEngine.Utils.NumericalMethods.weldorf_online_stddev import WeldorfOnlineStdDevMat
 
 
@@ -71,7 +77,7 @@ class ContingencyAnalysisTimeSeriesDriver(TimeSeriesDriverTemplate):
                                                                           add_vsc=False,
                                                                           add_switch=True), dtype=str)
 
-    def run_contingency_analysis(self) -> ContingencyAnalysisTimeSeriesResults:
+    def run_nonlinear_contingency_analysis(self) -> ContingencyAnalysisTimeSeriesResults:
         """
         Run a contngency analysis in series
         :return: returns the results
@@ -99,18 +105,19 @@ class ContingencyAnalysisTimeSeriesDriver(TimeSeriesDriverTemplate):
             clustering_results=self.clustering_results
         )
 
-        cdriver = ContingencyAnalysisDriver(grid=self.grid,
-                                            options=self.options,
-                                            linear_multiple_contingencies=None  # it is computed inside
-                                            )
+        if self.options is None:
+            contingency_groups_used = self.grid.get_contingency_groups()
+        else:
+            contingency_groups_used = (self.grid.get_contingency_groups()
+                                       if self.options.contingency_groups is None
+                                       else self.options.contingency_groups)
 
-        if self.options.contingency_method == ContingencyMethod.PTDF:
-            linear = LinearAnalysisTimeSeriesDriver(
-                grid=self.grid,
-                options=self.options,
-                time_indices=self.time_indices
-            )
-            linear.run()
+        linear_multiple_contingencies = LinearMultiContingencies(
+            grid=self.grid,
+            contingency_groups_used=contingency_groups_used
+        )
+
+        area_names, bus_area_indices, F, T, hvdc_F, hvdc_T = self.grid.get_branch_areas_info()
 
         std_dev_counter = WeldorfOnlineStdDevMat(nrow=results.nt, ncol=results.nbranch)
 
@@ -124,7 +131,24 @@ class ContingencyAnalysisTimeSeriesDriver(TimeSeriesDriverTemplate):
             else:
                 t_prob = 1.0 / len(self.time_indices)
 
-            res_t = cdriver.run_at(t_idx=int(t), t_prob=t_prob)
+            # set the numerical circuit
+            nc = compile_numerical_circuit_at(self.grid, t_idx=t)
+
+            res_t = nonlinear_contingency_analysis(
+                nc=nc,
+                options=self.options,
+                linear_multiple_contingencies=linear_multiple_contingencies,
+                area_names=area_names,
+                bus_area_indices=bus_area_indices,
+                F=F,
+                T=T,
+                report_text=self.report_text,
+                report_progress2=self.report_progress2,
+                is_cancel=self.is_cancel,
+                t_idx=t,
+                t_prob=t_prob,
+                logger=self.logger
+            )
 
             results.S[it, :] = res_t.Sbus.real.max(axis=0)
 
@@ -147,6 +171,232 @@ class ContingencyAnalysisTimeSeriesDriver(TimeSeriesDriverTemplate):
 
             results.srap_used_power += res_t.srap_used_power
             results.report += res_t.report
+
+            # TODO: think what to do about this
+            # results.report.merge(res_t.report)
+
+            if self.__cancel__:
+                return results
+
+        # compute the mean
+        std_dev_counter.finalize()
+        results.mean_overload = std_dev_counter.mean
+        results.std_dev_overload = std_dev_counter.std_dev
+
+        return results
+
+    def run_linear_contingency_analysis(self) -> ContingencyAnalysisTimeSeriesResults:
+        """
+        Run a contngency analysis in series
+        :return: returns the results
+        """
+
+        self.report_text("Analyzing...")
+
+        nb = self.grid.get_bus_number()
+
+        time_array = self.grid.time_profile[self.time_indices]
+
+        if self.options.contingency_groups is None:
+            con_names = self.grid.get_contingency_group_names()
+        else:
+            con_names = [con.name for con in self.options.contingency_groups]
+
+        results = ContingencyAnalysisTimeSeriesResults(
+            n=nb,
+            nbr=self.grid.get_branch_number(add_hvdc=False, add_vsc=False, add_switch=True),
+            time_array=time_array,
+            branch_names=self.grid.get_branch_names(add_hvdc=False, add_vsc=False, add_switch=True),
+            bus_names=self.grid.get_bus_names(),
+            bus_types=np.ones(nb, dtype=int),
+            con_names=con_names,
+            clustering_results=self.clustering_results
+        )
+
+        if self.options is None:
+            contingency_groups_used = self.grid.get_contingency_groups()
+        else:
+            contingency_groups_used = (self.grid.get_contingency_groups()
+                                       if self.options.contingency_groups is None
+                                       else self.options.contingency_groups)
+
+        linear_multiple_contingencies = LinearMultiContingencies(
+            grid=self.grid,
+            contingency_groups_used=contingency_groups_used
+        )
+
+        area_names, bus_area_indices, F, T, hvdc_F, hvdc_T = self.grid.get_branch_areas_info()
+
+        # cdriver = ContingencyAnalysisDriver(
+        #     grid=self.grid,
+        #     options=self.options,
+        #     linear_multiple_contingencies=None  # it is computed inside
+        # )
+
+        # if self.options.contingency_method == ContingencyMethod.PTDF:
+        #     linear = LinearAnalysisTimeSeriesDriver(
+        #         grid=self.grid,
+        #         options=self.options,
+        #         time_indices=self.time_indices
+        #     )
+        #     linear.run()
+
+        std_dev_counter = WeldorfOnlineStdDevMat(nrow=results.nt, ncol=results.nbranch)
+
+        for it, t in enumerate(self.time_indices):
+
+            self.report_text('Contingency at ' + str(self.grid.time_profile[t]))
+            self.report_progress2(it, len(self.time_indices))
+
+            if self.clustering_results is not None:
+                t_prob = self.clustering_results.sampled_probabilities[it]
+            else:
+                t_prob = 1.0 / len(self.time_indices)
+
+            # res_t = cdriver.run_at(t_idx=int(t), t_prob=t_prob)
+            nc = compile_numerical_circuit_at(self.grid, t_idx=t)
+
+            res_t = linear_contingency_analysis(
+                nc=nc,
+                options=self.options,
+                linear_multiple_contingencies=linear_multiple_contingencies,
+                area_names=area_names,
+                bus_area_indices=bus_area_indices,
+                F=F,
+                T=T,
+                report_text=None,
+                report_progress2=None,
+                is_cancel=self.is_cancel,
+                t=int(t),
+                t_prob=t_prob,
+                logger=self.logger
+            )
+
+            results.S[it, :] = res_t.Sbus.real.max(axis=0)
+
+            results.max_flows[it, :] = np.abs(res_t.Sf).max(axis=0)
+
+            # Note: Loading is (ncon, nbranch)
+
+            loading_abs = np.abs(res_t.loading)
+            overloading = loading_abs.copy()
+            overloading[overloading <= 1.0] = 0
+
+            for k in range(results.ncon):
+                std_dev_counter.update(it, overloading[k, :])
+
+            results.max_loading[it, :] = loading_abs.max(axis=0)
+            results.overload_count[it, :] = np.count_nonzero(overloading > 1.0)
+            results.sum_overload[it, :] = overloading.sum(axis=0)
+
+            results.std_dev_overload[it, :] = np.abs(res_t.loading).max(axis=0)
+
+            results.srap_used_power += res_t.srap_used_power
+            results.report += res_t.report
+
+            # TODO: think what to do about this
+            # results.report.merge(res_t.report)
+
+            if self.__cancel__:
+                return results
+
+        # compute the mean
+        std_dev_counter.finalize()
+        results.mean_overload = std_dev_counter.mean
+        results.std_dev_overload = std_dev_counter.std_dev
+
+        return results
+
+    def run_contingency_scan(self) -> ContingencyAnalysisTimeSeriesResults:
+        """
+        Run a contngency analysis in series
+        :return: returns the results
+        """
+
+        self.report_text("Analyzing...")
+
+        nb = self.grid.get_bus_number()
+
+        time_array = self.grid.time_profile[self.time_indices]
+
+        if self.options.contingency_groups is None:
+            con_names = self.grid.get_contingency_group_names()
+        else:
+            con_names = [con.name for con in self.options.contingency_groups]
+
+        results = ContingencyAnalysisTimeSeriesResults(
+            n=nb,
+            nbr=self.grid.get_branch_number(add_hvdc=False, add_vsc=False, add_switch=True),
+            time_array=time_array,
+            branch_names=self.grid.get_branch_names(add_hvdc=False, add_vsc=False, add_switch=True),
+            bus_names=self.grid.get_bus_names(),
+            bus_types=np.ones(nb, dtype=int),
+            con_names=con_names,
+            clustering_results=self.clustering_results
+        )
+
+        nc = compile_numerical_circuit_at(self.grid, t_idx=None)
+
+        lin_mc = LinearMultiContingencies(grid=self.grid,
+                                          contingency_groups_used=self.grid.get_contingency_groups())
+
+        n_con_groups = self.grid.get_contingency_groups_number()
+
+        # Get the branch index array and the contringency group it belongs array
+        con_idx, cg_idx = lin_mc.get_single_con_branch_idx()
+
+        mon_idx = np.where(nc.passive_branch_data.monitor_loading == 1)[0]
+
+        linear = LinearAnalysisTs(
+            grid=self.grid,
+        )
+
+        Pbus_mat = self.grid.get_Pbus_prof()
+
+        std_dev_counter = WeldorfOnlineStdDevMat(nrow=results.nt, ncol=results.nbranch)
+
+        for it, t in enumerate(self.time_indices):
+
+            self.report_text('Contingency at ' + str(self.grid.time_profile[t]))
+            self.report_progress2(it, len(self.time_indices))
+
+            # get the corresponding linear analysis
+            lin_t = linear.get_linear_analysis_at(t_idx=t)
+
+            SbrCon, LoadingCon, problems = linear_contingency_scan_numba(
+                nbr=nc.nbr,
+                nconn=n_con_groups,
+                Pbus=Pbus_mat[t, :],
+                rates=nc.passive_branch_data.rates,
+                con_rates=nc.passive_branch_data.contingency_rates,
+                PTDF=lin_t.PTDF,
+                LODF=lin_t.LODF,
+                mon_idx=mon_idx,
+                con_idx=con_idx,
+                cg_idx=cg_idx
+            )
+
+            results.S[it, :] = Pbus_mat[t, :].max(axis=0)
+
+            results.max_flows[it, :] = np.abs(SbrCon).max(axis=0)
+
+            # Note: Loading is (ncon, nbranch)
+
+            loading_abs = np.abs(LoadingCon)
+            overloading = loading_abs.copy()
+            overloading[overloading <= 1.0] = 0
+
+            for k in range(results.ncon):
+                std_dev_counter.update(it, overloading[k, :])
+
+            results.max_loading[it, :] = loading_abs.max(axis=0)
+            results.overload_count[it, :] = np.count_nonzero(overloading > 1.0)
+            results.sum_overload[it, :] = overloading.sum(axis=0)
+
+            results.std_dev_overload[it, :] = overloading.max(axis=0)
+
+            # results.srap_used_power += res_t.srap_used_power
+            # results.report += res_t.report
 
             # TODO: think what to do about this
             # results.report.merge(res_t.report)
@@ -232,13 +482,24 @@ class ContingencyAnalysisTimeSeriesDriver(TimeSeriesDriverTemplate):
         self.tic()
 
         if self.engine == EngineType.VeraGrid:
-            self.results = self.run_contingency_analysis()
 
-        elif self.engine == EngineType.NewtonPA:
-            self.report_text('Running Newton power analytics... ')
+            if self.options.contingency_method == ContingencyMethod.PowerFlow:
+                self.run_nonlinear_contingency_analysis()
+
+            elif self.options.contingency_method == ContingencyMethod.Linear:
+                self.results = self.run_linear_contingency_analysis()
+
+            elif self.options.contingency_method == ContingencyMethod.PTDF_scan:
+                self.results = self.run_contingency_scan()
+
+            else:
+                pass
+
+        elif self.engine == EngineType.NewtonPA and NEWTON_PA_AVAILABLE:
+            self.report_text('Running contingencies in newton... ')
             self.results = self.run_newton_pa()
 
-        elif self.engine == EngineType.GSLV:
+        elif self.engine == EngineType.GSLV and GSLV_AVAILABLE:
             self.report_text('Running contingencies in gslv... ')
             self.results = self.run_gslv()
 

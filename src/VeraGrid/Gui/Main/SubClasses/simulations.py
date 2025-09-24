@@ -147,7 +147,8 @@ class SimulationsMain(TimeEventsMain):
         self.contingency_engines_dict = OrderedDict()
         self.contingency_engines_dict[ContingencyMethod.PowerFlow.value] = ContingencyMethod.PowerFlow
         # self.contingency_engines_dict[ContingencyMethod.OptimalPowerFlow.value] = ContingencyMethod.OptimalPowerFlow
-        self.contingency_engines_dict[ContingencyMethod.PTDF.value] = ContingencyMethod.PTDF
+        self.contingency_engines_dict[ContingencyMethod.Linear.value] = ContingencyMethod.Linear
+        self.contingency_engines_dict[ContingencyMethod.PTDF_scan.value] = ContingencyMethod.PTDF_scan
         self.ui.contingencyEngineComboBox.setModel(gf.get_list_model(list(self.contingency_engines_dict.keys())))
 
         # list of stochastic power flow methods

@@ -17,7 +17,7 @@ results = gce.contingencies_ts(circuit=grid,
                                srap_rever_to_nominal_rating=True,
                                detailed_massive_report=True,
                                contingency_deadband=0.0,
-                               contingency_method=gce.ContingencyMethod.PTDF)
+                               contingency_method=gce.ContingencyMethod.Linear)
 
 print("Saving...")
 # gce.export_results([results], f_name + '.results.zip')

@@ -1316,7 +1316,7 @@ def newton_pa_contingencies(circuit: MultiCircuit,
         time_indices = [0]
         n_threads = 0
 
-    if con_opt.contingency_method == ContingencyMethod.PTDF:
+    if con_opt.contingency_method == ContingencyMethod.Linear:
         mode = npa.ContingencyAnalysisMode.Linear
     elif con_opt.contingency_method == ContingencyMethod.PowerFlow:
         mode = npa.ContingencyAnalysisMode.Full

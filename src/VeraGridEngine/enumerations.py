@@ -414,7 +414,8 @@ class ContingencyMethod(Enum):
     PowerFlow = 'Power flow'
     OptimalPowerFlow = 'Optimal power flow'
     HELM = 'HELM'
-    PTDF = 'PTDF'
+    Linear = 'Linear'
+    PTDF_scan = "PTDF Scan"
 
     def __str__(self):
         return self.value

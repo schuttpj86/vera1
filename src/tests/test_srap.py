@@ -21,7 +21,7 @@ def test_srap():
     print("Running contingency analysis...")
     con_options = ContingencyAnalysisOptions()
     con_options.use_srap = True
-    con_options.contingency_method = ContingencyMethod.PTDF
+    con_options.contingency_method = ContingencyMethod.Linear
 
     #con_options.srap_max_loading = 1.4
     grid.lines[2].protection_rating_factor = 1.4
@@ -42,7 +42,7 @@ def test_srap():
     print("Running contingency analysis...")
     con_options = ContingencyAnalysisOptions()
     con_options.use_srap = True
-    con_options.contingency_method = ContingencyMethod.PTDF
+    con_options.contingency_method = ContingencyMethod.Linear
 
     #con_options.srap_max_loading = 1.4
     grid.lines[2].protection_rating_factor = 1.4
@@ -68,7 +68,7 @@ def test_srap():
     print("Running contingency analysis...")
     con_options = ContingencyAnalysisOptions()
     con_options.use_srap = True
-    con_options.contingency_method = ContingencyMethod.PTDF
+    con_options.contingency_method = ContingencyMethod.Linear
 
     #con_options.srap_max_loading = 1.1
     grid.lines[2].protection_rating_factor = 1.1
@@ -96,7 +96,7 @@ def test_srap():
     print("Running contingency analysis...")
     con_options = ContingencyAnalysisOptions()
     con_options.use_srap = True
-    con_options.contingency_method = ContingencyMethod.PTDF
+    con_options.contingency_method = ContingencyMethod.Linear
 
     #con_options.srap_max_loading = 1.4
     grid.lines[5].protection_rating_factor = 1.4
@@ -117,7 +117,7 @@ def test_srap():
     print("Running contingency analysis...")
     con_options = ContingencyAnalysisOptions()
     con_options.use_srap = True
-    con_options.contingency_method = ContingencyMethod.PTDF
+    con_options.contingency_method = ContingencyMethod.Linear
 
     #con_options.srap_max_loading = 1.4
     grid.lines[5].protection_rating_factor = 1.4
@@ -142,7 +142,7 @@ def test_srap():
     print("Running contingency analysis...")
     con_options = ContingencyAnalysisOptions()
     con_options.use_srap = True
-    con_options.contingency_method = ContingencyMethod.PTDF
+    con_options.contingency_method = ContingencyMethod.Linear
 
     #con_options.srap_max_loading = 1.1
     grid.lines[5].protection_rating_factor = 1.1

@@ -18,7 +18,7 @@ grid = FileOpen(path).open()
 print("Running contingency analysis...")
 con_options = ContingencyAnalysisOptions()
 con_options.use_srap = True
-con_options.contingency_method = ContingencyMethod.PTDF
+con_options.contingency_method = ContingencyMethod.Linear
 
 con_options.srap_max_loading = 1.4
 con_options.srap_max_power = 8
@@ -34,7 +34,7 @@ test1_result = con_drv.results.report.entries[0].solved_by_srap # Este debe ser 
 print("Running contingency analysis...")
 con_options = ContingencyAnalysisOptions()
 con_options.use_srap = True
-con_options.contingency_method = ContingencyMethod.PTDF
+con_options.contingency_method = ContingencyMethod.Linear
 
 con_options.srap_max_loading = 1.4
 con_options.srap_max_power = 1
@@ -51,7 +51,7 @@ test2_result_b = np.around(con_drv.results.report.entries[0].srap_power, decimal
 print("Running contingency analysis...")
 con_options = ContingencyAnalysisOptions()
 con_options.use_srap = True
-con_options.contingency_method = ContingencyMethod.PTDF
+con_options.contingency_method = ContingencyMethod.Linear
 
 con_options.srap_max_loading = 1.1
 con_options.srap_max_power = 8
@@ -74,7 +74,7 @@ grid = FileOpen(path_reverse).open()
 print("Running contingency analysis...")
 con_options = ContingencyAnalysisOptions()
 con_options.use_srap = True
-con_options.contingency_method = ContingencyMethod.PTDF
+con_options.contingency_method = ContingencyMethod.Linear
 
 con_options.srap_max_loading = 1.4
 con_options.srap_max_power = 8
@@ -90,7 +90,7 @@ test4_result = con_drv.results.report.entries[0].solved_by_srap # Este debe ser 
 print("Running contingency analysis...")
 con_options = ContingencyAnalysisOptions()
 con_options.use_srap = True
-con_options.contingency_method = ContingencyMethod.PTDF
+con_options.contingency_method = ContingencyMethod.Linear
 
 con_options.srap_max_loading = 1.4
 con_options.srap_max_power = 1
@@ -107,7 +107,7 @@ test5_result_b = np.around(con_drv.results.report.entries[0].srap_power, decimal
 print("Running contingency analysis...")
 con_options = ContingencyAnalysisOptions()
 con_options.use_srap = True
-con_options.contingency_method = ContingencyMethod.PTDF
+con_options.contingency_method = ContingencyMethod.Linear
 
 con_options.srap_max_loading = 1.1
 con_options.srap_max_power = 8

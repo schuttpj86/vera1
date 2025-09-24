@@ -137,7 +137,7 @@ class LinearAnalysisDriver(DriverTemplate):
         elif self.engine == EngineType.Bentayga:
 
             lin_mat = bentayga_linear_matrices(circuit=self.grid, distributed_slack=self.options.distribute_slack)
-            self.results.PTDF = lin_mat.PTDF
+            self.results.PTDF = lin_mat.Linear
             self.results.LODF = lin_mat.LODF
             self.results.Sf = lin_mat.get_flows(lin_mat.Pbus * self.grid.Sbase)
             self.results.loading = self.results.Sf / (lin_mat.rates + 1e-20)
@@ -146,12 +146,12 @@ class LinearAnalysisDriver(DriverTemplate):
         elif self.engine == EngineType.NewtonPA:
 
             lin_mat = newton_pa_linear_matrices(circuit=self.grid, distributed_slack=self.options.distribute_slack)
-            self.results.PTDF = lin_mat.PTDF
+            self.results.PTDF = lin_mat.Linear
             self.results.LODF = lin_mat.LODF
             # TODO: figure this out
             self.results.Sbus = self.grid.get_Pbus()
             rates = self.grid.get_branch_rates()
-            self.results.Sf = np.dot(lin_mat.PTDF, self.results.Sbus)
+            self.results.Sf = np.dot(lin_mat.Linear, self.results.Sbus)
             self.results.loading = self.results.Sf / (rates + 1e-20)
 
         elif self.engine == EngineType.GSLV:
