@@ -31,7 +31,7 @@ from VeraGrid.Gui.Diagrams.SchematicWidget.Injections.current_injection_graphics
 from VeraGrid.Gui.Diagrams.SchematicWidget.Injections.controllable_shunt_graphics import (
     ControllableShuntGraphicItem,
     ControllableShunt)
-
+from VeraGrid.Gui.SubstationDesigner.voltage_level_conversion import VoltageLevelConversionWizard
 from VeraGridEngine.enumerations import DeviceType, FaultType, BusGraphicType
 from VeraGridEngine.Devices.types import INJECTION_DEVICE_TYPES
 from VeraGridEngine.Devices.Substation import Bus
@@ -199,6 +199,8 @@ class BusGraphicItem(GenericDiagramWidget, QtWidgets.QGraphicsRectItem):
         self.setBrush(TRANSPARENT)
         self.setFlags(self.GraphicsItemFlag.ItemIsSelectable | self.GraphicsItemFlag.ItemIsMovable)
         self.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+
+        self.vl_wizard: VoltageLevelConversionWizard | None = None
 
         # Update size:
         self.change_size(w=self.w)
@@ -484,11 +486,6 @@ class BusGraphicItem(GenericDiagramWidget, QtWidgets.QGraphicsRectItem):
                        checkeable=True,
                        checked_value=self.draw_labels)
 
-        # sc = menu.addMenu('Short circuit')
-        # sc_icon = QIcon()
-        # sc_icon.addPixmap(QPixmap(":/Icons/icons/short_circuit.svg"))
-        # sc.setIcon(sc_icon)
-
         sc = add_sub_menu(menu=menu,
                           text="Short circuit",
                           icon_path=":/Icons/icons/short_circuit.svg")
@@ -561,6 +558,10 @@ class BusGraphicItem(GenericDiagramWidget, QtWidgets.QGraphicsRectItem):
         add_menu_entry(menu, text='Delete',
                        icon_path=":/Icons/icons/delete_schematic.svg",
                        function_ptr=self.delete)
+
+        add_menu_entry(menu, text='Convert to voltage level',
+                       icon_path=":/Icons/icons/voltage_level.svg",
+                       function_ptr=self.convert_to_voltage_level)
 
         add_menu_entry(menu, text='Expand schematic',
                        icon_path=":/Icons/icons/grid_icon.svg",
@@ -644,6 +645,17 @@ class BusGraphicItem(GenericDiagramWidget, QtWidgets.QGraphicsRectItem):
             self.set_tile_color(QBrush(ACTIVE['color']))
         else:
             self.set_tile_color(QBrush(DEACTIVATED['color']))
+
+    def convert_to_voltage_level(self):
+        """
+        Open the voltage level conversion wizard
+        """
+        self.vl_wizard = VoltageLevelConversionWizard()
+
+
+
+        # open
+        self.vl_wizard.show()
 
     def expand_diagram_from_bus(self) -> None:
         """
