@@ -56,9 +56,11 @@ def yes_no_question(text, title='Question'):
     :param title:
     :return: True / False
     """
-    buttonReply = QtWidgets.QMessageBox.question(None,
-                                                 title,
-                                                 text,
-                                                 QtWidgets.QMessageBox.StandardButton.Yes | QtWidgets.QMessageBox.StandardButton.No,
-                                                 QtWidgets.QMessageBox.StandardButton.No)
+    buttonReply = QtWidgets.QMessageBox.question(
+        None,
+        title,
+        text,
+        QtWidgets.QMessageBox.StandardButton.Yes | QtWidgets.QMessageBox.StandardButton.No,
+        QtWidgets.QMessageBox.StandardButton.No
+    )
     return buttonReply == QtWidgets.QMessageBox.StandardButton.Yes.value

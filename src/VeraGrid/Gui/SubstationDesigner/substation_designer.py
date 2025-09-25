@@ -48,7 +48,7 @@ class SubstationDesigner(QtWidgets.QDialog):
         obj1 = VoltageLevelTemplate(name="VL", voltage=self.default_voltage,
                                     device_type=DeviceType.VoltageLevelTemplate)
 
-        self.property_list = [obj1.property_list[i] for i in [1, 5, 6, 7, 8, 9, 10]]
+        self.property_list = [obj1.property_list[i] for i in [1, 5, 6, 7, 8, 9]]
 
         self.mdl = ObjectsModel(objects=[obj1],
                                 property_list=self.property_list,

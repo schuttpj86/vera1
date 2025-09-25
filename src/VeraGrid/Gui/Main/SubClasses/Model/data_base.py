@@ -27,12 +27,12 @@ from VeraGrid.Gui.messages import yes_no_question, warning_msg, info_msg
 from VeraGrid.Gui.Main.SubClasses.Model.diagrams import DiagramsMain
 from VeraGrid.Gui.TowerBuilder.LineBuilderDialogue import TowerBuilderGUI
 from VeraGrid.Gui.RmsModelEditor.rms_model_editor_dialogue import RmsModelEditorGUI
-from VeraGrid.Gui.general_dialogues import LogsDialogue
 from VeraGrid.Gui.SystemScaler.system_scaler import SystemScaler
 from VeraGrid.Gui.Diagrams.MapWidget.grid_map_widget import GridMapWidget, make_diagram_from_substations
 from VeraGrid.Gui.Diagrams.SchematicWidget.schematic_widget import SchematicWidget, make_diagram_from_buses
 from VeraGrid.Gui.GridReduce.grid_reduce import GridReduceDialogue
 from VeraGrid.Gui.SubstationDesigner.substation_designer import SubstationDesigner
+from VeraGrid.Gui.general_dialogues import LogsDialogue, CustomQuestionDialogue
 
 
 class DataBaseTableMain(DiagramsMain):
@@ -1367,9 +1367,19 @@ class DataBaseTableMain(DiagramsMain):
                 vl_templates=dlg.get_voltage_levels()
             )
 
-            # ask to create a se diagram
-            ok = yes_no_question(title="create substation diagram",
-                                 text="Do you want to finalize the editing of the substation in the schematic?")
+            dlg3 = CustomQuestionDialogue(title="New substation",
+                                          question="How do you want to represent the merged grid?",
+                                          answer1="Create new diagram",
+                                          answer2="Add to current diagram")
+            dlg3.exec()
 
-            if ok:
+            if dlg3.accepted_answer == 1:
+                # Create a blank diagram and add to it
                 self.new_bus_branch_diagram_from_substation(substations=[se_object])
+
+            elif dlg3.accepted_answer == 2:
+                self.add_substation_to_current_diagram(substations=[se_object])
+
+            else:
+                # not imported
+                return

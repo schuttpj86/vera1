@@ -1907,6 +1907,35 @@ class DiagramsMain(CompiledArraysMain):
                 info_msg(text=f"No buses were found associated with the substations",
                          title="New schematic from substation")
 
+    def add_substation_to_current_diagram(self, substations: List[dev.Substation]):
+        """
+        Add a bus-branch diagram of a particular selection of objects
+        """
+
+        if len(substations) == 0:
+            info_msg(text="No substations selected. Please select some substations",
+                     title="Substations schematic")
+            return
+
+        diagram_widget = self.get_selected_diagram_widget()
+        if not isinstance(diagram_widget, SchematicWidget):
+            self.show_error_toast("The current diagram is not a schematic :(")
+            return
+
+        selected_buses = self.circuit.get_buses_from_objects(elements=substations)
+
+        if len(selected_buses):
+            diagram_widget.add_buses(selected_buses)
+
+            self.show_info_toast(f"Substation added")
+        else:
+            if len(substations) == 1:
+                info_msg(text=f"No buses were found associated with the substation {substations[0].name}",
+                         title="New schematic from substation")
+            else:
+                info_msg(text=f"No buses were found associated with the substations",
+                         title="New schematic from substation")
+
     def create_circuit_stored_diagrams(self):
         """
         Create as Widgets the diagrams stored in the circuit

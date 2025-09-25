@@ -6222,6 +6222,9 @@ class Assets:
         elif obj.device_type == DeviceType.SeriesReactanceDevice:
             self.delete_series_reactance(obj)
 
+        elif obj.device_type == DeviceType.SwitchDevice:
+            self.delete_switch(obj)
+
         elif obj.device_type == DeviceType.HVDCLineDevice:
             self.delete_hvdc_line(obj)
 
