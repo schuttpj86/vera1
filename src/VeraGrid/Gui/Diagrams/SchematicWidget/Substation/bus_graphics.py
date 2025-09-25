@@ -407,16 +407,21 @@ class BusGraphicItem(GenericDiagramWidget, QtWidgets.QGraphicsRectItem):
         Returns:
             Nothing
         """
-        y0 = self.h + 40
-        n = len(self._child_graphics)
-        inc_x = self.w / (n + 1)
-        x = inc_x
-        for elm in self._child_graphics:
-            elm.setPos(x - elm.w / 2, y0)
-            x += inc_x
+        if len(self._child_graphics):
+            positions = [e.api_object.get_bus_pos(self.api_object) for e in self._child_graphics]
+            positions_sorted = np.argsort(positions)
 
-        # Arrange line positions
-        self._terminal.process_callbacks(self.pos() + self._terminal.pos())
+            y0 = self.h + 40
+            n = len(self._child_graphics)
+            inc_x = self.w / (n + 1)
+            x = inc_x
+            for i in positions_sorted:
+                elm = self._child_graphics[i]
+                elm.setPos(x - elm.w / 2, y0)
+                x += inc_x
+
+            # Arrange line positions
+            self._terminal.process_callbacks(self.pos() + self._terminal.pos())
 
     def create_children_widgets(self, injections_by_tpe: Dict[DeviceType, List[INJECTION_DEVICE_TYPES]]):
         """
