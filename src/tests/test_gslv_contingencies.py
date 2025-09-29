@@ -23,7 +23,10 @@ def test_gslv_contingencies_ts():
 
     grid_gc = vg.open_file(filename=fname)
 
-    opts = vg.ContingencyAnalysisOptions()
+    opts = vg.ContingencyAnalysisOptions(
+        pf_options=vg.PowerFlowOptions(solver_type=vg.SolverType.NR),
+        contingency_method=vg.ContingencyMethod.PowerFlow
+    )
 
     # Native engine
     driver1 = vg.ContingencyAnalysisTimeSeriesDriver(grid=grid_gc,

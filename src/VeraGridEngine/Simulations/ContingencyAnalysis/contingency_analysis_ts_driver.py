@@ -4,9 +4,10 @@
 # SPDX-License-Identifier: MPL-2.0
 
 import numpy as np
+import numba as nb
 from typing import Union
 
-from VeraGridEngine.basic_structures import IntVec, StrVec
+from VeraGridEngine.basic_structures import IntVec, StrVec, Mat, Vec, CxMat, CxVec
 from VeraGridEngine.enumerations import EngineType, ContingencyMethod
 from VeraGridEngine.Devices.multi_circuit import MultiCircuit
 from VeraGridEngine.Compilers.circuit_to_data import compile_numerical_circuit_at
@@ -27,6 +28,36 @@ from VeraGridEngine.Compilers.circuit_to_newton_pa import newton_pa_contingencie
     NEWTON_PA_AVAILABLE
 from VeraGridEngine.Compilers.circuit_to_gslv import (gslv_contingencies, GSLV_AVAILABLE)
 from VeraGridEngine.Utils.NumericalMethods.weldorf_online_stddev import WeldorfOnlineStdDevMat
+
+
+@nb.njit()
+def max_abs_per_col(A: Mat) -> Vec:
+
+    res = np.zeros(A.shape[1], dtype=float)
+
+    for j in range(A.shape[1]):  # for each col (device)
+        for i in range(A.shape[0]):  # for each row (contingency)
+
+            val = abs(A[i, j])
+            if val > abs(res[j]):
+                res[j] = A[i, j]
+
+    return res
+
+
+@nb.njit()
+def max_abs_per_col_cx(A: CxMat) -> CxVec:
+
+    res = np.zeros(A.shape[1], dtype=nb.complex128)
+
+    for j in range(A.shape[1]):  # for each col (device)
+        for i in range(A.shape[0]):  # for each row (contingency)
+
+            val = abs(A[i, j])
+            if val > abs(res[j]):
+                res[j] = A[i, j]
+
+    return res
 
 
 class ContingencyAnalysisTimeSeriesDriver(TimeSeriesDriverTemplate):
@@ -79,7 +110,7 @@ class ContingencyAnalysisTimeSeriesDriver(TimeSeriesDriverTemplate):
 
     def run_nonlinear_contingency_analysis(self) -> ContingencyAnalysisTimeSeriesResults:
         """
-        Run a contngency analysis in series
+        Run a contingency analysis in series
         :return: returns the results
         """
 
@@ -150,9 +181,14 @@ class ContingencyAnalysisTimeSeriesDriver(TimeSeriesDriverTemplate):
                 logger=self.logger
             )
 
-            results.S[it, :] = res_t.Sbus.real.max(axis=0)
+            # NOTE: res_t results come with the contingencies as rows and the data as columns
+            # Sbus[i_con, i_bus]
+            # Sf[i_con, k_br]
 
-            results.max_flows[it, :] = np.abs(res_t.Sf).max(axis=0)
+            # Sbus (ncon, nbus)
+            results.S[it, :] = max_abs_per_col_cx(res_t.Sbus)
+
+            results.max_flows[it, :] = max_abs_per_col_cx(res_t.Sf)
 
             # Note: Loading is (ncon, nbranch)
 
@@ -163,11 +199,11 @@ class ContingencyAnalysisTimeSeriesDriver(TimeSeriesDriverTemplate):
             for k in range(results.ncon):
                 std_dev_counter.update(it, overloading[k, :])
 
-            results.max_loading[it, :] = loading_abs.max(axis=0)
+            results.max_loading[it, :] = max_abs_per_col(loading_abs)
             results.overload_count[it, :] = np.count_nonzero(overloading > 1.0)
             results.sum_overload[it, :] = overloading.sum(axis=0)
 
-            results.std_dev_overload[it, :] = np.abs(res_t.loading).max(axis=0)
+            results.std_dev_overload[it, :] = np.abs(res_t.loading).std(axis=0)
 
             results.srap_used_power += res_t.srap_used_power
             results.report += res_t.report
@@ -187,7 +223,7 @@ class ContingencyAnalysisTimeSeriesDriver(TimeSeriesDriverTemplate):
 
     def run_linear_contingency_analysis(self) -> ContingencyAnalysisTimeSeriesResults:
         """
-        Run a contngency analysis in series
+        Run a contingency analysis in series
         :return: returns the results
         """
 
@@ -227,20 +263,6 @@ class ContingencyAnalysisTimeSeriesDriver(TimeSeriesDriverTemplate):
 
         area_names, bus_area_indices, F, T, hvdc_F, hvdc_T = self.grid.get_branch_areas_info()
 
-        # cdriver = ContingencyAnalysisDriver(
-        #     grid=self.grid,
-        #     options=self.options,
-        #     linear_multiple_contingencies=None  # it is computed inside
-        # )
-
-        # if self.options.contingency_method == ContingencyMethod.PTDF:
-        #     linear = LinearAnalysisTimeSeriesDriver(
-        #         grid=self.grid,
-        #         options=self.options,
-        #         time_indices=self.time_indices
-        #     )
-        #     linear.run()
-
         std_dev_counter = WeldorfOnlineStdDevMat(nrow=results.nt, ncol=results.nbranch)
 
         for it, t in enumerate(self.time_indices):
@@ -272,9 +294,9 @@ class ContingencyAnalysisTimeSeriesDriver(TimeSeriesDriverTemplate):
                 logger=self.logger
             )
 
-            results.S[it, :] = res_t.Sbus.real.max(axis=0)
+            results.S[it, :] = max_abs_per_col(res_t.Sbus.real)
 
-            results.max_flows[it, :] = np.abs(res_t.Sf).max(axis=0)
+            results.max_flows[it, :] = max_abs_per_col(res_t.Sf.real)
 
             # Note: Loading is (ncon, nbranch)
 
@@ -285,11 +307,11 @@ class ContingencyAnalysisTimeSeriesDriver(TimeSeriesDriverTemplate):
             for k in range(results.ncon):
                 std_dev_counter.update(it, overloading[k, :])
 
-            results.max_loading[it, :] = loading_abs.max(axis=0)
+            results.max_loading[it, :] = max_abs_per_col(loading_abs)
             results.overload_count[it, :] = np.count_nonzero(overloading > 1.0)
             results.sum_overload[it, :] = overloading.sum(axis=0)
 
-            results.std_dev_overload[it, :] = np.abs(res_t.loading).max(axis=0)
+            results.std_dev_overload[it, :] = np.abs(res_t.loading).std(axis=0)
 
             results.srap_used_power += res_t.srap_used_power
             results.report += res_t.report
@@ -484,7 +506,7 @@ class ContingencyAnalysisTimeSeriesDriver(TimeSeriesDriverTemplate):
         if self.engine == EngineType.VeraGrid:
 
             if self.options.contingency_method == ContingencyMethod.PowerFlow:
-                self.run_nonlinear_contingency_analysis()
+                self.results = self.run_nonlinear_contingency_analysis()
 
             elif self.options.contingency_method == ContingencyMethod.Linear:
                 self.results = self.run_linear_contingency_analysis()
@@ -505,6 +527,6 @@ class ContingencyAnalysisTimeSeriesDriver(TimeSeriesDriverTemplate):
 
         else:
             # default to VeraGrid mode
-            self.results = self.run_contingency_analysis()
+            self.results = self.run_linear_contingency_analysis()
 
         self.toc()
