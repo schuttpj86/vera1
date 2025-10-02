@@ -12,16 +12,15 @@ class RmsModelTemplate(EditableDevice):
     """
     This class serves to give flexible access to either a template or a custom model
     """
-    def __init__(self, name: str = ""):
 
+    def __init__(self, name: str = ""):
         super().__init__(name=name,
                          idtag=None,
                          code="",
-                         device_type= DeviceType.RmsModelTemplateDevice)
+                         device_type=DeviceType.RmsModelTemplateDevice)
 
         self._block: Block = Block()
 
     @property
     def block(self):
         return self._block
-

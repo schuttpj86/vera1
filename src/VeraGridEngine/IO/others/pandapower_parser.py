@@ -12,7 +12,7 @@ import numpy as np
 import pandas as pd
 
 import VeraGridEngine.Devices as dev
-from VeraGridEngine import TapChanger
+# from VeraGridEngine.Devices.Branches.tap_changer import TapChanger
 from VeraGridEngine.enumerations import (ExternalGridMode, TapChangerTypes)
 from VeraGridEngine.Devices.types import ALL_DEV_TYPES
 from VeraGridEngine.basic_structures import Logger
@@ -483,7 +483,7 @@ class Panda2VeraGrid:
 
             self.register(panda_type="trafo", panda_code=idx, api_obj=elm)
 
-    def extract_tap_changers(self, row) -> TapChanger | None:
+    def extract_tap_changers(self, row) -> dev.TapChanger | None:
         """
             # Tap changer mapping (pandapower → GridCal)
             #

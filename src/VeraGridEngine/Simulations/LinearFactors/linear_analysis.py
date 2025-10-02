@@ -941,6 +941,21 @@ class LinearMultiContingencies:
                 )
             )
 
+    def get_single_con_branch_idx(self) -> Tuple[IntVec, IntVec]:
+        """
+        Get the branch index array and the contringency group it belongs array
+        :return: array of single contingency branch indices,
+                 array of the matching contingency groups
+        """
+        con_idx = list()
+        cg_idx = list()
+        for i, ci in enumerate(self.contingency_indices_list):
+            if len(ci.branch_contingency_indices) == 1:
+                con_idx.append(ci.branch_contingency_indices[0])
+                cg_idx.append(i)
+
+        return np.array(con_idx), np.array(cg_idx)
+
 
 class LinearAnalysisTs:
     """
@@ -979,6 +994,20 @@ class LinearAnalysisTs:
         self.nbus = grid.get_bus_number()
         self.nt = grid.get_time_number()
 
+    def get_linear_analysis_at(self, t_idx: int) -> LinearAnalysis:
+        """
+
+        :param t_idx:
+        :return:
+        """
+        # get the base index
+        t_i = self.mapping[t_idx]
+
+        # get the linear analysis
+        lin: LinearAnalysis = self._linear_analysis[t_i]
+
+        return lin
+
     def get_flows_at(self, t_idx: int, P: CxVec | Vec) -> CxVec | Vec:
         """
         Get the flows at a time step
@@ -986,11 +1015,8 @@ class LinearAnalysisTs:
         :param P: Injections vector
         :return: branch flows vector
         """
-        # get the base index
-        t_i = self.mapping[t_idx]
-
         # get the linear analysis
-        lin: LinearAnalysis = self._linear_analysis[t_i]
+        lin = self.get_linear_analysis_at(t_idx=t_idx)
 
         return lin.get_flows(Sbus=P)
 

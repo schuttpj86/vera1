@@ -25,7 +25,7 @@ def test_contingency_filtes() -> None:
     print("Running contingency analysis...")
     con_options = ContingencyAnalysisOptions()
     con_options.use_srap = False
-    con_options.contingency_method = ContingencyMethod.PTDF
+    con_options.contingency_method = ContingencyMethod.Linear
 
     cg_idx_dict = {a: i for i, a in enumerate(grid.get_contingency_groups())}
 

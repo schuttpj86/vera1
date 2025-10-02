@@ -9,8 +9,10 @@ import uuid
 from dataclasses import dataclass, field
 from typing import Tuple, Sequence, List, Dict, Any
 
-from VeraGridEngine.Utils.Symbolic.symbolic import Var, Const, Expr
+from VeraGridEngine.Devices.Parents.physical_device import PhysicalDevice
+from VeraGridEngine.Utils.Symbolic.symbolic import Var, Const, Expr, make_symbolic
 from VeraGridEngine.enumerations import DynamicVarType
+
 
 
 def _new_uid() -> int:
@@ -71,6 +73,7 @@ class Block:
     This represents a group of equations or a group of blocks
     """
     uid: int = field(default_factory=_new_uid)
+    vars2device:Dict[int, PhysicalDevice] = field(default_factory=dict)
 
     # internal vars
     state_vars: List[Var] = field(default_factory=list)
@@ -79,15 +82,18 @@ class Block:
     algebraic_eqs: List[Expr] = field(default_factory=list)
 
     # initialization
-    init_eqs: Dict[Var, Expr] = field(default_factory=dict)
-    init_params_eq: Dict[str, Expr] = field(default_factory=dict)
     init_vars: List[Var] = field(default_factory=list)
+    init_eqs: Dict[Var, Expr] = field(default_factory=dict)
+    fix_vars: List[Any] = field(default_factory=list)
+    fix_vars_eqs: Dict[Any, Expr] = field(default_factory=dict)
+
 
     external_mapping: Dict[DynamicVarType, Var] = field(default_factory=dict)
     var_mapping: Dict[str, Var] = field(default_factory=dict)
 
-    # parameters
+    # parameters (parameters affected by events)
     parameters: List[Var | Const] = field(default_factory=list)
+    parameters_eqs: List[Expr] = field(default_factory=list)
 
     name: str = ""
 
@@ -190,6 +196,21 @@ def constant(value: float, name: str = "const") -> Tuple[Var, Block]:
     blk = Block(algebraic_vars=[y], algebraic_eqs=[y - Const(value)])
     return y, blk
 
+def variable(name: str = "variable",  vartype: str = "vartype") -> Tuple[Var, Block]:
+    y = Var(name)
+    if vartype == 'state':
+        blk = Block(state_vars=[y])
+    else:
+        blk = Block(algebraic_vars=[y])
+    return y, blk
+
+def equation(expr: str = 'expression', etype: str = "etype")-> Block:
+    if etype == 'state':
+        blk = Block(state_eqs=[make_symbolic(expr)])
+    else:
+        blk = Block(algebraic_eqs=[make_symbolic(expr)])
+    return blk
+
 
 def gain(k: float, u: Var | Const, name: str = "gain_out") -> Tuple[Var, Block]:
     y = Var(name)
@@ -208,6 +229,19 @@ def adder(inputs: Sequence[Var | Const], name: str = "sum_out") -> Tuple[Var, Bl
     return y, blk
 
 
+def substract(inputs: Sequence[Var | Const], name: str = "substract_out") -> Tuple[Var, Block]:
+    if len(inputs) == 0:
+        raise ValueError("adder() needs at least one input variable")
+    y = Var(name)
+    expr: Expr = inputs[0]
+    for v in inputs[1:]:
+        expr += v
+    blk = Block(algebraic_vars=[y], algebraic_eqs=[y - expr])
+    return y, blk
+
+
+
+
 def integrator(u: Var | Const, name: str = "x") -> Tuple[Var, Block]:
     x = Var(name)
     blk = Block(state_vars=[x], state_eqs=[u])
@@ -223,3 +257,7 @@ def pi_controller(err: Var, kp: float, ki: float, name: str = "pi") -> Block:
                  children=[blk_kp, blk_int, blk_ki, blk_sum],
                  in_vars=[err],
                  out_vars=[u])
+
+def generic() -> Block:
+    blk = Block()
+    return blk

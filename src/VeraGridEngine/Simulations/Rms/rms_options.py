@@ -4,16 +4,20 @@
 # SPDX-License-Identifier: MPL-2.0
 
 from VeraGridEngine.enumerations import DynamicIntegrationMethod
+from VeraGridEngine.Simulations.options_template import OptionsTemplate
 
 
-class RmsOptions:
+class RmsOptions(OptionsTemplate):
+    """
+    Rms simulation options
+    """
+
 
     def __init__(self,
                  time_step: float = 0.01,
                  simulation_time: float = 5,
-                 max_integrator_iterations: int = 20,
                  tolerance: float = 1e-6,
-                 integration_method: DynamicIntegrationMethod = DynamicIntegrationMethod.Trapezoid):
+                 integration_method: DynamicIntegrationMethod = DynamicIntegrationMethod.BackEuler):
         """
         RmsOptions
         :param time_step: time step of the simulations (s)
@@ -22,8 +26,18 @@ class RmsOptions:
         :param tolerance: Integration tolerance
         :param integration_method: Integration method (default Trapezoid)
         """
+
+        OptionsTemplate.__init__(self, name='RmsSimulationOptions')
+
+        self.integration_method: DynamicIntegrationMethod = integration_method
         self.time_step: float = time_step
         self.simulation_time: float = simulation_time
-        self.max_integrator_iterations: int = max_integrator_iterations
         self.tolerance: float = tolerance
-        self.integration_method: DynamicIntegrationMethod = integration_method
+
+
+
+        self.register(key="integration_method", tpe=DynamicIntegrationMethod)
+        self.register(key="time_step", tpe=float)
+        self.register(key="simulation_time", tpe=float)
+        self.register(key="tolerance", tpe=float)
+

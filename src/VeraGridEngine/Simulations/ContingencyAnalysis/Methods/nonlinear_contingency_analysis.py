@@ -3,44 +3,54 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 # SPDX-License-Identifier: MPL-2.0
 from __future__ import annotations
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, Union, Callable, List
 import numpy as np
-from VeraGridEngine.Devices.multi_circuit import MultiCircuit
+
+from VeraGridEngine.DataStructures.numerical_circuit import NumericalCircuit
 from VeraGridEngine.Compilers.circuit_to_data import compile_numerical_circuit_at
 from VeraGridEngine.Simulations.ContingencyAnalysis.contingency_analysis_results import ContingencyAnalysisResults
 from VeraGridEngine.Simulations.PowerFlow.power_flow_worker import multi_island_pf_nc
 from VeraGridEngine.Simulations.PowerFlow.power_flow_options import PowerFlowOptions, SolverType
 from VeraGridEngine.Simulations.LinearFactors.linear_analysis import LinearAnalysis, LinearMultiContingencies
 from VeraGridEngine.Simulations.ContingencyAnalysis.contingency_analysis_options import ContingencyAnalysisOptions
-from VeraGridEngine.basic_structures import Logger
+from VeraGridEngine.basic_structures import Logger, CxVec, IntVec, StrVec, Mat, Vec
 
 if TYPE_CHECKING:
     from VeraGridEngine.Simulations.ContingencyAnalysis.contingency_analysis_driver import ContingencyAnalysisDriver
 
 
-def nonlinear_contingency_analysis(grid: MultiCircuit,
+def nonlinear_contingency_analysis(nc: NumericalCircuit,
                                    options: ContingencyAnalysisOptions,
                                    linear_multiple_contingencies: LinearMultiContingencies,
-                                   calling_class: ContingencyAnalysisDriver,
+                                   area_names: StrVec | List[str],
+                                   bus_area_indices: StrVec,
+                                   F: IntVec,
+                                   T: IntVec,
+                                   report_text: Callable[[str], None] | None,
+                                   report_progress2: Callable[[int, int], None] | None,
+                                   is_cancel: Callable[[], bool] | None,
                                    t_idx: Union[None, int] = None,
                                    t_prob: float = 1.0,
                                    logger: Logger | None = None, ) -> ContingencyAnalysisResults:
     """
     Run a contingency analysis using the power flow options
-    :param grid: MultiCircuit
+    :param nc: NumericalCircuit
     :param options: ContingencyAnalysisOptions
     :param linear_multiple_contingencies: LinearMultiContingencies
-    :param calling_class: ContingencyAnalysisDriver
+    :param area_names:
+    :param bus_area_indices:
+    :param F:
+    :param T:
+    :param report_text:
+    :param report_progress2;
+    :param is_cancel:
     :param t_idx: time index, if None the snapshot is used
     :param t_prob: probability of te time
-    :param logger: logging object
-    :return: returns the results (ContingencyAnalysisResults)
+    :param logger: logger instance
+    :return: returns the results
     """
     if logger is None:
         logger = Logger()
-
-    # set the numerical circuit
-    nc = compile_numerical_circuit_at(grid, t_idx=t_idx)
 
     if options.pf_options is None:
         pf_opts = PowerFlowOptions(solver_type=SolverType.Linear,
@@ -48,8 +58,6 @@ def nonlinear_contingency_analysis(grid: MultiCircuit,
 
     else:
         pf_opts = options.pf_options
-
-    area_names, bus_area_indices, F, T, hvdc_F, hvdc_T = grid.get_branch_areas_info()
 
     # declare the results
     results = ContingencyAnalysisResults(ncon=len(linear_multiple_contingencies.contingency_groups_used),
@@ -95,9 +103,11 @@ def nonlinear_contingency_analysis(grid: MultiCircuit,
         nc.set_con_or_ra_status(contingencies)
 
         # report progress
-        if t_idx is None and calling_class is not None:
-            calling_class.report_text(f'Contingency group: {contingency_group.name}')
-            calling_class.report_progress2(ic, len(linear_multiple_contingencies.contingency_groups_used) * 100)
+        if report_text is not None:
+            report_text(f'Contingency group: {contingency_group.name}')
+
+        if report_progress2 is not None:
+            report_progress2(ic, len(linear_multiple_contingencies.contingency_groups_used) * 100)
 
         # run
         pf_res = multi_island_pf_nc(nc=nc,
@@ -139,8 +149,8 @@ def nonlinear_contingency_analysis(grid: MultiCircuit,
         # set the status
         nc.set_con_or_ra_status(contingencies, revert=True)
 
-        if calling_class is not None:
-            if calling_class.is_cancel():
+        if is_cancel is not None:
+            if is_cancel():
                 return results
 
     return results

@@ -39,7 +39,8 @@ from VeraGridEngine.basic_structures import CxVec
 from VeraGridEngine.enumerations import (DeviceType, AvailableTransferMode, SolverType, MIPSolvers, TimeGrouping,
                                          ZonalGrouping, ContingencyMethod, InvestmentEvaluationMethod, EngineType,
                                          BranchImpedanceMode, ResultTypes, SimulationTypes, NodalCapacityMethod,
-                                         ContingencyFilteringMethods, InvestmentsEvaluationObjectives)
+                                         ContingencyFilteringMethods, InvestmentsEvaluationObjectives,
+                                         ReliabilityMode)
 
 
 class SimulationsMain(TimeEventsMain):
@@ -90,6 +91,12 @@ class SimulationsMain(TimeEventsMain):
         self.lp_solvers_dict[SolverType.NONLINEAR_OPF.value] = SolverType.NONLINEAR_OPF
         self.lp_solvers_dict[SolverType.GREEDY_DISPATCH_OPF.value] = SolverType.GREEDY_DISPATCH_OPF
         self.ui.lpf_solver_comboBox.setModel(gf.get_list_model(list(self.lp_solvers_dict.keys())))
+
+        # reliabilty modes
+        self.reliability_mode_dict = OrderedDict()
+        self.reliability_mode_dict[ReliabilityMode.GenerationAdequacy.value] = ReliabilityMode.GenerationAdequacy
+        self.reliability_mode_dict[ReliabilityMode.GridMetrics.value] = ReliabilityMode.GridMetrics
+        self.ui.reliability_method_comboBox.setModel(gf.get_list_model(list(self.reliability_mode_dict.keys())))
 
         # ips solvers dictionary
         self.ips_solvers_dict = OrderedDict()
@@ -147,7 +154,8 @@ class SimulationsMain(TimeEventsMain):
         self.contingency_engines_dict = OrderedDict()
         self.contingency_engines_dict[ContingencyMethod.PowerFlow.value] = ContingencyMethod.PowerFlow
         # self.contingency_engines_dict[ContingencyMethod.OptimalPowerFlow.value] = ContingencyMethod.OptimalPowerFlow
-        self.contingency_engines_dict[ContingencyMethod.PTDF.value] = ContingencyMethod.PTDF
+        self.contingency_engines_dict[ContingencyMethod.Linear.value] = ContingencyMethod.Linear
+        self.contingency_engines_dict[ContingencyMethod.PTDF_scan.value] = ContingencyMethod.PTDF_scan
         self.ui.contingencyEngineComboBox.setModel(gf.get_list_model(list(self.contingency_engines_dict.keys())))
 
         # list of stochastic power flow methods
@@ -229,6 +237,8 @@ class SimulationsMain(TimeEventsMain):
         self.ui.actionFuse_devices.triggered.connect(self.fuse_devices)
         self.ui.actionInvestments_evaluation.triggered.connect(self.run_investments_evaluation)
         self.ui.actionReliability.triggered.connect(self.reliability_dispatcher)
+        self.ui.actionRun_Dynamic_RMS_Simulation.triggered.connect(self.rms_dispatcher)
+        self.ui.actionRun_Small_Signal_RMS_Simulation.triggered.connect(self.ss_dispatcher)
 
         self.ui.actionUse_clustering.triggered.connect(self.activate_clustering)
         self.ui.actionNodal_capacity.triggered.connect(self.run_nodal_capacity)
@@ -673,6 +683,8 @@ class SimulationsMain(TimeEventsMain):
             SimulationTypes.OPF_NTC_run.value: ':/Icons/icons/ntc_opf.svg',
             SimulationTypes.OPF_NTC_TS_run.value: ':/Icons/icons/ntc_opf_ts.svg',
             SimulationTypes.Reliability_run.value: ':/Icons/icons/reliability.svg',
+            SimulationTypes.SmallSignal_run.value: ':/Icons/icons/ss_icon.svg',
+            SimulationTypes.RmsDynamic_run.value: ':/Icons/icons/dyn.svg',
         }
 
         self.ui.results_treeView.setModel(gf.get_tree_model(d, 'Results', icons=icons))
@@ -750,6 +762,34 @@ class SimulationsMain(TimeEventsMain):
             initialize_angles=self.ui.initialize_pf_angles_checkBox.isChecked(),
             generate_report=self.ui.addPowerFlowReportCheckBox.isChecked(),
             three_phase_unbalanced=self.ui.pf_three_phase_checkBox.isChecked()
+        )
+
+        return ops
+
+    def get_selected_rms_simulation_options(self) -> sim.RmsOptions:
+        """
+        Gather rms simulation run options
+        :return: sim.RmsOptions
+        """
+        ops = sim.RmsOptions(
+            time_step=self.ui.h_spinBox.value(),
+            simulation_time=self.ui.sim_time_spinBox.value(),
+            tolerance=self.ui.tolerance_rms_spinBox.value(),
+            integration_method=self.ui.rms_int_method_comboBox.currentText()
+        )
+
+        return ops
+
+    def get_selected_small_signal_stability_options(self) -> sim.SmallSignalStabilityOptions:
+        """
+        Gather SmallSignal simulation run options
+        :return: sim.SmallSignalOptions
+        """
+        ops = sim.SmallSignalStabilityOptions(
+            time_step=self.ui.ss_h_spinBox_2.value(),
+            ss_assessment_time=self.ui.ss_assessment_time_spinBox_2.value(),
+            tolerance=self.ui.tolerance_ss_spinBox_2.value(),
+        integration_method=self.ui.ss_int_method_comboBox_2.currentText()
         )
 
         return ops
@@ -956,6 +996,19 @@ class SimulationsMain(TimeEventsMain):
 
         else:
             self.run_rms()
+
+    def ss_dispatcher(self):
+        """
+        Dispatch the reliability action
+        :return:
+        """
+        if self.server_driver.is_running():
+            instruction = RemoteInstruction(operation=SimulationTypes.SmallSignal_run)
+            self.run_remote(instruction=instruction)
+
+        else:
+            self.run_small_signal_stability()
+
 
     def run_power_flow(self):
         """
@@ -2945,9 +2998,12 @@ class SimulationsMain(TimeEventsMain):
 
                     pf_options = self.get_selected_power_flow_options()
 
+                    mode = self.reliability_mode_dict[self.ui.reliability_method_comboBox.currentText()]
+
                     drv = sim.ReliabilityStudyDriver(grid=self.circuit,
                                                      pf_options=pf_options,
                                                      time_indices=self.get_time_indices(),
+                                                     reliability_mode=mode,
                                                      n_sim=self.ui.max_iterations_reliability_spinBox.value())
 
                     self.session.run(drv,
@@ -2985,38 +3041,49 @@ class SimulationsMain(TimeEventsMain):
 
     def run_rms(self):
         """
-        Run reliability study
+        Run rms simulation
         :return:
         """
         if self.circuit.valid_for_simulation():
 
-            if self.circuit.get_time_number() > 0:
+            if not self.session.is_this_running(SimulationTypes.RmsDynamic_run):
 
-                if not self.session.is_this_running(SimulationTypes.RmsDynamic_run):
+                _, pf_results = self.session.power_flow
+
+                if pf_results is not None:
+
+
 
                     self.add_simulation(SimulationTypes.RmsDynamic_run)
 
                     self.LOCK()
 
-                    # Compile the grid
+                     # Compile the grid
                     self.ui.progress_label.setText('Compiling the grid...')
                     QtGui.QGuiApplication.processEvents()
 
-                    options = sim.RmsOptions()
+                    # get the rms simulation options from the GUI
+                    options = self.get_selected_rms_simulation_options()
 
-                    drv = sim.RmsSimulationDriver(grid=self.circuit, options=options)
+                    self.ui.progress_label.setText('Running rms simulation...')
+
+                    drv = sim.RmsSimulationDriver(grid=self.circuit, options=options, pf_results=pf_results)
 
                     self.session.run(drv,
-                                     post_func=self.post_reliability,
-                                     prog_func=self.ui.progressBar.setValue,
-                                     text_func=self.ui.progress_label.setText)
+                                post_func=self.post_rms,
+                                prog_func=self.ui.progressBar.setValue,
+                                text_func=self.ui.progress_label.setText)
+
 
                 else:
-                    self.show_warning_toast('Another reliability study is running already...')
+                    info_msg('Run a power flow simulation first.\n'
+                             'The results are needed to initialize this simulation.')
             else:
-                self.show_warning_toast('Reliability studies need time data...')
+                self.show_warning_toast('Another rms simulation is running already...')
+
         else:
             pass
+
 
     def post_rms(self):
         """
@@ -3029,15 +3096,19 @@ class SimulationsMain(TimeEventsMain):
 
             # delete from the current simulations
             self.remove_simulation(SimulationTypes.RmsDynamic_run)
+            self.update_available_results()
 
-            if results is not None:
-                self.update_available_results()
-                self.colour_diagrams()
+            # if results.converged:
+            #     self.show_info_toast("Power flow converged :)")
+            # else:
+            #     self.show_warning_toast("Power flow not converged :/")
+
         else:
-            pass
+            warning_msg('There are no rms simulation results.', 'Rms simulation')
 
         if not self.session.is_anything_running():
             self.UNLOCK()
+
 
     def automatic_pf_precision(self):
         """
@@ -3092,3 +3163,69 @@ class SimulationsMain(TimeEventsMain):
             self._remote_jobs.pop(driver_idtag)
 
             self.show_info_toast(f"Remote results received!")
+    def run_small_signal_stability(self):
+        """
+        Run small signal simulation
+        :return:
+        """
+        if self.circuit.valid_for_simulation():
+
+            if not self.session.is_this_running(SimulationTypes.SmallSignal_run):
+
+                _, pf_results = self.session.power_flow
+
+                if pf_results is not None:
+
+                    self.add_simulation(SimulationTypes.SmallSignal_run)
+
+                    self.LOCK()
+
+                     # Compile the grid
+                    self.ui.progress_label.setText('Compiling the grid...')
+                    QtGui.QGuiApplication.processEvents()
+
+                    # get the small signal stability analysis simulation options from the GUI
+                    options = self.get_selected_small_signal_stability_options()
+
+                    self.ui.progress_label.setText('Performing Small Signal Stability analysis...')
+
+                    drv = sim.SmallSignalStabilityDriver(grid=self.circuit, options=options, pf_results=pf_results)
+
+                    self.session.run(drv,
+                                post_func=self.post_small_signal_stability,
+                                prog_func=self.ui.progressBar.setValue,
+                                text_func=self.ui.progress_label.setText)
+
+
+                else:
+                    info_msg('Run a power flow simulation first.\n'
+                             'The results are needed to initialize this simulation.')
+            else:
+                self.show_warning_toast('Another Small Signal stability analysis simulation is running already...')
+
+        else:
+            pass
+
+    def post_small_signal_stability(self):
+        """
+
+        :return:
+        """
+        _, results = self.session.small_signal_stability_simulation
+
+        if results is not None:
+
+            # delete from the current simulations
+            self.remove_simulation(SimulationTypes.SmallSignal_run)
+            self.update_available_results()
+
+            # if results.converged:
+            #     self.show_info_toast("Power flow converged :)")
+            # else:
+            #     self.show_warning_toast("Power flow not converged :/")
+
+        else:
+            warning_msg('There are no Small Signal Stability analysis results.', 'Small Signal Stability analysis')
+
+        if not self.session.is_anything_running():
+            self.UNLOCK()

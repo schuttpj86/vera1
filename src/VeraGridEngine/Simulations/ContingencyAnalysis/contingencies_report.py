@@ -356,7 +356,12 @@ class ContingencyResultsReport:
         df = self.get_df(time_array=time_array, time_format=time_format)
 
         df["Time idx"] = df["Time idx"].astype(int)
-        df["Probability cluster"] = df["Probability cluster"].astype(float)
+
+        if "Probability cluster" in df:
+            df["Probability cluster"] = df["Probability cluster"].astype(float)
+        else:
+            df["Probability cluster"] = np.ones(df.shape[0])
+
         df["Base rating (MW)"] = df["Base rating (MW)"].astype(float)
         df["Contingency rating (MW)"] = df["Contingency rating (MW)"].astype(float)
         df["SRAP rating (MW)"] = df["SRAP rating (MW)"].astype(float)

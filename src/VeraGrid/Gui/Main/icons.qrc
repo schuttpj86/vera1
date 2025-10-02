@@ -200,7 +200,9 @@
     <file>icons/dcopf.svg</file>
     <file>icons/dcopf_ts.svg</file>
     <file>icons/grid_icon.svg</file>
+    <file>icons/ss_icon.svg</file>
     <file>icons/pf.svg</file>
+    <file>icons/dyn_gray.svg</file>
     <file>icons/short_circuit.svg</file>
     <file>icons/stochastic_power_flow.svg</file>
     <file>icons/pf_ts.svg</file>

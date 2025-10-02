@@ -1,3 +1,5 @@
+from trunk.ai.ai_iterable_example import grid_
+
 # 💥 Contingency analysis
 
 
@@ -6,6 +8,18 @@ Firs you define a contingency group, and then define individual events that are 
 The simulation then tries all the contingency groups and apply the events registered in each group.
 
 ![](figures/settings-con.png)
+
+- Contingency method or engine:
+  - "Power flow": Base flows are obtained with a power flow according to `pf_options`. 
+    Each contingency is obtained by runnig a power flow also according to `pf_options` 
+    and to the more sophisticated contingency definition.
+  
+  - "Linear": Base flows are taken from `options.Pf` or if not provided, computed linearly. 
+     The continegencies are computed linearly, according to the more sophisticated contingency definition.
+    
+  - "PTDF Scan": Brute contingency scan, this is the fastest 
+  and may not adhere to the sophisticated contingency definition. 
+  No SRAP or particular condition is performed.
 
 ## API
 
@@ -18,44 +32,56 @@ import VeraGridEngine as gce
 folder = os.path.join('Grids_and_profiles', 'grids')
 fname = os.path.join(folder, 'IEEE 5 Bus.xlsx')
 
-main_circuit = gce.open_file(fname)
+grid = gce.open_file(fname)
 
-branches = main_circuit.get_branches()
+branches = grid.get_branches()
 
 # manually generate the contingencies
 for i, br in enumerate(branches):
-    # add a contingency group
-    group = gce.ContingencyGroup(name="contingency {}".format(i + 1))
-    main_circuit.add_contingency_group(group)
+  # add a contingency group
+  group = gce.ContingencyGroup(name="contingency {}".format(i + 1))
+  grid.add_contingency_group(group)
 
-    # add the branch contingency to the groups, only groups are failed at once
-    con = gce.Contingency(device=br, name=br.name, group=group)
-    main_circuit.add_contingency(con)
+  # add the branch contingency to the groups, only groups are failed at once
+  con = gce.Contingency(device=br, name=br.name, group=group)
+  grid.add_contingency(con)
 
 # add a special contingency
 group = gce.ContingencyGroup(name="Special contingency")
-main_circuit.add_contingency_group(group)
-main_circuit.add_contingency(gce.Contingency(device=branches[3], name=branches[3].name, group=group))
-main_circuit.add_contingency(gce.Contingency(device=branches[5], name=branches[5].name, group=group))
+grid.add_contingency_group(group)
+grid.add_contingency(gce.Contingency(device=branches[3], name=branches[3].name, group=group))
+grid.add_contingency(gce.Contingency(device=branches[5], name=branches[5].name, group=group))
 
 pf_options = gce.PowerFlowOptions(solver_type=gce.SolverType.NR)
 
 # declare the contingency options
-options_ = gce.ContingencyAnalysisOptions(use_provided_flows=False,
-                                          Pf=None,
-                                          contingency_method=gce.ContingencyMethod.PowerFlow,
-                                          # if no power flow options are provided
-                                          # a linear power flow is used
-                                          pf_options=pf_options)
+options_ = gce.ContingencyAnalysisOptions(
+  
+  # use the provided flows?
+  use_provided_flows=False,
+  
+  # Pass here more exact base flows, otherwise linear ones will be computed
+  Pf=None,
+  
+  # Contingency method to use
+  contingency_method=gce.ContingencyMethod.PowerFlow,
+
+  # optional, you can send here any contingency groups
+  contingency_groups=grid.get_contingency_groups(),
+  
+  # if no power flow options are provided
+  # a linear power flow is used
+  pf_options=pf_options
+)
 
 # Get all the defined contingency groups from the circuit
-contingency_groups = main_circuit.get_contingency_groups()
+contingency_groups = grid.get_contingency_groups()
 
-# Pass the list of contingency groups as required
-linear_multiple_contingencies = gce.LinearMultiContingencies(grid=main_circuit,
+# Pass the list of contingency groups as required (optional)
+linear_multiple_contingencies = gce.LinearMultiContingencies(grid=grid,
                                                              contingency_groups_used=contingency_groups)
 
-simulation = gce.ContingencyAnalysisDriver(grid=main_circuit,
+simulation = gce.ContingencyAnalysisDriver(grid=grid,
                                            options=options_,
                                            linear_multiple_contingencies=linear_multiple_contingencies)
 

@@ -69,7 +69,7 @@ try:
     }
 
     contingency_method_dict = {
-        ContingencyMethod.PTDF: pg.ContingencyMethod.PTDF,
+        ContingencyMethod.Linear: pg.ContingencyMethod.PTDF,
         ContingencyMethod.PowerFlow: pg.ContingencyMethod.PowerFlow,
         ContingencyMethod.HELM: pg.ContingencyMethod.HELM,
     }

@@ -187,6 +187,10 @@ def build_tar_gz_pkg(pkg_name: str,
     """
     pkg_name2 = pkg_name.lower() + '-' + version
     filename = pkg_name2 + '.tar.gz'
+
+    if not os.path.exists(folder_to_save):
+        os.makedirs(folder_to_save)
+
     output_filename = os.path.join(folder_to_save, filename)
 
     files = find_pkg_files(path=pkg_name,
@@ -216,9 +220,6 @@ def build_tar_gz_pkg(pkg_name: str,
     setup_cfg_path = 'setup_cfg' + pkg_name
     with open(setup_cfg_path, 'w') as f:
         f.write(setup_cfg)
-
-    if not os.path.exists('dist'):
-        os.makedirs('dist')
 
     with tarfile.open(output_filename, "w:gz") as tar:
         for name, file_path in files:

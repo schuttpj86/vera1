@@ -9,6 +9,7 @@ from VeraGridEngine.DataStructures.numerical_circuit import NumericalCircuit
 from VeraGridEngine.enumerations import DeviceType
 from VeraGridEngine.Simulations.OPF.simple_dispatch_ts import greedy_dispatch2
 from VeraGridEngine.basic_structures import IntMat, Vec, Mat
+import VeraGridEngine as vge
 
 """
 Common reliability indicators:
@@ -145,6 +146,31 @@ def find_different_states(mat1: IntMat, mat2: IntMat):
     return states
 
 
+@nb.njit()
+def find_time_blocks(horizon: int, all_actives: IntMat):
+    """
+    Get the contigous time blocks of failure
+    :param horizon: number of time steps (ntime)
+    :param all_actives: matrix of active states (ntime, n_device)
+    :return:
+    """
+    blocks = list()
+    idx_list = list()
+    for tidx in range(horizon):
+
+        val = all_actives[tidx, :].sum()
+
+        if val != all_actives.shape[1]:
+            # there is at least one failure
+            idx_list.append(tidx)
+        else:
+            # there is no failure
+            if len(idx_list) > 0:
+                blocks.append(idx_list.copy())
+                idx_list.clear()
+    return blocks
+
+
 @nb.njit(cache=True)
 def compute_loss_of_load_because_of_lack_of_generation(gen_pmax: Mat, load: Mat, dt: Vec):
     """
@@ -269,3 +295,57 @@ def reliability_simulation(n_sim: int,
             curtailment_arr[sim_idx] = np.sum(ndg_surplus_after_batt)
 
     return lole_arr, total_cost_arr, curtailment_arr
+
+
+@nb.njit(cache=True, parallel=True)
+def reliability_grid_simulation(nc,
+                                grid,
+                                n_sim: int,
+                                branch_mttf: Vec,
+                                branch_mttr: Vec,
+                                dt: Vec,
+                                tol=1e-6):
+    """
+
+    :param n_sim:
+    :param gen_mttf:
+    :param gen_mttr:
+    :param dt:
+    :param tol:
+    :return:
+    """
+    lole_arr = np.zeros(n_sim)
+
+    power_not_supplied = 0
+    n_hours_not_supplied = 0
+
+    for sim_idx in nb.prange(n_sim):
+        simulated_branch_actives, n_failures = generate_states_matrix(mttf=branch_mttf,
+                                                                      mttr=branch_mttr,
+                                                                      horizon=len(dt),
+                                                                      initially_working=False)
+
+        if n_failures:
+
+            time_failures = np.sum(simulated_branch_actives, axis=0)
+
+            for i in range(len(nc.passive)):
+                grid.lines[i].active_prof = simulated_branch_actives[i, :]
+
+            for k, value in time_failures:
+
+                if value > 0:
+
+                    opf_options = vge.OptimalPowerFlowOptions(ips_tolerance=tol)
+                    opf_driver = vge.OptimalPowerFlowTimeSeriesDriver(grid=grid, options=opf_options, time_indices=k)
+                    opf_driver.run()
+
+                    branch_loading = opf_driver.results.loading
+
+                    if np.any(branch_loading > 1.1):
+                        n_hours_not_supplied += 1
+                        power_not_supplied += sum(grid.loads.P for load in grid.loads if load.active)
+
+                    lole_arr[sim_idx] = np.sum(power_not_supplied)
+
+    return lole_arr, n_hours_not_supplied

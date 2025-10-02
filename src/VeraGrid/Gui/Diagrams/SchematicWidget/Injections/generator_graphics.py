@@ -15,6 +15,7 @@ from VeraGrid.Gui.Diagrams.Editors.generator_editor import GeneratorQCurveEditor
 from VeraGrid.Gui.SolarPowerWizard.solar_power_wizzard import SolarPvWizard
 from VeraGrid.Gui.WindPowerWizard.wind_power_wizzard import WindFarmWizard
 from VeraGrid.Gui.gui_functions import add_menu_entry
+from VeraGrid.Gui.Diagrams.Editors.RmsModelEditor.rms_model_editor_engine import RmsModelEditorGUI
 
 if TYPE_CHECKING:  # Only imports the below statements during type checking
     from VeraGrid.Gui.Diagrams.SchematicWidget.schematic_widget import SchematicWidget
@@ -73,6 +74,10 @@ class GeneratorGraphicItem(InjectionTemplateGraphicItem):
                        icon_path="",
                        function_ptr=self.set_regulation_bus)
 
+        add_menu_entry(menu=menu,
+                       text="Rms Editor",
+                       function_ptr=self.edit_rms,
+                       icon_path=":/Icons/icons/edit.svg")
 
         add_menu_entry(menu=menu,
                        text="Qcurve edit",
@@ -115,6 +120,14 @@ class GeneratorGraphicItem(InjectionTemplateGraphicItem):
                        function_ptr=self.change_bus)
 
         menu.exec_(event.screenPos())
+
+    def edit_rms(self):
+        """
+        Open the appropriate editor dialogue
+        :return:
+        """
+        dlg = RmsModelEditorGUI(self.api_object, parent=self.editor)
+        dlg.show()
 
     def to_battery(self):
         """

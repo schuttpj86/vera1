@@ -6,27 +6,35 @@
 
 from __future__ import annotations
 
+import pdb
 import sys
 import os
+import time
+
+import cProfile as profile
+
+pr = profile.Profile()
+pr.disable()
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../../..", "src")))
 
-from typing import Tuple
+from typing import Tuple, Any
 import pandas as pd
 import numpy as np
 import numba as nb
 import math
 import scipy.sparse as sp
-from scipy.sparse.linalg import spsolve
-from scipy.sparse import csr_matrix
-from scipy.sparse.linalg import gmres, spilu, LinearOperator
+import scipy.linalg
+from scipy.sparse import csr_matrix, csc_matrix
+from scipy.sparse.linalg import gmres, spilu, LinearOperator, spsolve, eigs
 from typing import Dict, List, Literal, Any, Callable, Sequence
+from matplotlib import pyplot as plt
 
-# from VeraGridEngine.Devices.multi_circuit import MultiCircuit
 from VeraGridEngine.Devices.Dynamic.events import RmsEvents
-from VeraGridEngine.Utils.Symbolic.symbolic import Var, Expr, Const, _emit
+from VeraGridEngine.Utils.Symbolic.symbolic import Var, Expr, Const, _emit, _emit_params_eq, _heaviside
 from VeraGridEngine.Utils.Symbolic.block import Block
 from VeraGridEngine.Utils.Sparse.csc import pack_4_by_4_scipy
+from VeraGridEngine.basic_structures import Vec
 
 
 def _fully_substitute(expr: Expr, mapping: Dict[Var, Expr], max_iter: int = 10) -> Expr:
@@ -65,10 +73,35 @@ def _compile_equations(eqs: Sequence[Expr],
     return fn
 
 
-def _get_jacobian(eqs: List[Expr],
-                  variables: List[Var],
-                  uid2sym_vars: Dict[int, str],
-                  uid2sym_params: Dict[int, str], ):
+def _compile_parameters_equations(eqs: Sequence[Expr],
+                                  uid2sym_t: Dict[int, str],
+                                  add_doc_string: bool = True) -> Callable[[float], np.ndarray]:
+    """
+    Compile the array of expressions to a function that returns an array of values for those expressions
+    :param eqs: Iterable of expressions (Expr)
+    :param uid2sym_vars: dictionary relating the uid of a var with its array name (i.e. var[0])
+    :param uid2sym_params:
+    :param add_doc_string: add the docstring?
+    :return: Function pointer that returns an array
+    """
+    # Build source
+    src = f"def _f(glob_time):\n"
+    src += f"    out = np.zeros({len(eqs)})\n"
+    src += "\n".join([f"    out[{i}] = {_emit_params_eq(e, uid2sym_t)}" for i, e in enumerate(eqs)]) + "\n"
+    src += f"    return out"
+    ns: Dict[str, Any] = {"math": math, "np": np, "_heaviside": _heaviside}
+    exec(src, ns)
+    fn = nb.njit(ns["_f"], fastmath=True)
+    if add_doc_string:
+        fn.__doc__ = "def _f(vars)"
+    return fn
+
+
+# full jacobian
+def _get_full_jacobian(eqs: List[Expr],
+                       variables: List[Var],
+                       uid2sym_vars: Dict[int, str],
+                       uid2sym_params: Dict[int, str], ):
     """
     JIT‑compile a sparse Jacobian evaluator for *equations* w.r.t *variables*.
     :param eqs: Array of equations
@@ -76,9 +109,10 @@ def _get_jacobian(eqs: List[Expr],
     :param uid2sym_vars: dictionary relating the uid of a var with its array name (i.e. var[0])
     :param uid2sym_params:
     :return:
-            jac_fn : callable(values: np.ndarray) -> scipy.sparse.csc_matrix
+            jac_fn : callable(values: np.ndarray, params: np.ndarray) -> scipy.sparse.csc_matrix
                 Fast evaluator in which *values* is a 1‑D NumPy vector of length
-                ``len(variables)``.
+                ``len(variables)``and *params* is a 1‑D NumPy vector of length
+                ``len(parameters)``
             sparsity_pattern : tuple(np.ndarray, np.ndarray)
                 Row/col indices of structurally non‑zero entries.
     """
@@ -91,8 +125,6 @@ def _get_jacobian(eqs: List[Expr],
         else:
             check_set.add(v)
 
-    # Cache compiled partials by UID so duplicates are reused
-    fn_cache: Dict[str, Callable] = {}
     triplets: List[Tuple[int, int, Callable]] = []  # (col, row, fn)
 
     for row, eq in enumerate(eqs):
@@ -100,75 +132,126 @@ def _get_jacobian(eqs: List[Expr],
             d_expression = eq.diff(var).simplify()
             if isinstance(d_expression, Const) and d_expression.value == 0:
                 continue  # structural zero
+            triplets.append((col, row, d_expression))
 
-            function_ptr = _compile_equations(eqs=[d_expression], uid2sym_vars=uid2sym_vars,
-                                              uid2sym_params=uid2sym_params)
-
-            fn = fn_cache.setdefault(d_expression.uid, function_ptr)
-
-            triplets.append((col, row, fn))
-
-    # Sort by column, then row for CSC layout
     triplets.sort(key=lambda t: (t[0], t[1]))
-    cols_sorted, rows_sorted, fns_sorted = zip(*triplets) if triplets else ([], [], [])
+    cols_sorted, rows_sorted, equations_sorted = zip(*triplets) if triplets else ([], [], [])
+    functions_ptr = _compile_equations(eqs=equations_sorted, uid2sym_vars=uid2sym_vars,
+                                       uid2sym_params=uid2sym_params)
 
-    nnz = len(fns_sorted)
+    nnz = len(cols_sorted)
     indices = np.fromiter(rows_sorted, dtype=np.int32, count=nnz)
-    data = np.empty(nnz, dtype=np.float64)
 
     indptr = np.zeros(len(variables) + 1, dtype=np.int32)
     for c in cols_sorted:
         indptr[c + 1] += 1
     np.cumsum(indptr, out=indptr)
+    # template with zeros but correct structure
+    template_csc = sp.csc_matrix((np.zeros(nnz, dtype=np.float64),
+                                  indices.copy(),
+                                  indptr.copy()),
+                                 shape=(len(eqs), len(variables)))
 
-    def jac_fn(values: np.ndarray, params) -> sp.csc_matrix:  # noqa: D401 – simple
+    def full_jac_fn(values: np.ndarray, params: np.ndarray) -> tuple[csc_matrix, float, float]:  # noqa: D401 – simple
         assert len(values) >= len(variables)
-        for k, fn_ in enumerate(fns_sorted):
-            data[k] = fn_(values, params)
-        return sp.csc_matrix((data, indices, indptr), shape=(len(eqs), len(variables)))
+
+        start_jac = time.time()
+        jac_values = functions_ptr(values, params)
+        end_jac = time.time()
+        jac_eval_time = end_jac - start_jac
+
+        # data = np.array(jac_values, dtype=np.float64)
+
+        start_csc_matrix = time.time()
+        csc_matrix = template_csc.copy()
+        csc_matrix.data[:] = jac_values
+        # csc_matrix = sp.csc_matrix((data, indices, indptr), shape=(len(eqs), len(variables)))
+        end_csc_matrix = time.time()
+        csc_matrix_time = end_csc_matrix - start_csc_matrix
+
+        return csc_matrix, jac_eval_time, csc_matrix_time
+
+    return full_jac_fn
+
+
+def _get_jacobian(eqs: List[Expr],
+                  variables: List[Var],
+                  uid2sym_vars: Dict[int, str],
+                  uid2sym_params: Dict[int, str], ):
+    """
+    JIT‑compile a sparse Jacobian evaluator for *equations* w.r.t *variables*.
+    :param eqs: Array of equations
+    :param variables: Array of variables to differentiate against
+    :param uid2sym_vars: dictionary relating the uid of a var with its array name (i.e. var[0])
+    :param uid2sym_params:
+    :return:
+            jac_fn : callable(values: np.ndarray, params: np.ndarray) -> scipy.sparse.csc_matrix
+                Fast evaluator in which *values* is a 1‑D NumPy vector of length
+                ``len(variables)``and *params* is a 1‑D NumPy vector of length
+                ``len(parameters)``
+            sparsity_pattern : tuple(np.ndarray, np.ndarray)
+                Row/col indices of structurally non‑zero entries.
+    """
+
+    # Ensure deterministic variable order
+    check_set = set()
+    for v in variables:
+        if v in check_set:
+            raise ValueError(f"Repeated var {v.name} in the variables' list :(")
+        else:
+            check_set.add(v)
+
+    triplets: List[Tuple[int, int, Callable]] = []  # (col, row, fn)
+
+    for row, eq in enumerate(eqs):
+        for col, var in enumerate(variables):
+            d_expression = eq.diff(var).simplify()
+            if isinstance(d_expression, Const) and d_expression.value == 0:
+                continue  # structural zero
+            triplets.append((col, row, d_expression))
+
+    triplets.sort(key=lambda t: (t[0], t[1]))
+    cols_sorted, rows_sorted, equations_sorted = zip(*triplets) if triplets else ([], [], [])
+    functions_ptr = _compile_equations(eqs=equations_sorted, uid2sym_vars=uid2sym_vars,
+                                       uid2sym_params=uid2sym_params)
+
+    nnz = len(cols_sorted)
+    indices = np.fromiter(rows_sorted, dtype=np.int32, count=nnz)
+
+    indptr = np.zeros(len(variables) + 1, dtype=np.int32)
+    for c in cols_sorted:
+        indptr[c + 1] += 1
+    np.cumsum(indptr, out=indptr)
+    # template with zeros but correct structure
+    template_csc = sp.csc_matrix((np.zeros(nnz, dtype=np.float64),
+                                  indices.copy(),
+                                  indptr.copy()),
+                                 shape=(len(eqs), len(variables)))
+
+    def jac_fn(values: np.ndarray, params: np.ndarray) -> tuple[csc_matrix, float, float]:  # noqa: D401 – simple
+        assert len(values) >= len(variables)
+        pr.enable()
+
+        start_jac = time.time()
+        jac_values = functions_ptr(values, params)
+        end_jac = time.time()
+        jac_eval_time = end_jac - start_jac
+
+        # data = np.array(jac_values, dtype=np.float64)
+
+        start_csc_matrix = time.time()
+        csc_matrix = template_csc.copy()
+        csc_matrix.data[:] = jac_values
+        # csc_matrix = sp.csc_matrix((data, indices, indptr), shape=(len(eqs), len(variables)))
+        end_csc_matrix = time.time()
+        csc_matrix_time = end_csc_matrix - start_csc_matrix
+
+        pr.disable()
+        pr.dump_stats('profile.pstat')
+
+        return csc_matrix, jac_eval_time, csc_matrix_time
 
     return jac_fn
-
-
-# def compose_system_block(grid: MultiCircuit, power_flow_results) -> Block:
-#     """
-#     Compose all RMS models
-#     :return: System block
-#     """
-#     # already computed grid power flow
-#     res = power_flow_results
-#
-#     # create the system block
-#     sys_block = Block(children=[], in_vars=[])
-#
-#     # initialize set variables list
-#     already_set: List[Var] = list()
-#
-#     # buses
-#     for i, elm in enumerate(grid.buses):
-#         mdl = elm.rms_model.model
-#         #mdl.compute_init_guess
-#         # set already computed values
-#         Vm0 = res.voltage[i]
-#         already_set.append(Vm0)
-#         init_eqs = mdl.init_eqs
-#         sys_block.children.append(mdl)
-#
-#     # branches
-#     for elm in grid.get_branches_iter(add_vsc=True, add_hvdc=True, add_switch=True):
-#         mdl = elm.rms_model.model
-#         #mdl.compute_init_guess
-#         init_eqs = mdl.init_eqs
-#         sys_block.children.append(mdl)
-#
-#     # initialize injections
-#     for elm in grid.get_injection_devices_iter():
-#         mdl = elm.rms_model.model
-#         #mdl.compute_init_guess
-#         init_eqs = mdl.init_eqs
-#         sys_block.children.append(mdl)
-#
-#     return sys_block
 
 
 class BlockSolver:
@@ -176,7 +259,7 @@ class BlockSolver:
     A network of Blocks that behaves roughly like a Simulink diagram.
     """
 
-    def __init__(self, block_system: Block):
+    def __init__(self, block_system: Block, glob_time: Var):
         """
         Constructor        
         :param block_system: BlockSystem
@@ -189,6 +272,9 @@ class BlockSolver:
         self._state_vars: List[Var] = list()
         self._state_eqs: List[Expr] = list()
         self._parameters: List[Const] = list()
+        self._parameters_eqs: List[Expr] = list()
+        self.glob_time: Var = glob_time
+        self.vars2device = block_system.vars2device
 
         for b in self.block_system.get_all_blocks():
             self._algebraic_vars.extend(b.algebraic_vars)
@@ -196,6 +282,7 @@ class BlockSolver:
             self._state_vars.extend(b.state_vars)
             self._state_eqs.extend(b.state_eqs)
             self._parameters.extend(b.parameters)
+            self._parameters_eqs.extend(b.parameters_eqs)
 
         self._n_state = len(self._state_vars)
         self._n_alg = len(self._algebraic_vars)
@@ -208,9 +295,11 @@ class BlockSolver:
 
         uid2sym_vars: Dict[int, str] = dict()
         uid2sym_params: Dict[int, str] = dict()
+        uid2sym_t: Dict[int, str] = dict()
         self.uid2var: Dict[int, Var] = dict()
         self.uid2idx_vars: Dict[int, int] = dict()
         self.uid2idx_params: Dict[int, int] = dict()
+        self.uid2idx_t: Dict[int, int] = dict()
         i = 0
         for v in self._state_vars:
             uid2sym_vars[v.uid] = f"vars[{i}]"
@@ -231,6 +320,10 @@ class BlockSolver:
             self.uid2idx_params[ep.uid] = j
             j += 1
 
+        k = 0
+        uid2sym_t[self.glob_time.uid] = f"glob_time"
+        self.uid2idx_t[self.glob_time.uid] = k
+
         # Compile RHS and Jacobian
         """
                    state Var   algeb var  
@@ -240,12 +333,21 @@ class BlockSolver:
         algeb eq |J21        | J22       |    | ∆ algeb var|    | ∆ algeb eq |
                  |           |           |    |            |    |            |
         """
+        start_compiling = time.time()
         print("Compiling...", end="")
+
+        # all_eqs = self._state_eqs + self._algebraic_eqs
+        # all_vars = self._state_vars + self._algebraic_vars
+
+        # self._full_jacobian_fn = _get_full_jacobian(eqs=all_eqs, variables=all_vars, uid2sym_vars=uid2sym_vars, uid2sym_params=uid2sym_params)
+
         self._rhs_state_fn = _compile_equations(eqs=self._state_eqs, uid2sym_vars=uid2sym_vars,
                                                 uid2sym_params=uid2sym_params)
 
         self._rhs_algeb_fn = _compile_equations(eqs=self._algebraic_eqs, uid2sym_vars=uid2sym_vars,
                                                 uid2sym_params=uid2sym_params)
+
+        self._params_fn = _compile_parameters_equations(eqs=self._parameters_eqs, uid2sym_t=uid2sym_t)
 
         self._j11_fn = _get_jacobian(eqs=self._state_eqs, variables=self._state_vars, uid2sym_vars=uid2sym_vars,
                                      uid2sym_params=uid2sym_params)
@@ -257,11 +359,32 @@ class BlockSolver:
                                      uid2sym_params=uid2sym_params)
 
         print("done!")
+        end_compiling = time.time()
+        compilation_time = end_compiling - start_compiling
+        print(f"all compilation time = {compilation_time:.6f} [s]")
+
+    @property
+    def state_vars(self) -> List[Var]:
+        """
+        Get the state vars
+        :return: List[Var]
+        """
+        return self._state_vars
 
     def get_var_idx(self, v: Var) -> int:
+        """
+
+        :param v:
+        :return:
+        """
         return self.uid2idx_vars[v.uid]
 
     def get_vars_idx(self, variables: Sequence[Var]) -> np.ndarray:
+        """
+
+        :param variables:
+        :return:
+        """
         return np.array([self.uid2idx_vars[v.uid] for v in variables])
 
     def sort_vars(self, mapping: dict[Var, float]) -> np.ndarray:
@@ -377,7 +500,84 @@ class BlockSolver:
         else:
             return f_algeb
 
-    def jacobian_implicit(self, x: np.ndarray, params: np.ndarray, h: float) -> sp.csc_matrix:
+    # def jacobian_implicit(
+    #         self,
+    #         x: np.ndarray,
+    #         params: np.ndarray,
+    #         h: float,
+    #         n_processes: int = 4
+    # ) -> Tuple[sp.csc_matrix, float, float]:
+    #     """
+    #     Compute the implicit Jacobian:
+    #         | I - h*J11   -h*J12 |
+    #         | J21         J22    |
+    #     using pathos multiprocessing to parallelize the four Jacobians.
+    #     """
+    #
+    #     tasks = [
+    #         (self._j11_fn, (x, params)),
+    #         (self._j12_fn, (x, params)),
+    #         (self._j21_fn, (x, params)),
+    #         (self._j22_fn, (x, params))
+    #     ]
+    #
+    #     # Use pathos ProcessingPool
+    #     with Pool(nodes=n_processes) as pool:
+    #         # pathos can map closures/lambdas directly
+    #         results = pool.map(lambda t: t[0](*t[1]), tasks)
+    #
+    #     # Unpack results
+    #     (j11_val, jac_time11, csc_time11), \
+    #         (j12_val, jac_time12, csc_time12), \
+    #         (j21_val, jac_time21, csc_time21), \
+    #         (j22_val, jac_time22, csc_time22) = results
+    #
+    #     # Total timing
+    #     jac_time = jac_time11 + jac_time12 + jac_time21 + jac_time22
+    #     csc_time = csc_time11 + csc_time12 + csc_time21 + csc_time22
+    #
+    #     # Build blocks
+    #     I = sp.eye(self._n_state, self._n_state)
+    #     j11: sp.csc_matrix = (I - h * j11_val).tocsc()
+    #     j12: sp.csc_matrix = - h * j12_val
+    #     j21: sp.csc_matrix = j21_val
+    #     j22: sp.csc_matrix = j22_val
+    #
+    #     J = pack_4_by_4_scipy(j11, j12, j21, j22)
+    #
+    #     return J, jac_time, csc_time
+
+    # def full_jacobian_implicit(self, x: np.ndarray, params: np.ndarray, h: float) -> tuple[sp.csc_matrix, float, float]:
+    #     """
+    #     :param x: vector or variables' values
+    #     :param params: params array
+    #     :param h: step
+    #     :return:
+    #     """
+    #
+    #     """
+    #               state Var    algeb var
+    #     state eq |I - h * J11 | - h* J12  |    | ∆ state var|    | ∆ state eq |
+    #              |            |           |    |            |    |            |
+    #              -------------------------- x  |------------|  = |------------|
+    #     algeb eq |J21         | J22       |    | ∆ algeb var|    | ∆ algeb eq |
+    #              |            |           |    |            |    |            |
+    #     """
+    #     ######################## to del
+    #
+    #     J, full_jac_time, csc_time = self._full_jacobian_fn(x, params)
+    #
+    #     j11_val, jac_time11, csc_time11 = self._j11_fn(x, params)
+    #     j12_val, jac_time12, csc_time12 = self._j12_fn(x, params)
+    #     j21_val, jac_time21, csc_time21 = self._j21_fn(x, params)
+    #     j22_val, jac_time22, csc_time22 = self._j22_fn(x, params)
+    #
+    #     jac_time = jac_time11 + jac_time12 + jac_time21 + jac_time22
+    #
+    #     return J, jac_time, full_jac_time, csc_time
+
+    def jacobian_implicit(self, x: np.ndarray, params: np.ndarray, h: float) -> tuple[
+        sp.csc_matrix, float, float, float]:
         """
         :param x: vector or variables' values
         :param params: params array
@@ -393,14 +593,30 @@ class BlockSolver:
         algeb eq |J21         | J22       |    | ∆ algeb var|    | ∆ algeb eq |
                  |            |           |    |            |    |            |
         """
+        ########################to del
+
+        j11_val, jac_time11, csc_time11 = self._j11_fn(x, params)
+        j12_val, jac_time12, csc_time12 = self._j12_fn(x, params)
+        j21_val, jac_time21, csc_time21 = self._j21_fn(x, params)
+        j22_val, jac_time22, csc_time22 = self._j22_fn(x, params)
+
+        jac_time = jac_time11 + jac_time12 + jac_time21 + jac_time22
+        csc_time = csc_time11 + csc_time12 + csc_time21 + csc_time22
 
         I = sp.eye(m=self._n_state, n=self._n_state)
-        j11: sp.csc_matrix = (I - h * self._j11_fn(x, params)).tocsc()
-        j12: sp.csc_matrix = - h * self._j12_fn(x, params)
-        j21: sp.csc_matrix = self._j21_fn(x, params)
-        j22: sp.csc_matrix = self._j22_fn(x, params)
+        j11: sp.csc_matrix = (I - h * j11_val).tocsc()
+        j12: sp.csc_matrix = - h * j12_val
+        j21: sp.csc_matrix = j21_val
+        j22: sp.csc_matrix = j22_val
+
         J = pack_4_by_4_scipy(j11, j12, j21, j22)
-        return J
+
+        # j11: sp.csc_matrix = (I - h * self._j11_fn(x, params)).tocsc()
+        # j12: sp.csc_matrix = - h * self._j12_fn(x, params)
+        # j21: sp.csc_matrix = self._j21_fn(x, params)
+        # j22: sp.csc_matrix = self._j22_fn(x, params)
+
+        return J, jac_time, csc_time
 
     def residual_init(self, z: np.ndarray, params: np.ndarray):
         # concatenate state & algebraic residuals
@@ -789,8 +1005,7 @@ class BlockSolver:
             h: float,
             x0: np.ndarray,
             params0: np.ndarray,
-            events_list: RmsEvents,
-            method: Literal["rk4", "euler", "implicit_euler"] = "rk4",
+            method: str,
             newton_tol: float = 1e-8,
             newton_max_iter: int = 1000,
 
@@ -812,12 +1027,8 @@ class BlockSolver:
         if method == "rk4":
             return self._simulate_fixed(t0, t_end, h, x0, params0, stepper="rk4")
         if method == "implicit_euler":
-            params_matrix = self.build_params_matrix(n_steps=int(np.ceil((t_end - t0) / h)),
-                                                     params0=params0,
-                                                     events_list=events_list)
-
             return self._simulate_implicit_euler(
-                t0=t0, t_end=t_end, h=h, x0=x0, params0=params0, diff_params_matrix=params_matrix,
+                t0=t0, t_end=t_end, h=h, x0=x0, params0=params0,
                 tol=newton_tol, max_iter=newton_max_iter,
             )
         raise ValueError(f"Unknown method '{method}'")
@@ -858,7 +1069,6 @@ class BlockSolver:
     def _simulate_implicit_euler(self, t0: float, t_end: float, h: float,
                                  x0: np.ndarray,
                                  params0: np.ndarray,
-                                 diff_params_matrix: csr_matrix,  # TODO: Not sure if a CSR is the best thing here
                                  tol=1e-6,
                                  max_iter=1000):
         """
@@ -874,18 +1084,42 @@ class BlockSolver:
         steps = int(np.ceil((t_end - t0) / h))
         t = np.empty(steps + 1)
         y = np.empty((steps + 1, self._n_vars))
-        params_current = params0
         t[0] = t0
         y[0] = x0.copy()
+        jacobian_time = 0
+        functions_time = 0
+        params_time = 0
+        residual_time = 0
+        solv_time = 0
+        total_jac_time = 0
+        total_csc_time = 0
         for step_idx in range(steps):
-            params_current += diff_params_matrix[step_idx, :].toarray().ravel()  # TODO think of a better way
             xn = y[step_idx]
             x_new = xn.copy()  # initial guess
             converged = False
             n_iter = 0
+            current_time = t[step_idx]
+
+            start_params_calculation = time.time()
+            params_current = self._params_fn(float(current_time))
+            end_params_calculation = time.time()
+            params_calculation_time = end_params_calculation - start_params_calculation
+            params_time += params_calculation_time
+
             while not converged and n_iter < max_iter:
+
+                start_functions_calc = time.time()
                 rhs = self.rhs_implicit(x_new, xn, params_current, step_idx, h)
+                end_functions_calc = time.time()
+                calc_functions_time = end_functions_calc - start_functions_calc
+                functions_time += calc_functions_time
+
+                start_residual_calc = time.time()
                 residual = np.linalg.norm(rhs, np.inf)
+                end_residual_calc = time.time()
+                calc_residual_time = end_residual_calc - start_residual_calc
+                residual_time += calc_residual_time
+
                 converged = residual < tol
 
                 if step_idx == 0:
@@ -896,8 +1130,21 @@ class BlockSolver:
 
                 if converged:
                     break
-                Jf = self.jacobian_implicit(x_new, params_current, h)  # sparse matrix
+
+                start_jac_calc = time.time()
+                Jf, jac_eval_time, csc_matrix_time = self.jacobian_implicit(x_new, params_current, h)  # sparse matrix
+                end_jac_calc = time.time()
+                calc_jac_time = end_jac_calc - start_jac_calc
+                jacobian_time += calc_jac_time
+                total_jac_time += jac_eval_time
+                total_csc_time += csc_matrix_time
+
+                start_solv = time.time()
                 delta = sp.linalg.spsolve(Jf, -rhs)
+                end_solv = time.time()
+                solv_time = end_solv - start_solv
+                solv_time += calc_jac_time
+
                 x_new += delta
                 n_iter += 1
 
@@ -906,13 +1153,23 @@ class BlockSolver:
                 y[step_idx + 1] = x_new
                 t[step_idx + 1] = t[step_idx] + h
 
+
+
             else:
                 print(f"Failed to converge at step {step_idx}")
                 break
+        print((f"jacobian_total_time = {jacobian_time:.6f} [s]"))
+
+        print((f"functions_total_time = {functions_time:.6f} [s]"))
+        print((f"params_total_time = {params_time:.6f} [s]"))
+        print((f"residual_total_time = {residual_time:.6f} [s]"))
+        print((f"solv_time = {solv_time:.6f} [s]"))
+        print((f"total_jac_time = {total_jac_time:.6f} [s]"))
+        print((f"total_csc_time = {total_csc_time:.6f} [s]"))
 
         return t, y
 
-    def save_simulation_to_csv(self, filename, t, y):
+    def save_simulation_to_csv(self, filename, t, y, csv_saving=False):
         """
         Save the simulation results to a CSV file.
 
@@ -934,9 +1191,96 @@ class BlockSolver:
         var_names = [str(var) + '_VeraGrid' for var in all_vars]
 
         # Create DataFrame with time and variable data
-        df = pd.DataFrame(data=y, columns=var_names)
-        df.insert(0, 'Time [s]', t)
+        df_simulation_results = pd.DataFrame(data=y, columns=var_names)
+        df_simulation_results.insert(0, 'Time [s]', t)
 
-        # Save to CSV
-        df.to_csv(filename, index=False)
-        print(f"Simulation results saved to: {filename}")
+        if csv_saving:
+            df_simulation_results.to_csv(filename, index=False)
+            print(f"Simulation results saved to: {filename}")
+        return df_simulation_results
+
+    def run_small_signal_stability(self, x: Vec, params: Vec, tol=1e-6, plot=True):
+        """
+        Small Signal Stability analysis
+        :param x: variables (1D numpy array)
+        :param params: parameters (1D numpy array)
+        :param tol:  numerical tolerance for eigenvalues = 0
+        :param plot: True(default) if S-domain eigenvalues plot wanted. Else: False
+        :return:
+            stability: str
+                "Unstable", "Marginally stable" or "Asymptotically stable"
+            eigenvalues:  1D row numpy array
+            participation factors: 2D array csc matrix.
+                Participation factors of mode i stored in PF[:,i]
+        """
+
+        """
+        Small Signal Stability analysis:
+        1. Calculate the state matrix (A) from the state space model. From the DAE model:
+            Tx'=f(x,y)
+            0=g(x,y)
+            the A matrix is computed as:
+            A = T^-1(f_x - f_y * g_y^{-1} * g_x)   #T is implicit in the jacobian!
+
+        2. Find eigenvalues and right(V) and left(W) eigenvectors
+
+        3. Perform stability assessment
+
+        4. Calculate normalized participation factors PF = W · V
+        """
+
+        fx, _, _ = self._j11_fn(x, params)  # ∂f/∂x
+        fy, _, _ = self._j12_fn(x, params)  # ∂f/∂y
+        gx, _, _ = self._j21_fn(x, params)  # ∂g/∂x
+        gy, _, _ = self._j22_fn(x, params)  # ∂g/∂y
+
+        gyx = spsolve(gy, gx)
+        A = (fx - fy @ gyx)  # sparse state matrix csc matrix
+        An = A.toarray()  # TODO: always use sparse algebra
+
+        num_states = A.shape[0]
+
+        eigen_values, W, V = scipy.linalg.eig(An, left=True, right=True)
+        # eigen_values, eigen_vectors = eigs(A)  # TODO: always use sparse algebra
+        V = sp.csc_matrix(V)  # right
+        W = sp.csc_matrix(W)  # left
+
+        # find participation factors
+        participation_factors = sp.lil_matrix(A.shape)
+        for row in range(W.shape[0]):
+            for column in range(W.shape[0]):
+                participation_factors[row, column] = abs(W[row, column]) * abs(V[row, column])
+
+        # normalize participation factors
+        PF_abs = sp.csc_matrix(np.ones(num_states)) @ participation_factors
+        for i in range(len(eigen_values)):
+            participation_factors[:, i] /= PF_abs[0, i]
+
+            # Stability: select positive and zero eigenvalues
+
+        unstable_eigs = eigen_values[np.real(eigen_values) > tol]
+        zero_eigs = eigen_values[abs(np.real(eigen_values)) <= tol]
+        stable_eigs = eigen_values[np.real(eigen_values) < -tol]
+
+        if unstable_eigs.size == 0:
+            if zero_eigs.size == 0:
+                stability = "Asymptotically stable"  # TODO: always use Enums for known states
+            else:
+                stability = "Marginally stable"
+        else:
+            stability = "Unstable"
+
+        if plot:
+            x = eigen_values.real
+            y = eigen_values.imag
+
+            plt.scatter(x, y, marker='x', color='blue')
+            plt.xlabel("Re [s -1]")
+            plt.ylabel("Im [s -1]")
+            plt.title("Stability plot")
+            plt.axhline(0, color='black', linewidth=1)  # eje horizontal (y = 0)
+            plt.axvline(0, color='black', linewidth=1)
+            plt.tight_layout()
+            plt.show()
+
+        return stability, eigen_values, participation_factors

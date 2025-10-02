@@ -25,7 +25,6 @@ from VeraGridEngine.enumerations import TapModuleControl, TapPhaseControl
 from VeraGridEngine.enumerations import SolverType
 from VeraGridEngine.DataStructures.numerical_circuit import NumericalCircuit
 
-
 from VeraGridEngine.basic_structures import Logger
 
 if TYPE_CHECKING:  # Only imports the below statements during type checking
@@ -34,7 +33,6 @@ if TYPE_CHECKING:  # Only imports the below statements during type checking
     from VeraGridEngine.Simulations.LinearFactors.linear_analysis_options import LinearAnalysisOptions
     from VeraGridEngine.Simulations.ContingencyAnalysis.contingency_analysis_options import ContingencyAnalysisOptions
     from VeraGridEngine.Simulations.ContingencyAnalysis.contingency_analysis_results import ContingencyAnalysisResults
-
 
 
 def get_gslv_mip_solvers_list() -> List[str]:
@@ -2496,6 +2494,37 @@ def gslv_contingencies(circuit: MultiCircuit,
                                logger=logger)
 
     return res
+
+
+def gslv_linear_matrices(circuit: MultiCircuit,
+                         distributed_slack=False,
+                         correctValues=False,
+                         override_branch_controls=False) -> "pg.LinearAnalysis":
+    """
+    Newton linear analysis
+    :param circuit: MultiCircuit instance
+    :param distributed_slack: distribute the PTDF slack
+    :param correctValues: Correct nonsense values (outsie -1, 1) interval
+    :param override_branch_controls: Override branch controls
+    :return: Newton LinearAnalysisMatrices object
+    """
+    gslv_circuit, _ = to_gslv(circuit=circuit,
+                              use_time_series=False,
+                              override_branch_controls=override_branch_controls)
+
+    options = pg.LinearAnalysisOptions(distributeSlack=distributed_slack,
+                                       correctValues=correctValues,
+                                       ptdfThreshold=0.001,
+                                       lodfThreshold=0.001)
+
+    logger = pg.Logger()
+    nc = pg.compile(grid=gslv_circuit, logger=logger, t_idx=0)
+
+    results = pg.LinearAnalysis(nc=nc,
+                                distributed_slack_=distributed_slack,
+                                correct_values_=correctValues, )
+
+    return results
 
 
 def CheckArr(arr: Vec, arr_expected: Vec, tol: float, name: str, test: str, verbose=False):

@@ -388,7 +388,7 @@ def contingencies_ts(circuit: MultiCircuit,
                      srap_rever_to_nominal_rating=True,
                      detailed_massive_report=True,
                      contingency_deadband=0.0,
-                     contingency_method=ContingencyMethod.PTDF) -> ContingencyAnalysisTimeSeriesResults:
+                     contingency_method=ContingencyMethod.Linear) -> ContingencyAnalysisTimeSeriesResults:
     """
     Run a time series contingency analysis
     :param circuit: MultiCircuit instance

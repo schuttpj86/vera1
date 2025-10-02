@@ -145,6 +145,11 @@ class PassiveBranchData(BranchParentData):
         data.virtual_tap_f = self.virtual_tap_f.copy()
         data.virtual_tap_t = self.virtual_tap_t.copy()
 
+        data.Yff3 = self.Yff3.copy()
+        data.Yft3 = self.Yft3.copy()
+        data.Ytt3 = self.Ytt3.copy()
+        data.Ytf3 = self.Ytf3.copy()
+
         data.phA = self.phA.copy()
         data.phB = self.phB.copy()
         data.phC = self.phC.copy()

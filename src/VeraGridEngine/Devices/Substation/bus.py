@@ -2,7 +2,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.  
 # SPDX-License-Identifier: MPL-2.0
-
+from __future__ import annotations
 
 from typing import Tuple, Union
 import numpy as np
@@ -496,16 +496,17 @@ class Bus(PhysicalDevice):
     def initialize_rms(self):
 
         if self.rms_model.empty():
-            Vm = Var("Vm")
-            Va = Var("Va")
-            P = Var("P")
-            Q = Var("Q")
+            Vm = Var("Vm" + self.name)
+            Va = Var("Va" + self.name)
+            P = Var("P" + self.name)
+            Q = Var("Q" + self.name)
 
             self.rms_model.model = Block(
                 state_eqs=[],
                 state_vars=[],
                 algebraic_eqs=[
                 ],
+                # algebraic_vars=[],
                 algebraic_vars=[Vm, Va],
 
                 init_eqs={},

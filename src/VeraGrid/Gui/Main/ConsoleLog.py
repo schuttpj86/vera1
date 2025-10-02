@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'ConsoleLog.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.7.2
+## Created by: Qt User Interface Compiler version 6.9.2
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -48,31 +48,31 @@ class Ui_mainWindow(object):
         self.plainTextEdit.setObjectName(u"plainTextEdit")
         palette = QPalette()
         brush = QBrush(QColor(255, 255, 255, 255))
-        brush.setStyle(Qt.SolidPattern)
-        palette.setBrush(QPalette.Active, QPalette.Text, brush)
+        brush.setStyle(Qt.BrushStyle.SolidPattern)
+        palette.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Text, brush)
         brush1 = QBrush(QColor(0, 170, 127, 255))
-        brush1.setStyle(Qt.SolidPattern)
-        palette.setBrush(QPalette.Active, QPalette.Base, brush1)
+        brush1.setStyle(Qt.BrushStyle.SolidPattern)
+        palette.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Base, brush1)
         brush2 = QBrush(QColor(255, 255, 255, 128))
-        brush2.setStyle(Qt.SolidPattern)
+        brush2.setStyle(Qt.BrushStyle.SolidPattern)
 #if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
-        palette.setBrush(QPalette.Active, QPalette.PlaceholderText, brush2)
+        palette.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.PlaceholderText, brush2)
 #endif
-        palette.setBrush(QPalette.Inactive, QPalette.Text, brush)
-        palette.setBrush(QPalette.Inactive, QPalette.Base, brush1)
+        palette.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.Text, brush)
+        palette.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.Base, brush1)
 #if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
-        palette.setBrush(QPalette.Inactive, QPalette.PlaceholderText, brush2)
+        palette.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.PlaceholderText, brush2)
 #endif
         brush3 = QBrush(QColor(120, 120, 120, 255))
-        brush3.setStyle(Qt.SolidPattern)
-        palette.setBrush(QPalette.Disabled, QPalette.Text, brush3)
+        brush3.setStyle(Qt.BrushStyle.SolidPattern)
+        palette.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Text, brush3)
         brush4 = QBrush(QColor(240, 240, 240, 255))
-        brush4.setStyle(Qt.SolidPattern)
-        palette.setBrush(QPalette.Disabled, QPalette.Base, brush4)
+        brush4.setStyle(Qt.BrushStyle.SolidPattern)
+        palette.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Base, brush4)
         brush5 = QBrush(QColor(0, 0, 0, 128))
-        brush5.setStyle(Qt.SolidPattern)
+        brush5.setStyle(Qt.BrushStyle.SolidPattern)
 #if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
-        palette.setBrush(QPalette.Disabled, QPalette.PlaceholderText, brush5)
+        palette.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.PlaceholderText, brush5)
 #endif
         self.plainTextEdit.setPalette(palette)
         font = QFont()

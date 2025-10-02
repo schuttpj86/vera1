@@ -27,12 +27,12 @@ from VeraGrid.Gui.messages import yes_no_question, warning_msg, info_msg
 from VeraGrid.Gui.Main.SubClasses.Model.diagrams import DiagramsMain
 from VeraGrid.Gui.TowerBuilder.LineBuilderDialogue import TowerBuilderGUI
 from VeraGrid.Gui.RmsModelEditor.rms_model_editor_dialogue import RmsModelEditorGUI
-from VeraGrid.Gui.general_dialogues import LogsDialogue
 from VeraGrid.Gui.SystemScaler.system_scaler import SystemScaler
 from VeraGrid.Gui.Diagrams.MapWidget.grid_map_widget import GridMapWidget, make_diagram_from_substations
 from VeraGrid.Gui.Diagrams.SchematicWidget.schematic_widget import SchematicWidget, make_diagram_from_buses
 from VeraGrid.Gui.GridReduce.grid_reduce import GridReduceDialogue
 from VeraGrid.Gui.SubstationDesigner.substation_designer import SubstationDesigner
+from VeraGrid.Gui.general_dialogues import LogsDialogue, CustomQuestionDialogue
 
 
 class DataBaseTableMain(DiagramsMain):
@@ -153,6 +153,8 @@ class DataBaseTableMain(DiagramsMain):
             DeviceType.BranchGroupDevice.value: ":/Icons/icons/branch_group.svg",
             DeviceType.ModellingAuthority.value: ":/Icons/icons/modelling_authority.svg",
             DeviceType.FacilityDevice.value: ":/Icons/icons/powerplant.svg",
+            DeviceType.RmsEventsGroupDevice.value: ":/Icons/icons/dyn_gray.svg",
+            DeviceType.RmsEventDevice.value: ":/Icons/icons/dyn_gray.svg",
 
             "Associations": ":/Icons/icons/associations.svg",
             DeviceType.Technology.value: ":/Icons/icons/technology.svg",
@@ -166,6 +168,8 @@ class DataBaseTableMain(DiagramsMain):
             DeviceType.SequenceLineDevice.value: ":/Icons/icons/ac_line.svg",
             DeviceType.TransformerTypeDevice.value: ":/Icons/icons/to_transformer.svg",
             DeviceType.RmsModelTemplateDevice.value: ":/Icons/icons/dyn_gray.svg",
+            DeviceType.DynamicModelHostDevice.value: ":/Icons/icons/dyn_gray.svg",
+
         }
 
         db_tree_model = gf.get_tree_model(d=self.circuit.get_template_objects_str_dict(),
@@ -820,11 +824,23 @@ class DataBaseTableMain(DiagramsMain):
                 obj = dev.Facility(name=name)
                 self.circuit.add_facility(obj)
 
-            elif elm_type == DeviceType.RmsModelTemplateDevice.value:
+            elif elm_type == DeviceType.DynamicModelHostDevice.value:
 
                 name = f'RMS model {self.circuit.get_rms_models_number()}'
-                obj = dev.RmsModelTemplate(name=name)
+                obj = dev.DynamicModelHost(name=name)
                 self.circuit.add_rms_model(obj)
+
+            elif elm_type == DeviceType.RmsEventDevice.value:
+
+                name = f'RMS event {len(self.circuit.rms_events)}'
+                obj = dev.RmsEvent(name=name)
+                self.circuit.add_rms_event(obj)
+
+            elif elm_type == DeviceType.RmsEventsGroupDevice.value:
+
+                name = f'RMS event grou{len(self.circuit.rms_events_groups)}'
+                obj = dev.RmsEventsGroup(name=name)
+                self.circuit.add_rms_events_group(obj)
 
             else:
                 info_msg("This object does not support table-like addition.\nUse the schematic instead.")
@@ -861,9 +877,9 @@ class DataBaseTableMain(DiagramsMain):
                         self.tower_builder_window.resize(int(1.81 * 700.0), 700)
                         self.tower_builder_window.exec()
 
-                    elif elm_type == DeviceType.RmsModelTemplateDevice.value:
+                    elif elm_type == DeviceType.DynamicModelHostDevice.value:
 
-                        self.rms_model_Editor_window = RmsModelEditorGUI(model=self.circuit.rms_models[idx].block, )
+                        self.rms_model_Editor_window = RmsModelEditorGUI(model_host=self.circuit.rms_models[idx], )
                         self.rms_model_Editor_window.resize(int(1.81 * 700.0), 700)
                         self.rms_model_Editor_window.show()
 
@@ -1367,9 +1383,19 @@ class DataBaseTableMain(DiagramsMain):
                 vl_templates=dlg.get_voltage_levels()
             )
 
-            # ask to create a se diagram
-            ok = yes_no_question(title="create substation diagram",
-                                 text="Do you want to finalize the editing of the substation in the schematic?")
+            dlg3 = CustomQuestionDialogue(title="New substation",
+                                          question="How do you want to represent the merged grid?",
+                                          answer1="Create new diagram",
+                                          answer2="Add to current diagram")
+            dlg3.exec()
 
-            if ok:
+            if dlg3.accepted_answer == 1:
+                # Create a blank diagram and add to it
                 self.new_bus_branch_diagram_from_substation(substations=[se_object])
+
+            elif dlg3.accepted_answer == 2:
+                self.add_substation_to_current_diagram(substations=[se_object])
+
+            else:
+                # not imported
+                return

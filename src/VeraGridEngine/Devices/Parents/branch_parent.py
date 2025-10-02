@@ -49,6 +49,8 @@ class BranchParent(PhysicalDevice):
         '_protection_rating_factor',
         '_protection_rating_factor_prof',
         'color',
+        'bus_from_pos',
+        'bus_to_pos',
         'group',
         '_rms_model',
     )
@@ -158,6 +160,9 @@ class BranchParent(PhysicalDevice):
 
         self.color = color if color is not None else "#909090"  # light gray
 
+        self.bus_from_pos: int = 0
+        self.bus_to_pos: int = 0
+
         # group of this branch
         self.group: Union[BranchGroup, None] = None
 
@@ -201,6 +206,12 @@ class BranchParent(PhysicalDevice):
                       is_color=True)
         self.register(key='rms_model', units='', tpe=SubObjectType.DynamicModelHostType,
                       definition='RMS dynamic model', display=False)
+
+        self.register(key='bus_from_pos', units='', tpe=int, definition='Aid to locate devices on a busbar',
+                      display=False)
+
+        self.register(key='bus_to_pos', units='', tpe=int, definition='Aid to locate devices on a busbar',
+                      display=False)
 
     @property
     def rms_model(self) -> DynamicModelHost:
@@ -550,3 +561,16 @@ class BranchParent(PhysicalDevice):
         :return: weight value
         """
         return 1.0
+
+    def get_bus_pos(self, bus: Bus) -> int:
+        """
+        Get the bus specified position
+        :param bus:
+        :return:
+        """
+        if bus == self.bus_from:
+            return self.bus_from_pos
+        elif bus == self.bus_to:
+            return self.bus_to_pos
+        else:
+            return 0

@@ -172,7 +172,7 @@ A contingency study with SRAP activated can be run with the following commands:
 ```python
 con_options = ContingencyAnalysisOptions()
 con_options.use_srap = True
-con_options.engine = ContingencyEngine.PTDF
+con_options.engine = ContingencyEngine.Linear
 
 con_drv = ContingencyAnalysisDriver(grid=grid,
                                     options=con_options,

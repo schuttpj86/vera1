@@ -187,7 +187,7 @@ Learn [here](https://veragrid.readthedocs.io/en/latest/rst_source/development/st
 
 All simulations in VeraGrid are handled by the simulation drivers. The structure is as follows:
 
-<img height="250" src="doc/rst_source/figures/DataModelSimulation.png"/>
+<img height="250" src="doc/md_source/figures/DataModelSimulation.png"/>
 
 Any driver is fed with the data model (`MultiCircuit` object), the respective driver options, and often another
 object relative to specific inputs for that driver. The driver is run, storing the driver results object.

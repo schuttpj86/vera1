@@ -5,6 +5,7 @@
 import random
 import uuid
 import numpy as np
+
 from VeraGridEngine.Devices.profile import Profile
 from typing import List, Dict, AnyStr, Any, Union, Type, Tuple
 from VeraGridEngine.basic_structures import Logger
@@ -16,7 +17,7 @@ from VeraGridEngine.enumerations import (DeviceType, TimeFrame, BuildStatus, Win
                                          ZonalGrouping, MIPSolvers, AcOpfMode, SubstationTypes, BranchGroupTypes,
                                          BranchImpedanceMode, FaultType, TapChangerTypes, ContingencyOperationTypes,
                                          WindingType, MethodShortCircuit, PhasesShortCircuit, ShuntConnectionType,
-                                         BusGraphicType, SwitchGraphicType)
+                                         BusGraphicType, SwitchGraphicType, DynamicIntegrationMethod)
 
 # types that can be assigned to a VeraGrid property
 GCPROP_TYPES = Union[
@@ -57,7 +58,8 @@ GCPROP_TYPES = Union[
     Type[DeviceType],
     Type[ShuntConnectionType],
     Type[BusGraphicType],
-    Type[SwitchGraphicType]
+    Type[SwitchGraphicType],
+    Type[DynamicIntegrationMethod]
 ]
 
 

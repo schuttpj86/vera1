@@ -14,6 +14,7 @@ from VeraGridEngine.basic_structures import CxVec
 from VeraGridEngine.Devices.profile import Profile
 from VeraGridEngine.Devices.Aggregation.facility import Facility
 from VeraGridEngine.Devices.Dynamic.dynamic_model_host import DynamicModelHost
+from VeraGridEngine.Utils.Symbolic.block import Var
 
 if TYPE_CHECKING:
     from VeraGridEngine.Devices import Technology
@@ -40,10 +41,14 @@ class InjectionParent(PhysicalDevice):
         'technologies',
         'scalable',
         'shift_key',
+        'longitude',
+        'latitude',
         '_shift_key_prof',
         '_use_kw',
+        'bus_pos',
         '_conn',
-        '_rms_model'
+        '_rms_model',
+        'time'
     )
 
     def __init__(self,
@@ -58,7 +63,9 @@ class InjectionParent(PhysicalDevice):
                  capex: float,
                  opex: float,
                  build_status: BuildStatus,
-                 device_type: DeviceType):
+                 device_type: DeviceType,
+                 longitude=0.0,
+                 latitude=0.0):
         """
         InjectionTemplate
         :param name: Name of the device
@@ -109,11 +116,16 @@ class InjectionParent(PhysicalDevice):
         self.shift_key: float = 1.0
         self._shift_key_prof = Profile(default_value=self.shift_key, data_type=float)
 
+        self.longitude = float(longitude)
+        self.latitude = float(latitude)
+
         self._use_kw: bool = False
 
         self._conn: ShuntConnectionType = ShuntConnectionType.Star
 
         self._rms_model: DynamicModelHost = DynamicModelHost()
+
+        self.bus_pos: int = 0
 
         self.register(key='bus', units='', tpe=DeviceType.BusDevice, definition='Connection bus', editable=False)
 
@@ -143,6 +155,11 @@ class InjectionParent(PhysicalDevice):
         self.register(key='shift_key', units='', tpe=float, definition='Shift key for net transfer capacity',
                       profile_name="shift_key_prof")
 
+        self.register(key='longitude', units='deg', tpe=float,
+                      definition='longitude of the injection.', profile_name='')
+        self.register(key='latitude', units='deg', tpe=float,
+                      definition='latitude of the injection.', profile_name='')
+
         self.register(key='use_kw', units='', tpe=bool, definition='Consider the injections in kW and kVAr?')
 
         self.register(key='conn', units='', tpe=ShuntConnectionType,
@@ -150,6 +167,9 @@ class InjectionParent(PhysicalDevice):
 
         self.register(key='rms_model', units='', tpe=SubObjectType.DynamicModelHostType,
                       definition='RMS dynamic model', display=False)
+
+        self.register(key='bus_pos', units='', tpe=int, definition='Aid to locate devices on a busbar',
+                      display=False)
 
     @property
     def bus(self) -> Bus:
@@ -243,9 +263,9 @@ class InjectionParent(PhysicalDevice):
                 else:
                     # is in MW, replace kW by MW
                     for key, prp in self.registered_properties.items():
-                        prp.units = (prp.units.replace( "kW", "MW")
-                                     .replace( "kVAr", "MVAr")
-                                     .replace( "kVA", "MVA"))
+                        prp.units = (prp.units.replace("kW", "MW")
+                                     .replace("kVAr", "MVAr")
+                                     .replace("kVA", "MVA"))
         else:
             self._use_kw = val
 
@@ -297,3 +317,12 @@ class InjectionParent(PhysicalDevice):
         :return: Bus
         """
         return self.technologies.to_list()
+
+    def get_bus_pos(self, bus: Bus | None = None) -> int:
+        """
+        Get the bus position
+        NOTE: don't remove the void bus argument
+        :param bus: Bus
+        :return: bus_pos
+        """
+        return self.bus_pos

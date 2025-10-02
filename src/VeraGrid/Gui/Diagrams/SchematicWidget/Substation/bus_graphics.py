@@ -31,7 +31,10 @@ from VeraGrid.Gui.Diagrams.SchematicWidget.Injections.current_injection_graphics
 from VeraGrid.Gui.Diagrams.SchematicWidget.Injections.controllable_shunt_graphics import (
     ControllableShuntGraphicItem,
     ControllableShunt)
+from VeraGrid.Gui.Diagrams.Editors.RmsModelEditor.rms_model_editor_engine import RmsModelEditorGUI
 
+
+from VeraGrid.Gui.SubstationDesigner.voltage_level_conversion import VoltageLevelConversionWizard
 from VeraGridEngine.enumerations import DeviceType, FaultType, BusGraphicType
 from VeraGridEngine.Devices.types import INJECTION_DEVICE_TYPES
 from VeraGridEngine.Devices.Substation import Bus
@@ -199,6 +202,8 @@ class BusGraphicItem(GenericDiagramWidget, QtWidgets.QGraphicsRectItem):
         self.setBrush(TRANSPARENT)
         self.setFlags(self.GraphicsItemFlag.ItemIsSelectable | self.GraphicsItemFlag.ItemIsMovable)
         self.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+
+        self.vl_wizard: VoltageLevelConversionWizard | None = None
 
         # Update size:
         self.change_size(w=self.w)
@@ -405,16 +410,21 @@ class BusGraphicItem(GenericDiagramWidget, QtWidgets.QGraphicsRectItem):
         Returns:
             Nothing
         """
-        y0 = self.h + 40
-        n = len(self._child_graphics)
-        inc_x = self.w / (n + 1)
-        x = inc_x
-        for elm in self._child_graphics:
-            elm.setPos(x - elm.w / 2, y0)
-            x += inc_x
+        if len(self._child_graphics):
+            positions = [e.api_object.get_bus_pos(self.api_object) for e in self._child_graphics]
+            positions_sorted = np.argsort(positions)
 
-        # Arrange line positions
-        self._terminal.process_callbacks(self.pos() + self._terminal.pos())
+            y0 = self.h + 40
+            n = len(self._child_graphics)
+            inc_x = self.w / (n + 1)
+            x = inc_x
+            for i in positions_sorted:
+                elm = self._child_graphics[i]
+                elm.setPos(x - elm.w / 2, y0)
+                x += inc_x
+
+            # Arrange line positions
+            self._terminal.process_callbacks(self.pos() + self._terminal.pos())
 
     def create_children_widgets(self, injections_by_tpe: Dict[DeviceType, List[INJECTION_DEVICE_TYPES]]):
         """
@@ -484,10 +494,10 @@ class BusGraphicItem(GenericDiagramWidget, QtWidgets.QGraphicsRectItem):
                        checkeable=True,
                        checked_value=self.draw_labels)
 
-        # sc = menu.addMenu('Short circuit')
-        # sc_icon = QIcon()
-        # sc_icon.addPixmap(QPixmap(":/Icons/icons/short_circuit.svg"))
-        # sc.setIcon(sc_icon)
+        add_menu_entry(menu=menu,
+                       text="Rms Editor",
+                       function_ptr=self.edit_rms,
+                       icon_path=":/Icons/icons/edit.svg")
 
         sc = add_sub_menu(menu=menu,
                           text="Short circuit",
@@ -562,6 +572,10 @@ class BusGraphicItem(GenericDiagramWidget, QtWidgets.QGraphicsRectItem):
                        icon_path=":/Icons/icons/delete_schematic.svg",
                        function_ptr=self.delete)
 
+        add_menu_entry(menu, text='Convert to voltage level',
+                       icon_path=":/Icons/icons/voltage_level.svg",
+                       function_ptr=self.convert_to_voltage_level)
+
         add_menu_entry(menu, text='Expand schematic',
                        icon_path=":/Icons/icons/grid_icon.svg",
                        function_ptr=self.expand_diagram_from_bus)
@@ -614,6 +628,15 @@ class BusGraphicItem(GenericDiagramWidget, QtWidgets.QGraphicsRectItem):
 
         menu.exec_(event.screenPos())
 
+    def edit_rms(self):
+        """
+        Open the appropriate editor dialogue
+        :return:
+        """
+        dlg = RmsModelEditorGUI(self.api_object, parent=self.editor)
+        dlg.show()
+
+
     def assign_status_to_profile(self):
         """
         Assign the snapshot rate to the profile
@@ -644,6 +667,17 @@ class BusGraphicItem(GenericDiagramWidget, QtWidgets.QGraphicsRectItem):
             self.set_tile_color(QBrush(ACTIVE['color']))
         else:
             self.set_tile_color(QBrush(DEACTIVATED['color']))
+
+    def convert_to_voltage_level(self):
+        """
+        Open the voltage level conversion wizard
+        """
+        self.vl_wizard = VoltageLevelConversionWizard()
+
+
+
+        # open
+        self.vl_wizard.show()
 
     def expand_diagram_from_bus(self) -> None:
         """

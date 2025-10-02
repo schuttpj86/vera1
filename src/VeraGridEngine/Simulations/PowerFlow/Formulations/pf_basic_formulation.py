@@ -284,7 +284,7 @@ class PfBasicFormulation(PfFormulationTemplate):
             Ybus=self.adm.Ybus,
             Yf=self.adm.Yf,
             Yt=self.adm.Yt,
-            Yshunt_bus=self.adm.Yshunt_bus,
+            Yshunt_bus= - self.adm.Yshunt_bus,
             branch_rates=self.nc.passive_branch_data.rates,
             Sbase=self.nc.Sbase
         )

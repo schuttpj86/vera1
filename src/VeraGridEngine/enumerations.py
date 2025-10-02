@@ -414,7 +414,8 @@ class ContingencyMethod(Enum):
     PowerFlow = 'Power flow'
     OptimalPowerFlow = 'Optimal power flow'
     HELM = 'HELM'
-    PTDF = 'PTDF'
+    Linear = 'Linear'
+    PTDF_scan = "PTDF Scan"
 
     def __str__(self):
         return self.value
@@ -1109,7 +1110,13 @@ class DeviceType(Enum):
 
     BusOrBranch = "BusOrBranch"
 
+    DynamicModelHostDevice = "Dynamic Model Host"
+
     RmsModelTemplateDevice = "RMS template"
+
+    RmsEventDevice = "Rms Event"
+
+    RmsEventsGroupDevice = "Rms Events Group"
 
     def __str__(self) -> str:
         return str(self.value)
@@ -1278,6 +1285,7 @@ class StudyResultsType(Enum):
     NetTransferCapacityTimeSeries = 'NetTransferCapacityTimeSeries'
     StochasticPowerFlow = 'StochasticPowerFlow'
     RmsSimulation = "RmsSimulation"
+    SmallSignalStability = "SmallSignalStability"
 
     def __str__(self):
         return self.value
@@ -1538,24 +1546,20 @@ class ResultTypes(Enum):
     BranchActiveCurrentFromB = 'Irf: Active current "from" B'
     BranchActiveCurrentFromC = 'Irf: Active current "from" C'
 
-
     BranchReactiveCurrentFrom = 'Iif: Reactive current "from"'
     BranchReactiveCurrentFromA = 'Iif: Reactive current "from" A'
     BranchReactiveCurrentFromB = 'Iif: Reactive current "from" B'
     BranchReactiveCurrentFromC = 'Iif: Reactive current "from" C'
-
 
     BranchActiveCurrentTo = 'Irt: Active current "to"'
     BranchActiveCurrentToA = 'Irt: Active current "to" A'
     BranchActiveCurrentToB = 'Irt: Active current "to" B'
     BranchActiveCurrentToC = 'Irt: Active current "to" C'
 
-
     BranchReactiveCurrentTo = 'Iit: Reactive current "to"'
     BranchReactiveCurrentToA = 'Iit: Reactive current "to" A'
     BranchReactiveCurrentToB = 'Iit: Reactive current "to" B'
     BranchReactiveCurrentToC = 'Iit: Reactive current "to" C'
-
 
     BranchTapModule = 'm: Tap module'
     BranchTapAngle = '𝜏: Tap angle'
@@ -1603,7 +1607,6 @@ class ResultTypes(Enum):
     HvdcPowerFromA = 'HVDC power "from" A'
     HvdcPowerFromB = 'HVDC power "from" B'
     HvdcPowerFromC = 'HVDC power "from" C'
-
 
     HvdcPowerTo = 'HVDC power "to"'
     HvdcPowerToA = 'HVDC power "to" A'
@@ -1816,6 +1819,15 @@ class ResultTypes(Enum):
     # Clustering
     ClusteringReport = 'Clustering time series report'
 
+    # RMS Simulation
+
+    RmsSimulationReport = 'Rms time series report'
+
+    # RMS Small Signal Stability
+    ParticipationFactors = "Participation Factors"
+    Modes = "Modes"
+    SDomainPlot = "S-Domain Plot"
+
     # inputs analysis
     ZoneAnalysis = 'Zone analysis'
     CountryAnalysis = 'Country analysis'
@@ -2006,6 +2018,7 @@ class SimulationTypes(Enum):
     NodalCapacityTimeSeries_run = 'Nodal capacity time series'
     Reliability_run = "Reliability"
     RmsDynamic_run = "RMS Dynamic"
+    SmallSignal_run = "Small Signal stability"
 
     NoSim = "No simulation"
 
@@ -2321,10 +2334,12 @@ class GridReductionMethod(Enum):
         except KeyError:
             return s
 
+
 class DynamicVarType(Enum):
     """
        GridReductionMethod
        """
+    T = "T"
     Vm = "Vm"
     Va = "Va"
     P = "P"
@@ -2349,5 +2364,30 @@ class DynamicVarType(Enum):
         """
         try:
             return DynamicVarType[s]
+        except KeyError:
+            return s
+
+
+class ReliabilityMode(Enum):
+    """
+    ReliabilityMode
+    """
+    GenerationAdequacy = "Generation Adequacy"
+    GridMetrics = "Grid Metrics"
+
+    def __str__(self):
+        return self.value
+
+    def __repr__(self):
+        return str(self)
+
+    @staticmethod
+    def argparse(s):
+        """
+        :param s:
+        :return:
+        """
+        try:
+            return ReliabilityMode[s]
         except KeyError:
             return s

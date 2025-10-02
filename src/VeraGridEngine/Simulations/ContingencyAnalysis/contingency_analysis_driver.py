@@ -13,12 +13,13 @@ from VeraGridEngine.Devices.multi_circuit import MultiCircuit
 from VeraGridEngine.enumerations import EngineType, ContingencyMethod, SimulationTypes
 from VeraGridEngine.Simulations.ContingencyAnalysis.contingency_analysis_results import ContingencyAnalysisResults
 from VeraGridEngine.Simulations.driver_template import DriverTemplate
+from VeraGridEngine.Compilers.circuit_to_data import compile_numerical_circuit_at
 from VeraGridEngine.Simulations.LinearFactors.linear_analysis import LinearMultiContingencies
 from VeraGridEngine.Simulations.ContingencyAnalysis.contingency_analysis_options import ContingencyAnalysisOptions
-from VeraGridEngine.Simulations.ContingencyAnalysis.Methods.nonlinear_contingency_analysis import \
-    nonlinear_contingency_analysis
-from VeraGridEngine.Simulations.ContingencyAnalysis.Methods.linear_contingency_analysis import \
-    linear_contingency_analysis
+from VeraGridEngine.Simulations.ContingencyAnalysis.Methods.nonlinear_contingency_analysis import (
+    nonlinear_contingency_analysis)
+from VeraGridEngine.Simulations.ContingencyAnalysis.Methods.linear_contingency_analysis import (
+    linear_contingency_analysis)
 from VeraGridEngine.Simulations.ContingencyAnalysis.Methods.helm_contingency_analysis import helm_contingency_analysis
 from VeraGridEngine.Simulations.ContingencyAnalysis.Methods.optimal_linear_contingency_analysis import \
     optimal_linear_contingency_analysis
@@ -111,22 +112,45 @@ class ContingencyAnalysisDriver(DriverTemplate):
         if self.engine == EngineType.VeraGrid:
 
             if self.options.contingency_method == ContingencyMethod.PowerFlow:
+                area_names, bus_area_indices, F, T, hvdc_F, hvdc_T = self.grid.get_branch_areas_info()
+
+                # set the numerical circuit
+                nc = compile_numerical_circuit_at(self.grid, t_idx=t_idx)
+
                 self.results = nonlinear_contingency_analysis(
-                    grid=self.grid,
+                    nc=nc,
                     options=self.options,
                     linear_multiple_contingencies=self.linear_multiple_contingencies,
-                    calling_class=self,
+                    area_names=area_names,
+                    bus_area_indices=bus_area_indices,
+                    F=F,
+                    T=T,
+                    report_text=self.report_text,
+                    report_progress2=self.report_progress2,
+                    is_cancel=self.is_cancel,
                     t_idx=t_idx,
                     t_prob=t_prob,
                     logger=self.logger
                 )
 
-            elif self.options.contingency_method == ContingencyMethod.PTDF:
+            elif self.options.contingency_method == ContingencyMethod.Linear:
+
+                area_names, bus_area_indices, F, T, hvdc_F, hvdc_T = self.grid.get_branch_areas_info()
+
+                # set the numerical circuit
+                nc = compile_numerical_circuit_at(self.grid, t_idx=t_idx)
+
                 self.results = linear_contingency_analysis(
-                    grid=self.grid,
+                    nc=nc,
                     options=self.options,
                     linear_multiple_contingencies=self.linear_multiple_contingencies,
-                    calling_class=self,
+                    area_names=area_names,
+                    bus_area_indices=bus_area_indices,
+                    F=F,
+                    T=T,
+                    report_text=self.report_text,
+                    report_progress2=self.report_progress2,
+                    is_cancel=self.is_cancel,
                     t=t_idx,
                     t_prob=t_prob,
                     logger=self.logger

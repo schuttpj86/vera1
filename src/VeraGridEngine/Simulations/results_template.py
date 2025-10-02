@@ -394,6 +394,14 @@ class ResultsTemplate:
         """
         self.area_names, self.bus_area_indices, self.F, self.T, self.hvdc_F, self.hvdc_T = grid.get_branch_areas_info()
 
+    def fill_simulation_info(self, grid: MultiCircuit):
+        """
+
+        :param grid:
+        :return:
+        """
+        self.area_names, self.bus_area_indices, self.F, self.T, self.hvdc_F, self.hvdc_T = grid.get_branch_areas_info()
+
     def mdl(self, result_type: ResultTypes) -> ResultsTable:
         """
         Get results model (overloaded in the respective implementations)
@@ -422,21 +430,26 @@ class ResultsTemplate:
                         if value.ndim == 1:
 
                             if len(value) > 0:
-                                arr = value[self.original_sample_idx]  # expand
-                                setattr(self, prop, arr)  # overwrite the array
+                                try:
+                                    arr = value[self.original_sample_idx]  # expand
+                                    setattr(self, prop, arr)  # overwrite the array
+                                except IndexError as e:
+                                    print(f"Index error in expand_clustered_results (1D) for {prop}")
 
                         elif value.ndim == 2:
 
                             if value.shape[0] > 0:
-                                arr = value[self.original_sample_idx, :]  # expand
-                                setattr(self, prop, arr)  # overwrite the array
+                                try:
+                                    arr = value[self.original_sample_idx, :]  # expand
+                                    setattr(self, prop, arr)  # overwrite the array
+                                except IndexError as e:
+                                    print(f"Index error in expand_clustered_results (2D) for {prop}")
                         else:
                             pass
                             # print(prop, value.ndim, value.dtype)
                     else:
                         pass
                         # print(prop, value.ndim, value.dtype)
-
 
     def parse_saved_data(self, grid: MultiCircuit,
                          data_dict: Dict[str, pd.DataFrame],

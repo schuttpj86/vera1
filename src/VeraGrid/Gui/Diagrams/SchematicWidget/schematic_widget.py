@@ -4848,6 +4848,36 @@ class SchematicWidget(BaseDiagramWidget):
         for i, bus, bus_graphics in self.get_buses():
             bus_graphics.set_position(bus.x, bus.y)
 
+    def add_buses(self, buses: List[Bus] | Set[Bus]):
+        """
+        Draw all elements associated to a group of buses
+        :param buses: List or Set of Buses
+        """
+
+        (buses,
+         lines, dc_lines, transformers2w,
+         transformers3w, windings, hvdc_lines,
+         vsc_converters, upfc_devices,
+         series_reactances, switches,
+         fluid_nodes, fluid_paths) = get_devices_to_expand(circuit=self.circuit, buses=buses, max_level=1)
+
+        # Draw schematic subset
+        diagram = generate_schematic_diagram(buses=list(buses),
+                                             lines=lines,
+                                             dc_lines=dc_lines,
+                                             transformers2w=transformers2w,
+                                             transformers3w=transformers3w,
+                                             windings=windings,
+                                             hvdc_lines=hvdc_lines,
+                                             vsc_devices=vsc_converters,
+                                             upfc_devices=upfc_devices,
+                                             series_reactances=series_reactances,
+                                             switches=switches,
+                                             fluid_nodes=list(fluid_nodes),
+                                             fluid_paths=fluid_paths)
+
+        self.draw_additional_diagram(diagram=diagram)
+
 
 def generate_schematic_diagram(buses: List[Bus],
                                lines: List[Line],
@@ -4867,7 +4897,7 @@ def generate_schematic_diagram(buses: List[Bus],
                                text_func: Union[Callable, None] = None,
                                name='Bus branch diagram') -> SchematicDiagram:
     """
-    Add a elements to the schematic scene
+    Generate diagram with the elements
     :param buses: list of Bus objects
     :param lines: list of Line objects
     :param dc_lines: list of DcLine objects
@@ -4888,6 +4918,65 @@ def generate_schematic_diagram(buses: List[Bus],
     """
 
     diagram = SchematicDiagram(name=name)
+
+    add_to_schematic_diagram(diagram=diagram,
+                             buses=buses,
+                             lines=lines,
+                             dc_lines=dc_lines,
+                             transformers2w=transformers2w,
+                             transformers3w=transformers3w,
+                             windings=windings,
+                             hvdc_lines=hvdc_lines,
+                             vsc_devices=vsc_devices,
+                             upfc_devices=upfc_devices,
+                             series_reactances=series_reactances,
+                             switches=switches,
+                             fluid_nodes=fluid_nodes,
+                             fluid_paths=fluid_paths,
+                             explode_factor=explode_factor,
+                             prog_func=prog_func,
+                             text_func=text_func)
+
+    return diagram
+
+
+def add_to_schematic_diagram(diagram: SchematicDiagram,
+                             buses: List[Bus],
+                             lines: List[Line],
+                             dc_lines: List[DcLine],
+                             transformers2w: List[Transformer2W],
+                             transformers3w: List[Transformer3W],
+                             windings: List[Winding],
+                             hvdc_lines: List[HvdcLine],
+                             vsc_devices: List[VSC],
+                             upfc_devices: List[UPFC],
+                             series_reactances: List[SeriesReactance],
+                             switches: List[Switch],
+                             fluid_nodes: List[FluidNode],
+                             fluid_paths: List[FluidPath],
+                             explode_factor=1.0,
+                             prog_func: Union[Callable, None] = None,
+                             text_func: Union[Callable, None] = None, ) -> SchematicDiagram:
+    """
+    Add a elements to the diagram
+    :param diagram: SchematicDiagram
+    :param buses: list of Bus objects
+    :param lines: list of Line objects
+    :param dc_lines: list of DcLine objects
+    :param transformers2w: list of Transformer Objects
+    :param transformers3w: list of Transformer3W Objects
+    :param windings: list of Winding objects
+    :param hvdc_lines: list of HvdcLine objects
+    :param vsc_devices: list Vsc objects
+    :param upfc_devices: List of UPFC devices
+    :param series_reactances: List of SeriesReactance
+    :param switches: List of Switch
+    :param fluid_nodes: List of FluidNode
+    :param fluid_paths: List of FluidPath
+    :param explode_factor: factor of "explosion": Separation of the nodes factor
+    :param prog_func: progress report function
+    :param text_func: Text report function
+    """
 
     # first create the buses
     if text_func is not None:
