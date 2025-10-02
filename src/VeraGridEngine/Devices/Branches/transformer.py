@@ -796,10 +796,10 @@ class Transformer2W(ControllableBranchParent):
     def initialize_rms(self):
         # NOTE: accurate model considering phase shift and tap change still need to be implemented!
         if self.rms_model.empty():
-            Qf = Var("Qf")
-            Qt = Var("Qt")
-            Pf = Var("Pf")
-            Pt = Var("Pt")
+            Qf = Var("Qf" + self.name)
+            Qt = Var("Qt" + self.name)
+            Pf = Var("Pf" + self.name)
+            Pt = Var("Pt" + self.name)
 
             ys = 1.0 / complex(self.R, self.X)
             g = Const(ys.real)

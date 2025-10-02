@@ -32,7 +32,6 @@ from VeraGridEngine.Utils.NumericalMethods.weldorf_online_stddev import WeldorfO
 
 @nb.njit()
 def max_abs_per_col(A: Mat) -> Vec:
-
     res = np.zeros(A.shape[1], dtype=float)
 
     for j in range(A.shape[1]):  # for each col (device)
@@ -47,7 +46,6 @@ def max_abs_per_col(A: Mat) -> Vec:
 
 @nb.njit()
 def max_abs_per_col_cx(A: CxMat) -> CxVec:
-
     res = np.zeros(A.shape[1], dtype=nb.complex128)
 
     for j in range(A.shape[1]):  # for each col (device)
@@ -202,8 +200,7 @@ class ContingencyAnalysisTimeSeriesDriver(TimeSeriesDriverTemplate):
             results.max_loading[it, :] = max_abs_per_col(loading_abs)
             results.overload_count[it, :] = np.count_nonzero(overloading > 1.0)
             results.sum_overload[it, :] = overloading.sum(axis=0)
-
-            results.std_dev_overload[it, :] = np.abs(res_t.loading).std(axis=0)
+            results.std_dev_overload[it, :] = overloading.std(axis=0)
 
             results.srap_used_power += res_t.srap_used_power
             results.report += res_t.report
@@ -310,8 +307,7 @@ class ContingencyAnalysisTimeSeriesDriver(TimeSeriesDriverTemplate):
             results.max_loading[it, :] = max_abs_per_col(loading_abs)
             results.overload_count[it, :] = np.count_nonzero(overloading > 1.0)
             results.sum_overload[it, :] = overloading.sum(axis=0)
-
-            results.std_dev_overload[it, :] = np.abs(res_t.loading).std(axis=0)
+            results.std_dev_overload[it, :] = overloading.std(axis=0)
 
             results.srap_used_power += res_t.srap_used_power
             results.report += res_t.report
@@ -365,13 +361,13 @@ class ContingencyAnalysisTimeSeriesDriver(TimeSeriesDriverTemplate):
         n_con_groups = self.grid.get_contingency_groups_number()
 
         # Get the branch index array and the contringency group it belongs array
-        con_idx, cg_idx = lin_mc.get_single_con_branch_idx()
+        # single_con_idx: array of single contingency branch indices,
+        # single_con_cg_idx: array of the matching contingency groups
+        single_con_br_idx, single_con_cg_idx = lin_mc.get_single_con_branch_idx()
 
         mon_idx = np.where(nc.passive_branch_data.monitor_loading == 1)[0]
 
-        linear = LinearAnalysisTs(
-            grid=self.grid,
-        )
+        linear = LinearAnalysisTs(grid=self.grid)
 
         Pbus_mat = self.grid.get_Pbus_prof()
 
@@ -387,20 +383,20 @@ class ContingencyAnalysisTimeSeriesDriver(TimeSeriesDriverTemplate):
 
             SbrCon, LoadingCon, problems = linear_contingency_scan_numba(
                 nbr=nc.nbr,
-                nconn=n_con_groups,
+                n_con_groups=n_con_groups,
                 Pbus=Pbus_mat[t, :],
                 rates=nc.passive_branch_data.rates,
                 con_rates=nc.passive_branch_data.contingency_rates,
                 PTDF=lin_t.PTDF,
                 LODF=lin_t.LODF,
                 mon_idx=mon_idx,
-                con_idx=con_idx,
-                cg_idx=cg_idx
+                single_con_br_idx=single_con_br_idx,
+                single_con_cg_idx=single_con_cg_idx
             )
 
-            results.S[it, :] = Pbus_mat[t, :].max(axis=0)
+            results.S[it, :] = max_abs_per_col(Pbus_mat[t, :])
 
-            results.max_flows[it, :] = np.abs(SbrCon).max(axis=0)
+            results.max_flows[it, :] = max_abs_per_col(SbrCon)
 
             # Note: Loading is (ncon, nbranch)
 
@@ -411,11 +407,10 @@ class ContingencyAnalysisTimeSeriesDriver(TimeSeriesDriverTemplate):
             for k in range(results.ncon):
                 std_dev_counter.update(it, overloading[k, :])
 
-            results.max_loading[it, :] = loading_abs.max(axis=0)
+            results.max_loading[it, :] = max_abs_per_col(loading_abs)
             results.overload_count[it, :] = np.count_nonzero(overloading > 1.0)
             results.sum_overload[it, :] = overloading.sum(axis=0)
-
-            results.std_dev_overload[it, :] = overloading.max(axis=0)
+            results.std_dev_overload[it, :] = overloading.std(axis=0)
 
             # results.srap_used_power += res_t.srap_used_power
             # results.report += res_t.report

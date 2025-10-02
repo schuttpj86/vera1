@@ -97,7 +97,6 @@ class LagVar(Var):
     def populate_initial_lag(self, x0:float, dx0:np.ndarray, lag_x:float, dt: Optional[Var], h:float):
         #function that initializes the lag of the same order for the same original_var
         diff_order = self.lag 
-
         if diff_order == 1:
             return x0
         elif diff_order == 2:
@@ -106,7 +105,7 @@ class LagVar(Var):
             res = x0 - dt*dx0[0]
 
         for i in range(1, diff_order + 1):
-            val = (diff_order +1 -i)*(dt**(i))*((-1)**(i))*dx0[i-1] 
+            val = (diff_order + 1 -i)*(dt**(i))*((-1)**(i))*dx0[i-1] 
             res += val
         return res.eval(dt = h)
         
@@ -182,33 +181,45 @@ class DiffVar(Var):
             res += (dt**(i+1))*(-1)**(i+1)*dx0[i] 
         return res.eval()
 
-    def approximation_expr(self, dt: Optional[Const]) -> Expr:
+    def approximation_expr(self, dt: Optional[Const], lag_can_be_0 = True, central =False) -> Expr:
         """
         Computes the n-th backward finite difference approximation of the derivative
         using the closed-form backward difference formula.
         """
         origin_name = self.origin_var.name
+        if lag_can_be_0:
+            lag_var_0 = LagVar.get_or_create(
+                f"{origin_name}_lag_{0}",
+                base_var=self.origin_var,
+                lag=0
+            )
+        else:
+            lag_var_0 = self.origin_var
+
+        origin_name = self.origin_var.name
         lag_total = self.diff_order
-        if self.diff_order == 1:
+        if self.diff_order == 1 and central:
             lag_var_2 = LagVar.get_or_create(
                 f"{origin_name}_lag_{2}",
                 base_var=self.origin_var,
                 lag=2
             )
-            return (self.origin_var - lag_var_2)/2*dt, lag_total
+            return (lag_var_0 - lag_var_2)/(2*dt), lag_total
         
         # Compute the sum: ∑_{i=0}^{n} (-1)^i * C(n, i) * f(x - i*dt)
         terms = []
+        minus1 = Const(-1)
+
         for i in range(lag_total + 1):
             if i == 0:
-                lag_var = self.origin_var
+                lag_var = lag_var_0
             else:
                 lag_var = LagVar.get_or_create(
                 f"{origin_name}_lag_{i}",
                 base_var=self.origin_var,
                 lag=i
             )
-            coeff = (-1)**i * math.comb(lag_total, i)
+            coeff = minus1**i * Const(math.comb(lag_total, i))
             terms.append(coeff * lag_var)
 
         finite_diff_sum = sum(terms)
@@ -216,3 +227,4 @@ class DiffVar(Var):
         # Divide by dt^n for n-th derivative
         result = finite_diff_sum / dt**lag_total
         return result.simplify(), lag_total
+    

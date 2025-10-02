@@ -147,29 +147,29 @@ def linear_contingency_analysis(nc: NumericalCircuit,
 
 
 @nb.njit()
-def linear_contingency_scan_numba(nbr: int, nconn: int,
+def linear_contingency_scan_numba(nbr: int, n_con_groups: int,
                                   Pbus: Vec, rates: Vec, con_rates: Vec,
                                   PTDF: Mat, LODF: Mat, mon_idx: IntVec,
-                                  con_idx: IntVec, cg_idx: IntVec):
+                                  single_con_br_idx: IntVec, single_con_cg_idx: IntVec):
     """
-
+    Fast contingency scan using the PTDF
     :param nbr: Number of branches
-    :param nconn: Number of contingency groups for this to match with the defined contingency groups
+    :param n_con_groups: Number of contingency groups
     :param Pbus: Buses injection (nbus, in MW)
     :param rates: Rates vector (nbr)
     :param con_rates: Contingency rates vector (nbr)
     :param PTDF: PTDF matrix (nbr, nbus)
     :param LODF: LODF matrix (nbr, nbr)
     :param mon_idx: Monitored branches
-    :param con_idx: indices of the contingency groups that represent a single contingency
-    :param cg_idx:
+    :param single_con_br_idx: array of single contingency branch indices
+    :param single_con_cg_idx: array of the matching contingency groups
     :return: SbrCon(nconn, nbr), LoadingCon(nconn, nbr), problems(..., (m, c))
     """
 
-    assert len(con_idx) == len(cg_idx)
+    assert len(single_con_br_idx) == len(single_con_cg_idx)
 
-    SbrCon = np.zeros((nconn, nbr))
-    LoadingCon = np.zeros((nconn, nbr))
+    SbrCon = np.zeros((n_con_groups, nbr))
+    LoadingCon = np.zeros((n_con_groups, nbr))
 
     # base flow
     Sbr0 = PTDF @ Pbus
@@ -185,7 +185,7 @@ def linear_contingency_scan_numba(nbr: int, nconn: int,
 
         if abs(Sbr0[m]) <= rates[m]:
 
-            for c, cgi in zip(con_idx, cg_idx):  # for each contingency branch
+            for c, cgi in zip(single_con_br_idx, single_con_cg_idx):  # for each contingency branch
 
                 # contingency flow
                 SbrCon[cgi, m] = Sbr0[m] + LODF[m, c] * Sbr0[c]

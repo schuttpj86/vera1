@@ -2,7 +2,8 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 # SPDX-License-Identifier: MPL-2.0
-from typing import Union
+import pdb
+from typing import Union, List
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
@@ -10,6 +11,7 @@ from VeraGridEngine.enumerations import DeviceType, BuildStatus
 from VeraGridEngine.Devices.Parents.load_parent import LoadParent
 from VeraGridEngine.Devices.profile import Profile
 from VeraGridEngine.Utils.Symbolic.block import Block, Var, Const, DynamicVarType
+from VeraGridEngine.Utils.Symbolic.symbolic import piecewise
 
 
 class Load(LoadParent):
@@ -557,7 +559,7 @@ class Load(LoadParent):
             if show_fig:
                 plt.show()
 
-    def initialize_rms(self):
+    def initialize_rms(self, rms_event = False):
         if self.rms_model.empty():
 
             Ql = Var("Ql")
@@ -565,16 +567,47 @@ class Load(LoadParent):
 
             self.rms_model.model = Block(
                 algebraic_eqs=[
-                    Pl - self.Pl0, #TODO: consider that self.P/Q should be constant variables/objects, in order for us to create events
+                    Pl - self.Pl0,
                     Ql - self.Ql0
                 ],
                 algebraic_vars=[Pl, Ql],
                 init_eqs={},
                 init_vars=[],
-                init_params_eq={},
                 parameters=[],
                 external_mapping={
                     DynamicVarType.P: Pl,
                     DynamicVarType.Q: Ql
                 }
             )
+
+    def initialize_rms_with_event(self, rms_events: List, glob_time):
+        if self.rms_model.empty():
+            Ql = Var("Ql" + self.name)
+            Pl = Var("Pl" + self.name)
+            self.rms_model.model = Block(
+                algebraic_eqs=[
+                ],
+                algebraic_vars=[],
+                init_eqs={},
+                init_vars=[],
+                parameters=[],
+                parameters_eqs=[],
+                external_mapping={
+                }
+            )
+            self.rms_model.model.external_mapping[DynamicVarType.P] = Pl
+            self.rms_model.model.external_mapping[DynamicVarType.Q] = Ql
+            self.rms_model.model.algebraic_vars.append(Pl)
+            self.rms_model.model.algebraic_vars.append(Ql)
+            for rms_event in rms_events:
+
+                default_value = getattr(self, rms_event.parameter, None)  # TODO: Find a way of not using getattr and setattr
+                var = Var(rms_event.parameter)
+                setattr(self, rms_event.parameter, var)
+                self.rms_model.model.parameters.append(var)
+                self.rms_model.model.parameters_eqs.append(piecewise(glob_time, rms_event.times, rms_event.values, default_value))
+
+            self.rms_model.model.algebraic_eqs.append(Pl - self.Pl0)
+            self.rms_model.model.algebraic_eqs.append(Ql - self.Ql0)
+
+

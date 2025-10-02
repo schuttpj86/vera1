@@ -714,10 +714,10 @@ class Line(BranchParent):
 
     def initialize_rms(self):
         if self.rms_model.empty():
-            Qf = Var("Qf")
-            Qt = Var("Qt")
-            Pf = Var("Pf")
-            Pt = Var("Pt")
+            Qf = Var("Qf" + self.name)
+            Qt = Var("Qt" + self.name)
+            Pf = Var("Pf" + self.name)
+            Pt = Var("Pt" + self.name)
 
             ys = 1.0 / complex(self.R, self.X)
             g = Const(ys.real)

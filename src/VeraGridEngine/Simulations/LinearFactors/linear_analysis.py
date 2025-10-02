@@ -941,10 +941,11 @@ class LinearMultiContingencies:
                 )
             )
 
-    def get_single_con_branch_idx(self) -> IntVec:
+    def get_single_con_branch_idx(self) -> Tuple[IntVec, IntVec]:
         """
         Get the branch index array and the contringency group it belongs array
-        :return:
+        :return: array of single contingency branch indices,
+                 array of the matching contingency groups
         """
         con_idx = list()
         cg_idx = list()

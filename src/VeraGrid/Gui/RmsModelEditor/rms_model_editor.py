@@ -17,9 +17,9 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QPainter, QPalette, QPixmap, QRadialGradient,
     QTransform)
 from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QHeaderView,
-    QListView, QMainWindow, QSizePolicy, QSplitter,
-    QTabWidget, QTableView, QToolBar, QVBoxLayout,
-    QWidget)
+    QListWidget, QListWidgetItem, QMainWindow, QSizePolicy,
+    QSplitter, QTabWidget, QTableView, QToolBar,
+    QVBoxLayout, QWidget)
 from .icons_rc import *
 
 class Ui_MainWindow(object):
@@ -62,10 +62,13 @@ class Ui_MainWindow(object):
         self.verticalLayout_7 = QVBoxLayout(self.frame_8)
         self.verticalLayout_7.setObjectName(u"verticalLayout_7")
         self.verticalLayout_7.setContentsMargins(-1, 8, -1, -1)
-        self.listView = QListView(self.frame_8)
-        self.listView.setObjectName(u"listView")
+        self.datalistWidget = QListWidget(self.frame_8)
+        QListWidgetItem(self.datalistWidget)
+        QListWidgetItem(self.datalistWidget)
+        QListWidgetItem(self.datalistWidget)
+        self.datalistWidget.setObjectName(u"datalistWidget")
 
-        self.verticalLayout_7.addWidget(self.listView)
+        self.verticalLayout_7.addWidget(self.datalistWidget)
 
         self.splitter_3.addWidget(self.frame_8)
         self.PlotFrame = QFrame(self.splitter_3)
@@ -75,10 +78,10 @@ class Ui_MainWindow(object):
         self.horizontalLayout = QHBoxLayout(self.PlotFrame)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.horizontalLayout.setContentsMargins(8, 8, 8, 8)
-        self.tableView = QTableView(self.PlotFrame)
-        self.tableView.setObjectName(u"tableView")
+        self.datatableView = QTableView(self.PlotFrame)
+        self.datatableView.setObjectName(u"datatableView")
 
-        self.horizontalLayout.addWidget(self.tableView)
+        self.horizontalLayout.addWidget(self.datatableView)
 
         self.splitter_3.addWidget(self.PlotFrame)
 
@@ -108,6 +111,17 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
         self.actionCheckModel.setText(QCoreApplication.translate("MainWindow", u"CheckModel", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QCoreApplication.translate("MainWindow", u"Block editor", None))
+
+        __sortingEnabled = self.datalistWidget.isSortingEnabled()
+        self.datalistWidget.setSortingEnabled(False)
+        ___qlistwidgetitem = self.datalistWidget.item(0)
+        ___qlistwidgetitem.setText(QCoreApplication.translate("MainWindow", u"State variables", None));
+        ___qlistwidgetitem1 = self.datalistWidget.item(1)
+        ___qlistwidgetitem1.setText(QCoreApplication.translate("MainWindow", u"Algebraic variables", None));
+        ___qlistwidgetitem2 = self.datalistWidget.item(2)
+        ___qlistwidgetitem2.setText(QCoreApplication.translate("MainWindow", u"Constants", None));
+        self.datalistWidget.setSortingEnabled(__sortingEnabled)
+
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), QCoreApplication.translate("MainWindow", u"Data", None))
         self.toolBar.setWindowTitle(QCoreApplication.translate("MainWindow", u"toolBar", None))
     # retranslateUi

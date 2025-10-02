@@ -6,7 +6,7 @@
 from __future__ import annotations
 import json
 import math
-import pdb
+import ast
 import uuid
 import numpy as np
 from enum import Enum
@@ -16,11 +16,9 @@ from dataclasses import dataclass, field
 from types import MappingProxyType
 from typing import Any, Callable, ClassVar, Dict, Mapping, Union, List, Sequence, Tuple, Set
 
-# from VeraGridEngine.Utils.Symbolic.events import EventParam
-
 NUMBER = Union[int, float, complex]
 
-NAME = 'name'
+
 
 
 # -----------------------------------------------------------------------------
@@ -56,17 +54,40 @@ def _var_uid(sym: Var | str) -> str:
 # Function helpers
 # ----------------------------------------------------------------------------
 
-def _stepwise(x: NUMBER) -> NUMBER:
-    return 1 if x >= 0 else 0
+@nb.njit                                        # TODO: is it the best option to compile here _heaviside?
+def _heaviside(x):
+    return 0.0 if x <= 0 else 1.0
 
 
-def _heaviside(x: NUMBER) -> NUMBER:
-    if x > 0:
-        return 1
-    elif x < 0:
-        return 0
-    else:
-        return 0.5
+def heaviside(x: Any) -> Func:
+    return Func("heaviside", _to_expr(x))
+
+
+def piecewise(time: Expr, t_events: np.ndarray, new_values: np.ndarray, default_value: NUMBER) -> Expr:
+    """
+    Symbolic piecewise function.
+    Returns default_value before the first event, then switches to
+    corresponding new_values after each t_event.
+
+    Parameters
+    ----------
+    time : Expr
+        Symbolic time expression
+    t_events : np.ndarray
+        1D array of event times (must be sorted ascending)
+    new_values : np.ndarray
+        1D array of values after each event time
+    default_value : NUMBER
+        Value before the first event
+    """
+    t_expr = _to_expr(time)
+    result = _to_expr(default_value)
+
+    for t_event, new_value in zip(t_events, new_values):
+        step = heaviside(t_expr - Const(t_event))
+        result = step * _to_expr(new_value) + (Const(1) - step) * result
+
+    return result
 
 
 class CmpOp(Enum):
@@ -285,6 +306,46 @@ class Var(Expr):
     def __eq__(self, other: "Expr" | NUMBER) -> Comparison:  # type: ignore[override]
         return Comparison(self, CmpOp.EQ, other)
 
+class UndefinedConst(Expr):
+    name: str = 'name'
+    frozen: bool = False
+    uid: int = field(default_factory=_new_uid)
+
+    def __setattr__(self, key, value):
+        if getattr(self, "_frozen", False):
+            raise AttributeError("Object is frozen, no further changes allowed")
+        object.__setattr__(self, key, value)
+
+    def assign_value(self, value):
+        self.value = value
+        self.frozen = True
+
+    def eval(self, **bindings: NUMBER) -> NUMBER:
+        if not hasattr(self, 'value'):
+            raise('value has not been assigned yet')
+        return self.value
+
+    def eval_uid(self, uid_bindings: Dict[str, NUMBER]) -> NUMBER:
+        if not hasattr(self, 'value'):
+            raise('value has not been assigned yet')
+        return self.value
+
+    def _diff1(self, var: Var | str) -> "Expr":
+        return Const(0)
+
+    def subs(self, mapping: Dict[Any, Expr]) -> Expr:
+        if self in mapping:
+            return mapping[self]
+        if self.name in mapping:
+            return mapping[self.name]
+        return self
+
+    def __str__(self) -> str:
+        return str(self.value)
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
 
 @dataclass(frozen=True)
 class BinOp(Expr):
@@ -468,9 +529,8 @@ class Func(Expr):
         "conj": np.conj,
         "angle": np.angle,
         "abs": np.abs,
-
-        "stepwise": _stepwise,
         "heaviside": _heaviside
+
     })
 
     # --- evaluation ----------------------------------------------------------
@@ -508,8 +568,6 @@ class Func(Expr):
             return cosh(u) * du
         if self.name == "cosh":
             return sinh(u) * du
-        if self.name == "stepwise":
-            return Const(0)
         if self.name == "heaviside":
             return Const(0)
         raise ValueError(f"Unknown function '{self.name}'")
@@ -566,8 +624,9 @@ imag = _make_unary("imag")
 conj = _make_unary("conj")
 angle = _make_unary("angle")
 abs = _make_unary("abs")
-stepwise = _make_unary("stepwise")
 heaviside = _make_unary("heaviside")
+
+
 
 
 def _expr_to_dict(expr: Expr) -> Dict[str, Any]:
@@ -713,7 +772,7 @@ def _emit(expr: Expr, uid_map_vars: Dict[int, str], uid_map_params: Dict[int, st
     :return:
     """
 
-    if isinstance(expr, Const):
+    if isinstance(expr, Const) or isinstance(expr, UndefinedConst):
         return repr(expr.value)
     if isinstance(expr, Var):
         if expr.uid in uid_map_vars.keys():
@@ -732,6 +791,38 @@ def _emit(expr: Expr, uid_map_vars: Dict[int, str], uid_map_params: Dict[int, st
             return f"np.{expr.name}({_emit(expr.arg, uid_map_vars, uid_map_params)})"
 
     raise TypeError(type(expr))
+
+def _emit_params_eq(expr: Expr, uid_map_t: Dict[int, str] = None ) -> str:
+    """
+    Emit a pure-Python (Numba-friendly) expression string
+    :param expr: Expr (expression)
+    :param uid_map:
+    :return:
+    """
+
+    if isinstance(expr, Const):
+        return repr(expr.value)
+    if isinstance(expr, Var):
+        if expr.uid in uid_map_t.keys():
+            return uid_map_t[expr.uid]
+    if isinstance(expr, UnOp):
+        return f"-({_emit_params_eq(expr.operand, uid_map_t)})"
+    if isinstance(expr, BinOp):
+        return f"({_emit_params_eq(expr.left, uid_map_t)} {expr.op} {_emit_params_eq(expr.right, uid_map_t)})"
+    if isinstance(expr, Func):
+        # Use numpy functions for standard numeric functions
+        if expr.name in ("real", "imag", "conj", "angle", "sin", "cos", "tan",
+                         "exp", "log", "sqrt", "asin", "acos", "atan",
+                         "sinh", "cosh", "abs"):
+            return f"np.{expr.name}({_emit_params_eq(expr.arg, uid_map_t)})"
+        elif expr.name == "heaviside":
+            return f"_heaviside({_emit_params_eq(expr.arg, uid_map_t)})"
+
+    else:
+            raise ValueError(f"Unknown function '{expr.name}' in _emit_params_eq")
+
+    raise TypeError(type(expr))
+
 
 def _emit_one(expr: Expr, uid_map_vars: Dict[int, str]) -> str:
     """
@@ -810,7 +901,12 @@ def _compile(expressions: Sequence[Expr],
     src += f"    out = np.zeros({len(expressions)})\n"
     src += "\n".join([f"    out[{i}] = {_emit(e, uid2sym, uid_map_params)}" for i, e in enumerate(expressions)]) + "\n"
     src += f"    return out"
-    ns: Dict[str, Any] = {"math": math, "np": np}
+    ns: Dict[str, Any] = {
+        "math": math,
+        "np": np,
+        "_heaviside": _heaviside,
+    }
+
     exec(src, ns)
     fn = nb.njit(ns["_f"], fastmath=True)
 
@@ -819,6 +915,107 @@ def _compile(expressions: Sequence[Expr],
             f"arg{i} → {v.name} (uid={v.uid}…)" for i, v in enumerate(sorting_vars)
         )
     return fn
+
+# mapping of Python operator nodes → our BinOp symbols
+_BINOP_MAP = {
+    ast.Add: "+",
+    ast.Sub: "-",
+    ast.Mult: "*",
+    ast.Div: "/",
+    ast.Pow: "**",
+}
+
+_UNOP_MAP = {
+    ast.USub: "-",
+}
+
+# mapping of allowed function names → our constructor functions
+_FUNC_MAP = {
+    "sin": sin,
+    "cos": cos,
+    "tan": tan,
+    "exp": exp,
+    "log": log,
+    "sqrt": sqrt,
+    "asin": asin,
+    "acos": acos,
+    "atan": atan,
+    "sinh": sinh,
+    "cosh": cosh,
+    "real": real,
+    "imag": imag,
+    "conj": conj,
+    "angle": angle,
+    "abs": abs,           # ⚠️ rename if you avoid shadowing built-in
+    "heaviside": heaviside,
+}
+
+def make_symbolic(expr_str: str, variables: Dict[str, Var] | None = None) -> Expr:
+    """
+    Parse a string like "sin(x) + 2*y" into a symbolic Expr tree.
+    variables: optional mapping of variable names -> Var. If None, new Var is created.
+    """
+    tree = ast.parse(expr_str, mode="eval").body
+
+    def _convert(node: ast.AST) -> Expr:
+        # if isinstance(node, ast.Num):  # Python <3.8
+        #     return Const(node.n)
+        if isinstance(node, ast.Constant):  # Python 3.8+
+            if isinstance(node.value, (int, float, complex)):
+                return Const(node.value)
+            raise TypeError(f"Unsupported constant: {node.value}")
+        if isinstance(node, ast.Name):
+            if variables is not None and node.id in variables:
+                return variables[node.id]
+            return Var(node.id)
+        if isinstance(node, ast.BinOp):
+            op = _BINOP_MAP.get(type(node.op))
+            if op is None:
+                raise TypeError(f"Unsupported binary operator {node.op}")
+            return BinOp(op, _convert(node.left), _convert(node.right))
+        if isinstance(node, ast.UnaryOp):
+            op = _UNOP_MAP.get(type(node.op))
+            if op is None:
+                raise TypeError(f"Unsupported unary operator {node.op}")
+            return UnOp(op, _convert(node.operand))
+        if isinstance(node, ast.Call):
+            if not isinstance(node.func, ast.Name):
+                raise TypeError("Only simple function calls allowed")
+            fname = node.func.id
+            if fname not in _FUNC_MAP:
+                raise ValueError(f"Unknown function '{fname}'")
+            if len(node.args) != 1:
+                raise ValueError(f"Function '{fname}' takes one argument")
+            return _FUNC_MAP[fname](_convert(node.args[0]))
+        raise TypeError(f"Unsupported expression: {ast.dump(node)}")
+
+    return _convert(tree)
+
+def symbolic_to_string(expr: Expr) -> str:
+    """
+    Convert a symbolic expression into a string (parsable by parse_expr).
+    """
+    if isinstance(expr, Const):
+        return str(expr.value)
+    elif isinstance(expr, Var):
+        return expr.name
+    elif isinstance(expr, UnOp):
+        if expr.op == "-":
+            return f"-({symbolic_to_string(expr.operand)})"
+        return f"{expr.op}({symbolic_to_string(expr.operand)})"
+    elif isinstance(expr, BinOp):
+        left = symbolic_to_string(expr.left)
+        right = symbolic_to_string(expr.right)
+        return f"({left} {expr.op} {right})"
+    elif isinstance(expr, Func):
+        return f"{expr.name}({symbolic_to_string(expr.arg)})"
+    elif isinstance(expr, Comparison):
+        left = symbolic_to_string(expr.left)
+        right = symbolic_to_string(expr.right)
+        return f"({left} {expr.op} {right})"
+    else:
+        raise TypeError(f"Unsupported expression type: {type(expr)}")
+
 
 
 # -----------------------------------------------------------------------------
@@ -836,6 +1033,19 @@ __all__ = [
     "conj",
     "abs",
     "angle",
-    "stepwise",
-    "heaviside"
+    "heaviside",
+    "piecewise",
+    "symbolic_to_string",
+    "make_symbolic"
 ]
+#
+# x = Var("x")
+# y = Var("y")
+#
+# expr1 = make_symbolic("sin(x) + 2*y", {"x": x, "y": y})
+# print(expr1)  # sin(x) + (2 * y)
+#
+# # You can also create new Vars on the fly:
+# expr2 = make_symbolic("exp(z) + 3")
+# print(expr2)  # exp(z) + 3
+

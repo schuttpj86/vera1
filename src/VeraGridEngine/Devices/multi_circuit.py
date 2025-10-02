@@ -17,6 +17,7 @@ from scipy.sparse import csc_matrix, lil_matrix, coo_matrix
 
 from VeraGridEngine.Devices.assets import Assets
 from VeraGridEngine.Devices.Parents.editable_device import EditableDevice
+from VeraGridEngine.Utils.Symbolic import Var
 from VeraGridEngine.basic_structures import IntVec, Vec, Mat, CxVec, IntMat, CxMat
 
 import VeraGridEngine.Devices as dev
@@ -158,6 +159,7 @@ class MultiCircuit(Assets):
         'user_name',
         'Sbase',
         'fBase',
+        'time',
         'logger',
     )
 
@@ -195,6 +197,9 @@ class MultiCircuit(Assets):
 
         # Base frequency in Hz
         self.fBase: float = fbase
+
+        # grid time
+        self.time: Var = Var("t")
 
         # logger of events
         self.logger: Logger = Logger()

@@ -14,6 +14,7 @@ from VeraGridEngine.basic_structures import CxVec
 from VeraGridEngine.Devices.profile import Profile
 from VeraGridEngine.Devices.Aggregation.facility import Facility
 from VeraGridEngine.Devices.Dynamic.dynamic_model_host import DynamicModelHost
+from VeraGridEngine.Utils.Symbolic.block import Var
 
 if TYPE_CHECKING:
     from VeraGridEngine.Devices import Technology
@@ -40,11 +41,14 @@ class InjectionParent(PhysicalDevice):
         'technologies',
         'scalable',
         'shift_key',
+        'longitude',
+        'latitude',
         '_shift_key_prof',
         '_use_kw',
         'bus_pos',
         '_conn',
-        '_rms_model'
+        '_rms_model',
+        'time'
     )
 
     def __init__(self,
@@ -59,7 +63,9 @@ class InjectionParent(PhysicalDevice):
                  capex: float,
                  opex: float,
                  build_status: BuildStatus,
-                 device_type: DeviceType):
+                 device_type: DeviceType,
+                 longitude=0.0,
+                 latitude=0.0):
         """
         InjectionTemplate
         :param name: Name of the device
@@ -110,6 +116,9 @@ class InjectionParent(PhysicalDevice):
         self.shift_key: float = 1.0
         self._shift_key_prof = Profile(default_value=self.shift_key, data_type=float)
 
+        self.longitude = float(longitude)
+        self.latitude = float(latitude)
+
         self._use_kw: bool = False
 
         self._conn: ShuntConnectionType = ShuntConnectionType.Star
@@ -145,6 +154,11 @@ class InjectionParent(PhysicalDevice):
 
         self.register(key='shift_key', units='', tpe=float, definition='Shift key for net transfer capacity',
                       profile_name="shift_key_prof")
+
+        self.register(key='longitude', units='deg', tpe=float,
+                      definition='longitude of the injection.', profile_name='')
+        self.register(key='latitude', units='deg', tpe=float,
+                      definition='latitude of the injection.', profile_name='')
 
         self.register(key='use_kw', units='', tpe=bool, definition='Consider the injections in kW and kVAr?')
 

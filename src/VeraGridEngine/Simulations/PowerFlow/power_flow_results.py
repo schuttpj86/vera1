@@ -52,7 +52,7 @@ class NumericPowerFlowResults:
         :param Scalc: Calculated power vector
         :param m: Tap modules vector for all the Branches
         :param tau: Tap angles vector for all the Branches
-        :param Sf: Power flom vector for all the Branches
+        :param Sf: Power flow vector for all the Branches
         :param St: Power to vector for all the Branches
         :param If: Current flom vector for all the Branches
         :param It: Current to vector for all the Branches

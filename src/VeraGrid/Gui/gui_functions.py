@@ -796,11 +796,15 @@ def fill_model_from_dict(parent: QtGui.QStandardItem,
             child.setFont(font)
 
             if icons is not None:
-                if name in icons.keys():
+                icon_path = icons.get(name, None)
+                if icon_path is not None:
                     icon_path = icons[name]
                     _icon = QtGui.QIcon()
                     _icon.addPixmap(QtGui.QPixmap(icon_path))
                     child.setIcon(_icon)
+                else:
+                    pass
+                    # print(f"path {name} has no icon: check 'setup_objects_tree()'")
 
             parent.appendRow(child)
             fill_model_from_dict(parent=child, d=v, icons=icons)
@@ -813,11 +817,15 @@ def fill_model_from_dict(parent: QtGui.QStandardItem,
         item.setFont(font)
 
         if icons is not None:
-            if name in icons.keys():
+            icon_path = icons.get(name, None)
+            if icon_path is not None:
                 icon_path = icons[name]
                 _icon = QtGui.QIcon()
                 _icon.addPixmap(QtGui.QPixmap(icon_path))
                 item.setIcon(_icon)
+            else:
+                pass
+                # print(f"path {name} has no icon: check 'setup_objects_tree()'")
         item.setEditable(editable)
         parent.appendRow(item)
 

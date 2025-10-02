@@ -394,6 +394,14 @@ class ResultsTemplate:
         """
         self.area_names, self.bus_area_indices, self.F, self.T, self.hvdc_F, self.hvdc_T = grid.get_branch_areas_info()
 
+    def fill_simulation_info(self, grid: MultiCircuit):
+        """
+
+        :param grid:
+        :return:
+        """
+        self.area_names, self.bus_area_indices, self.F, self.T, self.hvdc_F, self.hvdc_T = grid.get_branch_areas_info()
+
     def mdl(self, result_type: ResultTypes) -> ResultsTable:
         """
         Get results model (overloaded in the respective implementations)

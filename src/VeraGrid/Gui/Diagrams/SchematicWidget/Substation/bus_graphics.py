@@ -31,6 +31,9 @@ from VeraGrid.Gui.Diagrams.SchematicWidget.Injections.current_injection_graphics
 from VeraGrid.Gui.Diagrams.SchematicWidget.Injections.controllable_shunt_graphics import (
     ControllableShuntGraphicItem,
     ControllableShunt)
+from VeraGrid.Gui.Diagrams.Editors.RmsModelEditor.rms_model_editor_engine import RmsModelEditorGUI
+
+
 from VeraGrid.Gui.SubstationDesigner.voltage_level_conversion import VoltageLevelConversionWizard
 from VeraGridEngine.enumerations import DeviceType, FaultType, BusGraphicType
 from VeraGridEngine.Devices.types import INJECTION_DEVICE_TYPES
@@ -491,6 +494,11 @@ class BusGraphicItem(GenericDiagramWidget, QtWidgets.QGraphicsRectItem):
                        checkeable=True,
                        checked_value=self.draw_labels)
 
+        add_menu_entry(menu=menu,
+                       text="Rms Editor",
+                       function_ptr=self.edit_rms,
+                       icon_path=":/Icons/icons/edit.svg")
+
         sc = add_sub_menu(menu=menu,
                           text="Short circuit",
                           icon_path=":/Icons/icons/short_circuit.svg")
@@ -619,6 +627,15 @@ class BusGraphicItem(GenericDiagramWidget, QtWidgets.QGraphicsRectItem):
                        function_ptr=self.add_external_grid)
 
         menu.exec_(event.screenPos())
+
+    def edit_rms(self):
+        """
+        Open the appropriate editor dialogue
+        :return:
+        """
+        dlg = RmsModelEditorGUI(self.api_object, parent=self.editor)
+        dlg.show()
+
 
     def assign_status_to_profile(self):
         """

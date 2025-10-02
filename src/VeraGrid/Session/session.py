@@ -603,3 +603,12 @@ class SimulationSession:
         """
         drv, results = self.get_driver_results(SimulationTypes.NodeGrouping_run)
         return drv, None
+
+    @property
+    def small_signal_stability_simulation(self) -> Tuple[SmallSignal_Stability_Driver, SmallSignal_Stability_Results]:
+        """
+
+        :return:
+        """
+        drv, results = self.get_driver_results(SimulationTypes.SmallSignal_run)
+        return drv, results

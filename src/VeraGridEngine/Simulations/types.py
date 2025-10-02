@@ -40,6 +40,8 @@ from VeraGridEngine.Simulations.NodalCapacity.nodal_capacity_ts_driver import (N
 from VeraGridEngine.Simulations.Topology.node_groups_driver import NodeGroupsDriver
 from VeraGridEngine.Simulations.Reliability.reliability_driver import ReliabilityStudyDriver, ReliabilityResults
 
+from VeraGridEngine.Simulations.Rms.rms_driver import RmsSimulationDriver
+
 DRIVER_OBJECTS = Union[
     AvailableTransferCapacityDriver,
     AvailableTransferCapacityTimeSeriesDriver,
@@ -63,7 +65,8 @@ DRIVER_OBJECTS = Union[
     InputsAnalysisDriver,
     InvestmentsEvaluationDriver,
     NodalCapacityTimeSeriesDriver,
-    ReliabilityStudyDriver
+    ReliabilityStudyDriver,
+    RmsSimulationDriver
 ]
 
 RESULTS_OBJECTS = Union[
