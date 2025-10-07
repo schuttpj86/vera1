@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 import os
-from typing import List, Tuple, Union, Callable
+from typing import List, Tuple, Union, Callable, Iterable
 
 import networkx as nx
 import numpy as np
@@ -2237,7 +2237,7 @@ class DiagramsMain(CompiledArraysMain):
             if isinstance(diagram, (SchematicWidget, GridMapWidget)):
 
                 # declare the allowed file types
-                files_types = "Scalable Vector Graphics (*.svg);;Portable Network Graphics (*.png)"
+                files_types = "Scalable Vector Graphics (*.png);;Portable Network Graphics (*.png)"
 
                 f_name = str(os.path.join(self.project_directory, self.ui.grid_name_line_edit.text()))
 
@@ -2247,8 +2247,8 @@ class DiagramsMain(CompiledArraysMain):
 
                 if filename != "":
                     if 'svg' in type_selected:
-                        if not filename.endswith('.svg'):
-                            filename += ".svg"
+                        if not filename.endswith('.png'):
+                            filename += ".png"
 
                     elif 'png' in type_selected:
                         if not filename.endswith('.png'):
@@ -2342,7 +2342,7 @@ class DiagramsMain(CompiledArraysMain):
 
     def set_big_bus_marker_colours(self,
                                    buses: List[dev.Bus],
-                                   colors: List[type(QtGui.QColor)],
+                                   colors: Iterable[type(QtGui.QColor)],
                                    tool_tips: Union[None, List[str]] = None):
         """
         Set a big marker at the selected buses with the matching colours
@@ -2795,28 +2795,28 @@ class DiagramsMain(CompiledArraysMain):
 
         gf.add_menu_entry(menu=context_menu,
                           text="New schematic",
-                          icon_path=":/Icons/icons/schematic.svg",
+                          icon_path=":/Icons/icons/schematic.png",
                           function_ptr=self.add_complete_bus_branch_diagram)
 
         gf.add_menu_entry(menu=context_menu,
                           text="New schematic from selection",
-                          icon_path=":/Icons/icons/schematic.svg",
+                          icon_path=":/Icons/icons/schematic.png",
                           function_ptr=self.new_bus_branch_diagram_from_selection)
 
         gf.add_menu_entry(menu=context_menu,
                           text="New map",
-                          icon_path=":/Icons/icons/map (add).svg",
+                          icon_path=":/Icons/icons/map (add).png",
                           function_ptr=lambda: self.add_map_diagram(True))
 
         gf.add_menu_entry(menu=context_menu,
                           text="Duplicate",
-                          icon_path=":/Icons/icons/copy.svg",
+                          icon_path=":/Icons/icons/copy.png",
                           function_ptr=self.duplicate_diagram)
 
         context_menu.addSeparator()
         gf.add_menu_entry(menu=context_menu,
                           text="Remove",
-                          icon_path=":/Icons/icons/delete3.svg",
+                          icon_path=":/Icons/icons/delete3.png",
                           function_ptr=self.remove_diagram)
 
         # Convert global position to local position of the list widget

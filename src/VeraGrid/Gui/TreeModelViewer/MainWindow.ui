@@ -24,7 +24,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="icons.qrc">
-    <normaloff>:/Icons/icons/roseta.svg</normaloff>:/Icons/icons/roseta.svg</iconset>
+    <normaloff>:/Icons/icons/roseta.png</normaloff>:/Icons/icons/roseta.png</iconset>
   </property>
   <property name="autoFillBackground">
    <bool>false</bool>
@@ -97,7 +97,7 @@
   <action name="actionOpen">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/loadc.svg</normaloff>:/Icons/icons/loadc.svg</iconset>
+     <normaloff>:/Icons/icons/loadc.png</normaloff>:/Icons/icons/loadc.png</iconset>
    </property>
    <property name="text">
     <string>Open</string>
@@ -109,7 +109,7 @@
   <action name="actionConvert_to_psse">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/area_transfer.svg</normaloff>:/Icons/icons/area_transfer.svg</iconset>
+     <normaloff>:/Icons/icons/area_transfer.png</normaloff>:/Icons/icons/area_transfer.png</iconset>
    </property>
    <property name="text">
     <string>Convert to PSS/e</string>
@@ -118,7 +118,7 @@
   <action name="actionConvert_to_CGMES">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/area_transfer.svg</normaloff>:/Icons/icons/area_transfer.svg</iconset>
+     <normaloff>:/Icons/icons/area_transfer.png</normaloff>:/Icons/icons/area_transfer.png</iconset>
    </property>
    <property name="text">
     <string>Convert to CGMES</string>

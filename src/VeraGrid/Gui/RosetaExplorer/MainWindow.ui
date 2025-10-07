@@ -24,7 +24,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="icons.qrc">
-    <normaloff>:/Icons/icons/roseta.svg</normaloff>:/Icons/icons/roseta.svg</iconset>
+    <normaloff>:/Icons/icons/roseta.png</normaloff>:/Icons/icons/roseta.png</iconset>
   </property>
   <property name="autoFillBackground">
    <bool>false</bool>
@@ -93,7 +93,7 @@
          <widget class="QWidget" name="dataTabLayout">
           <attribute name="icon">
            <iconset resource="icons.qrc">
-            <normaloff>:/Icons/icons/array.svg</normaloff>:/Icons/icons/array.svg</iconset>
+            <normaloff>:/Icons/icons/array.png</normaloff>:/Icons/icons/array.png</iconset>
           </attribute>
           <attribute name="title">
            <string>Data</string>
@@ -122,7 +122,7 @@
              <widget class="QWidget" name="modelTab">
               <attribute name="icon">
                <iconset resource="icons.qrc">
-                <normaloff>:/Icons/icons/array.svg</normaloff>:/Icons/icons/array.svg</iconset>
+                <normaloff>:/Icons/icons/array.png</normaloff>:/Icons/icons/array.png</iconset>
               </attribute>
               <attribute name="title">
                <string>Model</string>
@@ -289,7 +289,7 @@
              <widget class="QWidget" name="loggerTab">
               <attribute name="icon">
                <iconset resource="icons.qrc">
-                <normaloff>:/Icons/icons/data.svg</normaloff>:/Icons/icons/data.svg</iconset>
+                <normaloff>:/Icons/icons/data.png</normaloff>:/Icons/icons/data.png</iconset>
               </attribute>
               <attribute name="title">
                <string>Logger</string>
@@ -307,7 +307,7 @@
          <widget class="QWidget" name="dbTab">
           <attribute name="icon">
            <iconset resource="icons.qrc">
-            <normaloff>:/Icons/icons/data.svg</normaloff>:/Icons/icons/data.svg</iconset>
+            <normaloff>:/Icons/icons/data.png</normaloff>:/Icons/icons/data.png</iconset>
           </attribute>
           <attribute name="title">
            <string>Lookup Database</string>
@@ -410,7 +410,7 @@
          <widget class="QWidget" name="tab">
           <attribute name="icon">
            <iconset resource="icons.qrc">
-            <normaloff>:/Icons/icons/console.svg</normaloff>:/Icons/icons/console.svg</iconset>
+            <normaloff>:/Icons/icons/console.png</normaloff>:/Icons/icons/console.png</iconset>
           </attribute>
           <attribute name="title">
            <string>Python</string>
@@ -424,7 +424,7 @@
          <widget class="QWidget" name="settingsTab">
           <attribute name="icon">
            <iconset resource="icons.qrc">
-            <normaloff>:/Icons/icons/gear.svg</normaloff>:/Icons/icons/gear.svg</iconset>
+            <normaloff>:/Icons/icons/gear.png</normaloff>:/Icons/icons/gear.png</iconset>
           </attribute>
           <attribute name="title">
            <string>Settings</string>
@@ -519,7 +519,7 @@
          </property>
          <property name="icon">
           <iconset resource="icons.qrc">
-           <normaloff>:/Icons/icons/delete.svg</normaloff>:/Icons/icons/delete.svg</iconset>
+           <normaloff>:/Icons/icons/delete.png</normaloff>:/Icons/icons/delete.png</iconset>
          </property>
         </widget>
        </item>
@@ -670,7 +670,7 @@ QProgressBar::chunk{
   <action name="actionOpen">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/loadc.svg</normaloff>:/Icons/icons/loadc.svg</iconset>
+     <normaloff>:/Icons/icons/loadc.png</normaloff>:/Icons/icons/loadc.png</iconset>
    </property>
    <property name="text">
     <string>Open</string>
@@ -682,7 +682,7 @@ QProgressBar::chunk{
   <action name="actionConvert_to_psse">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/to_psse.svg</normaloff>:/Icons/icons/to_psse.svg</iconset>
+     <normaloff>:/Icons/icons/to_psse.png</normaloff>:/Icons/icons/to_psse.png</iconset>
    </property>
    <property name="text">
     <string>Convert to PSS/e</string>
@@ -694,7 +694,7 @@ QProgressBar::chunk{
   <action name="actionConvert_to_CGMES">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/to_cgmes.svg</normaloff>:/Icons/icons/to_cgmes.svg</iconset>
+     <normaloff>:/Icons/icons/to_cgmes.png</normaloff>:/Icons/icons/to_cgmes.png</iconset>
    </property>
    <property name="text">
     <string>Convert to CGMES</string>
@@ -706,7 +706,7 @@ QProgressBar::chunk{
   <action name="actionConvert_to_Roseta">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/to_roseta.svg</normaloff>:/Icons/icons/to_roseta.svg</iconset>
+     <normaloff>:/Icons/icons/to_roseta.png</normaloff>:/Icons/icons/to_roseta.png</iconset>
    </property>
    <property name="text">
     <string>Convert to Roseta</string>
@@ -718,7 +718,7 @@ QProgressBar::chunk{
   <action name="actionSave">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/savec.svg</normaloff>:/Icons/icons/savec.svg</iconset>
+     <normaloff>:/Icons/icons/savec.png</normaloff>:/Icons/icons/savec.png</iconset>
    </property>
    <property name="text">
     <string>Save</string>
@@ -733,7 +733,7 @@ QProgressBar::chunk{
   <action name="actionSave_logs">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/save.svg</normaloff>:/Icons/icons/save.svg</iconset>
+     <normaloff>:/Icons/icons/save.png</normaloff>:/Icons/icons/save.png</iconset>
    </property>
    <property name="text">
     <string>Save logs</string>
@@ -742,7 +742,7 @@ QProgressBar::chunk{
   <action name="actionNavigation_tree">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/tree.svg</normaloff>:/Icons/icons/tree.svg</iconset>
+     <normaloff>:/Icons/icons/tree.png</normaloff>:/Icons/icons/tree.png</iconset>
    </property>
    <property name="text">
     <string>Navigation tree</string>
@@ -751,7 +751,7 @@ QProgressBar::chunk{
   <action name="actionNew">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/new2c.svg</normaloff>:/Icons/icons/new2c.svg</iconset>
+     <normaloff>:/Icons/icons/new2c.png</normaloff>:/Icons/icons/new2c.png</iconset>
    </property>
    <property name="text">
     <string>New</string>
@@ -763,7 +763,7 @@ QProgressBar::chunk{
   <action name="actionDocumentation">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/new2.svg</normaloff>:/Icons/icons/new2.svg</iconset>
+     <normaloff>:/Icons/icons/new2.png</normaloff>:/Icons/icons/new2.png</iconset>
    </property>
    <property name="text">
     <string>Documentation</string>
@@ -775,7 +775,7 @@ QProgressBar::chunk{
   <action name="actionAbout">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/roseta.svg</normaloff>:/Icons/icons/roseta.svg</iconset>
+     <normaloff>:/Icons/icons/roseta.png</normaloff>:/Icons/icons/roseta.png</iconset>
    </property>
    <property name="text">
     <string>About</string>
@@ -784,7 +784,7 @@ QProgressBar::chunk{
   <action name="actionProcess_topology">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/schematic.svg</normaloff>:/Icons/icons/schematic.svg</iconset>
+     <normaloff>:/Icons/icons/schematic.png</normaloff>:/Icons/icons/schematic.png</iconset>
    </property>
    <property name="text">
     <string>Process topology</string>
@@ -796,7 +796,7 @@ QProgressBar::chunk{
   <action name="actionRun_power_flow">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/automatic_layout.svg</normaloff>:/Icons/icons/automatic_layout.svg</iconset>
+     <normaloff>:/Icons/icons/automatic_layout.png</normaloff>:/Icons/icons/automatic_layout.png</iconset>
    </property>
    <property name="text">
     <string>Run power flow</string>
@@ -808,7 +808,7 @@ QProgressBar::chunk{
   <action name="actionGenerate_PSSe_look_up_database">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/import_models.svg</normaloff>:/Icons/icons/import_models.svg</iconset>
+     <normaloff>:/Icons/icons/import_models.png</normaloff>:/Icons/icons/import_models.png</iconset>
    </property>
    <property name="text">
     <string>Generate PSSe look-up database</string>

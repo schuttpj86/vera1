@@ -1,5 +1,5 @@
 <RCC>
   <qresource prefix="Icons">
-    <file>icons/VeraGrid_icon.svg</file>
+    <file>icons/VeraGrid_icon.png</file>
   </qresource>
 </RCC>

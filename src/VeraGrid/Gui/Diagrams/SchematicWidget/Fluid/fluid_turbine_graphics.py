@@ -74,19 +74,19 @@ class FluidTurbineGraphicItem(InjectionTemplateGraphicItem):
 
         add_menu_entry(menu=menu,
                        text="Plot fluid profiles",
-                       icon_path=":/Icons/icons/plot.svg",
+                       icon_path=":/Icons/icons/plot.png",
                        function_ptr=self.plot)
 
         menu.addSeparator()
 
         add_menu_entry(menu=menu,
                        text="Delete",
-                       icon_path=":/Icons/icons/delete3.svg",
+                       icon_path=":/Icons/icons/delete3.png",
                        function_ptr=self.delete)
 
         add_menu_entry(menu=menu,
                        text="Change bus",
-                       icon_path=":/Icons/icons/move_bus.svg",
+                       icon_path=":/Icons/icons/move_bus.png",
                        function_ptr=self.change_bus)
 
         menu.exec_(event.screenPos())

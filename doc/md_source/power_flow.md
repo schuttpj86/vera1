@@ -85,13 +85,13 @@ Using the simplified API:
 
 ```python
 import os
-import VeraGridEngine as gce
+import VeraGridEngine as vg
 
 folder = os.path.join('..', 'Grids_and_profiles', 'grids')
 fname = os.path.join(folder, 'IEEE39_1W.veragrid')
-main_circuit = gce.open_file(fname)
+main_circuit = vg.open_file(fname)
 
-results = gce.power_flow(main_circuit)
+results = vg.power_flow(main_circuit)
 
 print(main_circuit.name)
 print('Converged:', results.converged, 'error:', results.error)
@@ -103,14 +103,14 @@ Using the more complex library objects:
 
 ```python
 import os
-import VeraGridEngine as gce
+import VeraGridEngine as vg
 
 folder = os.path.join('..', 'Grids_and_profiles', 'grids')
 fname = os.path.join(folder, 'IEEE14_from_raw.veragrid')
-main_circuit = gce.open_file(fname)
+main_circuit = vg.open_file(fname)
 
-options = gce.PowerFlowOptions(gce.SolverType.NR, verbose=False)
-power_flow = gce.PowerFlowDriver(main_circuit, options)
+options = vg.PowerFlowOptions(vg.SolverType.NR, verbose=False)
+power_flow = vg.PowerFlowDriver(main_circuit, options)
 power_flow.run()
 
 print(main_circuit.name)
@@ -165,6 +165,30 @@ Branch results:
 4_7_1    28.074176  -9.681066  -28.074176  11.384281  2807417645485.176270 0.000000  1.703214
 4_9_1    16.079758  -0.427611  -16.079758   1.732322  1607975830176.256104 0.000000  1.304711
 5_6_1    44.087319  12.470682  -44.087319  -8.049520  4408731875605.579102 0.000000  4.421161
+```
+
+Getting the Jacobian:
+
+```python
+import os
+import VeraGridEngine as vg
+from VeraGridEngine.Simulations.Derivatives.ac_jacobian import AC_jacobian
+
+folder = os.path.join('..', 'Grids_and_profiles', 'grids')
+fname = os.path.join(folder, 'IEEE39_1W.veragrid')
+main_circuit = vg.open_file(fname)
+
+nc = vg.compile_numerical_circuit_at(circuit=main_circuit)
+
+adm = nc.get_admittance_matrices()
+sim = nc.get_simulation_indices()
+
+J = AC_jacobian(
+    Ybus=adm.Ybus,
+    V=nc.bus_data.Vbus, # The voltage initla guess, substitute by any other compatible voltage
+    pvpq=sim.no_slack, 
+    pq=sim.pq
+)
 ```
 
 

@@ -72,34 +72,34 @@ class HvdcGraphicItem(LineGraphicTemplateItem):
 
             add_menu_entry(menu=menu,
                            text="Change bus",
-                           icon_path=":/Icons/icons/move_bus.svg",
+                           icon_path=":/Icons/icons/move_bus.png",
                            function_ptr=self.change_bus)
 
             add_menu_entry(menu=menu,
                            text="Convert to VSC multi-terminal",
-                           icon_path=":/Icons/icons/vsc.svg",
+                           icon_path=":/Icons/icons/vsc.png",
                            function_ptr=self.convert_to_multi_terminal)
 
             menu.addSeparator()
 
             add_menu_entry(menu=menu,
                            text="Plot profiles",
-                           icon_path=":/Icons/icons/plot.svg",
+                           icon_path=":/Icons/icons/plot.png",
                            function_ptr=self.plot_profiles)
 
             add_menu_entry(menu=menu,
                            text="Assign rate to profile",
-                           icon_path=":/Icons/icons/assign_to_profile.svg",
+                           icon_path=":/Icons/icons/assign_to_profile.png",
                            function_ptr=self.assign_rate_to_profile)
 
             add_menu_entry(menu=menu,
                            text="Assign active state to profile",
-                           icon_path=":/Icons/icons/assign_to_profile.svg",
+                           icon_path=":/Icons/icons/assign_to_profile.png",
                            function_ptr=self.assign_status_to_profile)
 
             add_menu_entry(menu=menu,
                            text="Delete",
-                           icon_path=":/Icons/icons/delete3.svg",
+                           icon_path=":/Icons/icons/delete3.png",
                            function_ptr=self.delete)
 
             menu.exec_(event.screenPos())

@@ -7,14 +7,15 @@ from __future__ import annotations
 import sys
 
 from enum import Enum, auto
-from typing import List, Dict, Optional, Union
+from typing import List, Dict, Optional, Union, Sequence
 from dataclasses import dataclass
 
 from PySide6 import QtWidgets
 from PySide6.QtWidgets import (QApplication, QHBoxLayout, QGraphicsScene, QGraphicsView, QGraphicsItem,
                                QGraphicsRectItem, QGraphicsEllipseItem, QGraphicsTextItem, QMenu, QGraphicsPathItem,
                                QDialog, QVBoxLayout, QComboBox, QDialogButtonBox, QSplitter, QLabel, QDoubleSpinBox,
-                               QListView, QAbstractItemView, QPushButton, QListWidget, QInputDialog, QWidget,  QListWidgetItem)
+                               QListView, QAbstractItemView, QPushButton, QListWidget, QInputDialog, QWidget,
+                               QListWidgetItem, QFormLayout, QSpinBox, QLineEdit)
 from PySide6.QtGui import (QPen, QBrush, QPainterPath, QAction, QPainter, QIcon, QStandardItemModel, QStandardItem,
                            QPixmap, QDropEvent, QDragEnterEvent, QDragMoveEvent, QColor)
 from PySide6.QtCore import Qt, QPointF, QByteArray, QDataStream, QIODevice, QModelIndex, QMimeData
@@ -301,6 +302,22 @@ class BlockItem(QGraphicsRectItem):
             buttons.accepted.connect(dlg.accept)
             buttons.rejected.connect(dlg.reject)
 
+        # elif self.subsys.name.lower().startswith("gain") or self.subsys.name == "GAIN":
+        #     dlg = QDialog()
+        #     dlg.setWindowTitle("Edit Gain Value")
+        #     layout = QVBoxLayout(dlg)
+        #
+        #     spin = QDoubleSpinBox(dlg)
+        #     spin.setRange(-1e6, 1e6)
+        #     spin.setValue(self.subsys.value if hasattr(self.subsys, "value") else 0.0)
+        #     layout.addWidget(QLabel("Constant value:"))
+        #     layout.addWidget(spin)
+        #
+        #     buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        #     layout.addWidget(buttons)
+        #     buttons.accepted.connect(dlg.accept)
+        #     buttons.rejected.connect(dlg.reject)
+
             if dlg.exec() == QDialog.Accepted:
                 new_val = spin.value()
                 self.subsys.value = new_val
@@ -430,7 +447,6 @@ class BlockItem(QGraphicsRectItem):
             text, ok = QInputDialog.getText(None, f"Add {title}", "Variable name:")
             if ok and text:
                 var_list.append(Var(text))
-                print(self.subsys.algebraic_vars)
                 list_widget.addItem(text)
 
         add_btn.clicked.connect(add_var)
@@ -455,11 +471,8 @@ class BlockItem(QGraphicsRectItem):
         def add_eq():
             text, ok = QInputDialog.getText(None, f"Add {title}", "Equation:")
             if ok and text:
-                print(text)
                 sym_expr = make_symbolic(text)
-                print(type(sym_expr))
                 eq_list.append(sym_expr)
-                print(self.subsys.algebraic_eqs)
                 list_widget.addItem(text)
 
         add_btn.clicked.connect(add_eq)
@@ -478,6 +491,7 @@ class ModelHostItem(QGraphicsRectItem):
         # API
         # ------------------------
         self.model_host = model_host_sys
+
 
         # ---------------------------
         # Graphical stuff
@@ -508,6 +522,10 @@ class ModelHostItem(QGraphicsRectItem):
         self.update_handle_position()
 
         self._resizing_from_handle = False
+
+    @property
+    def subsys(self):
+        return self.model_host.model
 
     def mouseDoubleClickEvent(self, event):
 
@@ -636,7 +654,6 @@ class ModelHostItem(QGraphicsRectItem):
             text, ok = QInputDialog.getText(None, f"Add {title}", "Variable name:")
             if ok and text:
                 var_list.append(Var(text))
-                print(self.model_host.model.algebraic_vars)
                 list_widget.addItem(text)
 
         add_btn.clicked.connect(add_var)
@@ -661,16 +678,48 @@ class ModelHostItem(QGraphicsRectItem):
         def add_eq():
             text, ok = QInputDialog.getText(None, f"Add {title}", "Equation:")
             if ok and text:
-                print(text)
                 sym_expr = make_symbolic(text)
-                print(type(sym_expr))
                 eq_list.append(sym_expr)
-                print(self.model_host.model.algebraic_eqs)
                 list_widget.addItem(text)
 
         add_btn.clicked.connect(add_eq)
 
         return layout
+
+class GenericBlockDialog(QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Configure Generic Block")
+
+        layout = QFormLayout(self)
+
+        self.state_inputs_spin = QSpinBox()
+        self.state_inputs_spin.setMinimum(0)
+        layout.addRow("Number of state inputs:", self.state_inputs_spin)
+
+        self.state_outputs_edit = QLineEdit()
+        layout.addRow("State outputs (comma separated):", self.state_outputs_edit)
+
+        self.algeb_inputs_spin = QSpinBox()
+        self.algeb_inputs_spin.setMinimum(0)
+        layout.addRow("Number of algebraic inputs:", self.algeb_inputs_spin)
+
+        self.algeb_outputs_edit = QLineEdit()
+        layout.addRow("Algebraic outputs (comma separated):", self.algeb_outputs_edit)
+
+        # buttons
+        buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        buttons.accepted.connect(self.accept)
+        buttons.rejected.connect(self.reject)
+        layout.addRow(buttons)
+
+    def get_values(self):
+        state_ins = self.state_inputs_spin.value()
+        state_outs = [s.strip() for s in self.state_outputs_edit.text().split(",") if s.strip()]
+        algeb_ins = self.algeb_inputs_spin.value()
+        algeb_outs = [s.strip() for s in self.algeb_outputs_edit.text().split(",") if s.strip()]
+        return state_ins, state_outs, algeb_ins, algeb_outs
+
 
 
 class GraphicsView(QGraphicsView):
@@ -826,6 +875,10 @@ def create_block_of_type(block_type: BlockType, ins: int, outs: int, const_value
     blk.out_vars = out_vars
     return blk
 
+def create_generic_block(state_inputs: int, state_outputs: Sequence[str], algebraic_inputs: int, algebraic_outputs: Sequence[str]):
+    blk = generic(state_inputs, state_outputs, algebraic_inputs, algebraic_outputs)
+    return blk
+
 
 class DiagramScene(QGraphicsScene):
     def __init__(self, editor):
@@ -883,6 +936,7 @@ class DiagramScene(QGraphicsScene):
                     dst_var = self.source_port.subsystem.subsys.out_vars[self.source_port.index]
 
                     dst_port.subsystem.subsys.in_vars[dst_port.index] = dst_var
+                    dst_port.subsystem.subsys.active_in_vars.append(dst_port.subsystem.subsys.in_vars[dst_port.index])
 
                     self.addItem(connection)
 
@@ -930,7 +984,7 @@ class DynamicLibraryModel(QStandardItemModel):
         :return:
         """
         _icon = QIcon()
-        _icon.addPixmap(QPixmap(f":/Icons/icons/{icon_name}.svg"))
+        _icon.addPixmap(QPixmap(f":/Icons/icons/{icon_name}.png"))
         _item = QStandardItem(_icon, name)
         _item.setToolTip(f"Drag & drop {name} into the schematic")
         self.appendRow(_item)
@@ -1053,10 +1107,13 @@ class BlockEditor(QSplitter):
             tpe = self.library_model.get_type(obj_type)
 
             if tpe == BlockType.GENERIC:
+                dialog = GenericBlockDialog(self)
+                if dialog.exec() == QDialog.Accepted:
+                    state_ins, state_outs, algeb_ins, algeb_outs = dialog.get_values()
 
-                model_host: DynamicModelHost = DynamicModelHost()
+                    model_host: DynamicModelHost = DynamicModelHost()
 
-                if model_host is not None:
+                    model_host.model = create_generic_block(state_ins, state_outs, algeb_ins, algeb_outs)
                     self.main_block.add(model_host.model)
 
                     item = ModelHostItem(model_host)
@@ -1069,6 +1126,10 @@ class BlockEditor(QSplitter):
                         y=y0,
                         device_uid=model_host.model.uid,
                         tpe=tpe.name,
+                        state_ins=state_ins,
+                        state_outs=state_outs,
+                        algeb_ins=algeb_ins,
+                        algeb_outs=algeb_outs,
                         subdiagram= model_host.diagram
                     )
 
@@ -1103,12 +1164,18 @@ class BlockEditor(QSplitter):
         for uid, node in self.diagram.node_data.items():
             block_type = BlockType[node.tpe]
             if block_type == BlockType.GENERIC:
+
                 model_host = DynamicModelHost()
+                model_host.model = create_generic_block(
+                    node.state_ins, node.state_outs,
+                    node.algeb_ins, node.algeb_outs
+                )
+                model_host.model.uid = uid
                 model_host.diagram = node.sub_diagram
                 item = ModelHostItem(model_host)
-
                 self.scene.addItem(item)
                 item.setPos(QPointF(node.x, node.y))
+                uid_to_blockitem[uid] = item
 
 
             else:
@@ -1172,7 +1239,7 @@ class EditEquations(QWidget):
         left_panel.addLayout(var_header_layout)
 
         self.list_vars = QListWidget()
-        self.list_vars.itemDoubleClicked.connect(self.edit_variable)
+        # self.list_vars.itemDoubleClicked.connect(self.edit_variable)
         left_panel.addWidget(self.list_vars)
 
         # Parameters
@@ -1199,7 +1266,7 @@ class EditEquations(QWidget):
         right_panel.addLayout(eqn_header_layout)
 
         self.list_eqns = QListWidget()
-        self.list_eqns.itemDoubleClicked.connect(self.edit_equation)
+        # self.list_eqns.itemDoubleClicked.connect(self.edit_equation)
         right_panel.addWidget(self.list_eqns)
 
         # ----------------- Connections -----------------
@@ -1207,29 +1274,81 @@ class EditEquations(QWidget):
         self.btn_add_param.clicked.connect(self.add_parameter)
         self.btn_add_eqn.clicked.connect(self.add_equation)
 
-        self.refresh_lists()
+        self.refresh_lists(self.model_host.model)
+
+    def refresh_lists(self, model=None, clear=True):
+        """Load current model variables, parameters, equations into lists."""
+        if model is None:
+            model = self.model_host.model
+
+        # Only clear at the top-level call
+        if clear:
+            self.list_vars.clear()
+            self.list_params.clear()
+            self.list_eqns.clear()
+
+        # Add variables
+        for var in model.state_vars + model.algebraic_vars:
+            item = QListWidgetItem(f"{var.name} ({'state' if var in model.state_vars else 'algebraic'})")
+            self.list_vars.addItem(item)
+
+        for var in getattr(model, "active_in_vars", []):
+            item = QListWidgetItem(f"{var.name} (input)")
+            self.list_vars.addItem(item)
+
+        # Parameters (uncomment when available)
+        # for param in model.parameters:
+        #     item = QListWidgetItem(param.name)
+        #     self.list_params.addItem(item)
+
+        # Equations
+        for eq in model.state_eqs + model.algebraic_eqs:
+            item = QListWidgetItem(f"{symbolic_to_string(eq)} ({'state' if eq in model.state_eqs else 'algebraic'})")
+            self.list_eqns.addItem(item)
+
+        # Recurse into children, but without clearing
+        for submodel in getattr(model, "children", []):
+            self.refresh_lists(submodel, clear=False)
 
     # ----------------- Methods -----------------
-    def refresh_lists(self):
-        """Load current model variables, parameters, equations into lists."""
-        self.list_vars.clear()
-        self.list_params.clear()
-        self.list_eqns.clear()
+    # def refresh_lists(self, model):
+    #     """Load current model variables, parameters, equations into lists."""
+    #     self.list_vars.clear()
+    #     self.list_params.clear()
+    #     self.list_eqns.clear()
+    #
+    #     for var in model.state_vars + model.algebraic_vars:
+    #         item = QListWidgetItem(f"{var.name} ({'state' if var in model.state_vars else 'algebraic'})")
+    #         self.list_vars.addItem(item)
+    #
+    #     for var in model.active_in_vars:
+    #         item = QListWidgetItem(f"{var.name} ({'input' })")
+    #         self.list_vars.addItem(item)
+    #
+    #     # for param in self.model_host.get_parameters():
+    #     #     item = QListWidgetItem(param.name)
+    #     #     self.list_params.addItem(item)
+    #
+    #     for eq in model.state_eqs + model.algebraic_eqs:
+    #         item = QListWidgetItem(f"{symbolic_to_string(eq)} ({'state' if eq in model.state_eqs else 'algebraic'})")
+    #         self.list_eqns.addItem(item)
+    #
+    #
+    #     for submodel in model.children:
+    #         for var in model.state_vars + model.algebraic_vars:
+    #             item = QListWidgetItem(f"{var.name} ({'state' if var in model.state_vars else 'algebraic'})")
+    #             self.list_vars.addItem(item)
+    #
+    #         # for param in self.model_host.get_parameters():
+    #         #     item = QListWidgetItem(param.name)
+    #         #     self.list_params.addItem(item)
+    #
+    #         for eq in model.state_eqs + model.algebraic_eqs:
+    #             item = QListWidgetItem(f"{symbolic_to_string(eq)} ({'state' if eq in model.state_eqs else 'algebraic'})")
+    #             self.list_eqns.addItem(item)
+    #
+    #         self.refresh_lists(submodel)
 
-        for model in self.model_host.model.children:
-            for var in model.state_vars + model.algebraic_vars:
-                print(var)
-                item = QListWidgetItem(f"{var.name} ({'state' if var in model.state_vars else 'algebraic'})")
-                self.list_vars.addItem(item)
-
-            # for param in self.model_host.get_parameters():
-            #     item = QListWidgetItem(param.name)
-            #     self.list_params.addItem(item)
-
-            for eq in model.state_eqs + model.algebraic_eqs:
-                print(eq)
-                item = QListWidgetItem(f"{symbolic_to_string(eq)} ({'state' if eq in model.state_eqs else 'algebraic'})")
-                self.list_eqns.addItem(item)
 
     def add_variable(self):
         from PySide6.QtWidgets import QInputDialog
@@ -1243,7 +1362,7 @@ class EditEquations(QWidget):
         # Add to model
         var, blk = variable(name, vtype)
         self.model_host.model.add(blk)
-        self.refresh_lists()
+        self.refresh_lists(self.model_host.model)
 
     # find a way to add parameters
 
@@ -1256,7 +1375,7 @@ class EditEquations(QWidget):
         if not ok:
             return
         self.model_host.add_parameter(name, value)
-        self.refresh_lists()
+        self.refresh_lists(self.model_host.model)
 
     def add_equation(self):
         from PySide6.QtWidgets import QInputDialog
@@ -1268,44 +1387,46 @@ class EditEquations(QWidget):
             return
         blk = equation(expr, etype)
         self.model_host.model.add(blk)
-        self.refresh_lists()
+        self.refresh_lists(self.model_host.model)
 
-    def edit_variable(self, item):
-        from PySide6.QtWidgets import QInputDialog
-        full_text = item.text()
-        name, vtype = full_text.split(" (")
-        vtype = vtype[:-1]
+    ##### editing equations needs to access uid of the variables
 
-        new_name, ok = QInputDialog.getText(self, "Edit Variable", "Variable name:", text=name)
-        if not ok or not new_name:
-            return
-
-        new_vtype, ok = QInputDialog.getItem(self, "Variable Type", "Select type:",
-                                             ["state", "algebraic"],
-                                             current=0 if vtype == "state" else 1,
-                                             editable=False)
-        if not ok:
-            return
-
-        for model in self.model_host.model.children:
-            if vtype == "state":
-                for var in model.state_vars:
-                    if var.name == name:
-                        # elimina el bloque viejo
-                        model.state_vars.remove(var)
-                        # crea el nuevo
-                        new_var, blk = variable(new_name, new_vtype)
-                        model.add(blk)
-            if vtype == "algebraic":
-                for var in model.algebraic_vars:
-                    if var.name == name:
-                        # elimina el bloque viejo
-                        model.algebraic_vars.remove(var)
-                        # crea el nuevo
-                        new_var, blk = variable(new_name, new_vtype)
-                        model.add(blk)
-
-        self.refresh_lists()
+    # def edit_variable(self, item):
+    #     from PySide6.QtWidgets import QInputDialog
+    #     full_text = item.text()
+    #     name, vtype = full_text.split(" (")
+    #     vtype = vtype[:-1]
+    #
+    #     new_name, ok = QInputDialog.getText(self, "Edit Variable", "Variable name:", text=name)
+    #     if not ok or not new_name:
+    #         return
+    #
+    #     new_vtype, ok = QInputDialog.getItem(self, "Variable Type", "Select type:",
+    #                                          ["state", "algebraic"],
+    #                                          current=0 if vtype == "state" else 1,
+    #                                          editable=False)
+    #     if not ok:
+    #         return
+    #
+    #     for model in self.model_host.model.children:
+    #         if vtype == "state":
+    #             for var in model.state_vars:
+    #                 if var.name == name:
+    #                     # elimina el bloque viejo
+    #                     model.state_vars.remove(var)
+    #                     # crea el nuevo
+    #                     new_var, blk = variable(new_name, new_vtype)
+    #                     model.add(blk)
+    #         if vtype == "algebraic":
+    #             for var in model.algebraic_vars:
+    #                 if var.name == name:
+    #                     # elimina el bloque viejo
+    #                     model.algebraic_vars.remove(var)
+    #                     # crea el nuevo
+    #                     new_var, blk = variable(new_name, new_vtype)
+    #                     model.add(blk)
+    #
+    #     self.refresh_lists()
 
     # def edit_parameter(self, item):
     #     from PySide6.QtWidgets import QInputDialog
@@ -1323,84 +1444,125 @@ class EditEquations(QWidget):
     #
     #     self.refresh_lists()
 
-    def edit_equation(self, item):
-        from PySide6.QtWidgets import QInputDialog
-        # Texto formato "expr (state/algebraic)"
-        full_text = item.text()
-        expr, etype = full_text.split(" (")
-        etype = etype[:-1]  # quitar ")"
-
-        new_expr, ok = QInputDialog.getText(self, "Edit Equation", "Equation:", text=expr)
-        if not ok or not new_expr:
-            return
-
-        new_etype, ok = QInputDialog.getItem(self, "Equation Type", "Select type:",
-                                             ["state", "algebraic"],
-                                             current=0 if etype == "state" else 1,
-                                             editable=False)
-        if not ok:
-            return
-
-        for model in self.model_host.model.children:
-            if etype == "state":
-                for eq in model.state_eqs:
-                    if symbolic_to_string(eq) == expr:
-                        model.state_eqs.remove(eq)
-                        new_blk = equation(new_expr, new_etype)
-                        model.add(new_blk)
-            if etype == "algebraic":
-                for eq in model.algebraic_eqs:
-                    if symbolic_to_string(eq) == expr:
-                        model.algebraic_eqs.remove(eq)
-                        new_blk = equation(new_expr, new_etype)
-                        model.add(new_blk)
-
-        self.refresh_lists()
+    # def edit_equation(self, item):
+    #     from PySide6.QtWidgets import QInputDialog
+    #     # Texto formato "expr (state/algebraic)"
+    #     full_text = item.text()
+    #     expr, etype = full_text.split(" (")
+    #     etype = etype[:-1]  # quitar ")"
+    #
+    #     new_expr, ok = QInputDialog.getText(self, "Edit Equation", "Equation:", text=expr)
+    #     if not ok or not new_expr:
+    #         return
+    #
+    #     new_etype, ok = QInputDialog.getItem(self, "Equation Type", "Select type:",
+    #                                          ["state", "algebraic"],
+    #                                          current=0 if etype == "state" else 1,
+    #                                          editable=False)
+    #     if not ok:
+    #         return
+    #
+    #     for model in self.model_host.model.children:
+    #         if etype == "state":
+    #             for eq in model.state_eqs:
+    #                 if symbolic_to_string(eq) == expr:
+    #                     model.state_eqs.remove(eq)
+    #                     new_blk = equation(new_expr, new_etype)
+    #                     model.add(new_blk)
+    #         if etype == "algebraic":
+    #             for eq in model.algebraic_eqs:
+    #                 if symbolic_to_string(eq) == expr:
+    #                     model.algebraic_eqs.remove(eq)
+    #                     new_blk = equation(new_expr, new_etype)
+    #                     model.add(new_blk)
+    #
+    #     self.refresh_lists()
 
 
 ####### main editor ########
 
+def add_submodel_vars(model, vars_model, eqns_model, color_map):
+
+    for submodel in model.children:
+        for var in submodel.state_vars:
+            items = [
+                QStandardItem(var.name),
+                QStandardItem("state"),
+            ]
+            for it in items:
+                it.setForeground(color_map["State variables"])
+            vars_model.appendRow(items)
+        for eq in submodel.state_eqs:
+            eq_item = QStandardItem(str(eq))
+            eq_item.setForeground(color_map["State equations"])
+            eqns_model.appendRow([eq_item])
+
+        for var in submodel.algebraic_vars:
+            items = [
+                QStandardItem(var.name),
+                QStandardItem("algebraic"),
+            ]
+            for it in items:
+                it.setForeground(color_map["Algebraic variables"])
+            vars_model.appendRow(items)
+        for eq in submodel.algebraic_eqs:
+            eq_item = QStandardItem(str(eq))
+            eq_item.setForeground(color_map["Algebraic equations"])
+            eqns_model.appendRow([eq_item])
+
+        for param in submodel.parameters:
+            items = [
+                QStandardItem(param.name),
+                QStandardItem("parameter"),
+                QStandardItem(str(param.value)),
+            ]
+            for it in items:
+                it.setForeground(color_map["Parameters"])
+            vars_model.appendRow(items)
+        if submodel.children:
+            add_submodel_vars(submodel, vars_model, eqns_model, color_map)
 
 def add_vars(model, vars_model, eqns_model, color_map):
+
+    for var in model.state_vars:
+        items = [
+            QStandardItem(var.name),
+            QStandardItem("state"),
+        ]
+        for it in items:
+            it.setForeground(color_map["State variables"])
+        vars_model.appendRow(items)
+    for eq in model.state_eqs:
+        eq_item = QStandardItem(str(eq))
+        eq_item.setForeground(color_map["State equations"])
+        eqns_model.appendRow([eq_item])
+
+    for var in model.algebraic_vars:
+        items = [
+            QStandardItem(var.name),
+            QStandardItem("algebraic"),
+        ]
+        for it in items:
+            it.setForeground(color_map["Algebraic variables"])
+        vars_model.appendRow(items)
+    for eq in model.algebraic_eqs:
+        eq_item = QStandardItem(str(eq))
+        eq_item.setForeground(color_map["Algebraic equations"])
+        eqns_model.appendRow([eq_item])
+
+    for param in model.parameters:
+        items = [
+            QStandardItem(param.name),
+            QStandardItem("parameter"),
+            QStandardItem(str(param.value)),
+        ]
+        for it in items:
+            it.setForeground(color_map["Parameters"])
+        vars_model.appendRow(items)
     if model.children:
-        for submodel in model.children:
-            for var in submodel.state_vars:
-                items = [
-                    QStandardItem(var.name),
-                    QStandardItem("state"),
-                ]
-                for it in items:
-                    it.setForeground(color_map["State variables"])
-                vars_model.appendRow(items)
-            for eq in submodel.state_eqs:
-                eq_item = QStandardItem(str(eq))
-                eq_item.setForeground(color_map["State equations"])
-                eqns_model.appendRow([eq_item])
+        add_submodel_vars(model, vars_model, eqns_model, color_map)
 
-            for var in submodel.algebraic_vars:
-                items = [
-                    QStandardItem(var.name),
-                    QStandardItem("algebraic"),
-                ]
-                for it in items:
-                    it.setForeground(color_map["Algebraic variables"])
-                vars_model.appendRow(items)
-            for eq in submodel.algebraic_eqs:
-                eq_item = QStandardItem(str(eq))
-                eq_item.setForeground(color_map["Algebraic equations"])
-                eqns_model.appendRow([eq_item])
 
-            for param in submodel.parameters:
-                items = [
-                    QStandardItem(param.name),
-                    QStandardItem("parameter"),
-                    QStandardItem(str(param.value)),
-                ]
-                for it in items:
-                    it.setForeground(color_map["Parameters"])
-                vars_model.appendRow(items)
-
-            add_vars(submodel, vars_model, eqns_model, color_map)
 
 
 
@@ -1482,14 +1644,8 @@ class RmsModelEditorGUI(QtWidgets.QMainWindow):
         self._eqns_table_model.clear()
         self._eqns_table_model.setHorizontalHeaderLabels(["Equations"])
 
-        # Llenar tablas
+        # fill tables
         add_vars(self.model, self._vars_table_model, self._eqns_table_model, self.color_map)
-
-    def extract_dae(self):
-        eqs = self.editor.run()
-
-        for eq in eqs:
-            print(str(eq))
 
 
 

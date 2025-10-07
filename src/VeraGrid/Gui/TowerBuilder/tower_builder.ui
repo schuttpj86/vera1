@@ -269,7 +269,7 @@
                 </property>
                 <property name="icon">
                  <iconset resource="icons.qrc">
-                  <normaloff>:/Icons/icons/plus.svg</normaloff>:/Icons/icons/plus.svg</iconset>
+                  <normaloff>:/Icons/icons/plus.png</normaloff>:/Icons/icons/plus.png</iconset>
                 </property>
                </widget>
               </item>
@@ -283,7 +283,7 @@
                 </property>
                 <property name="icon">
                  <iconset resource="icons.qrc">
-                  <normaloff>:/Icons/icons/minus.svg</normaloff>:/Icons/icons/minus.svg</iconset>
+                  <normaloff>:/Icons/icons/minus.png</normaloff>:/Icons/icons/minus.png</iconset>
                 </property>
                </widget>
               </item>
@@ -451,7 +451,7 @@
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/Icons/icons/calc.svg</normaloff>:/Icons/icons/calc.svg</iconset>
+              <normaloff>:/Icons/icons/calc.png</normaloff>:/Icons/icons/calc.png</iconset>
             </property>
             <property name="iconSize">
              <size>

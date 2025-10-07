@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'gui.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.7.2
+## Created by: Qt User Interface Compiler version 6.9.2
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -28,17 +28,17 @@ class Ui_MainWindow(object):
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.resize(709, 427)
         icon = QIcon()
-        icon.addFile(u":/Icons/icons/automatic_layout.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon.addFile(u":/Icons/icons/automatic_layout.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         MainWindow.setWindowIcon(icon)
         self.actionCopy_to_clipboard = QAction(MainWindow)
         self.actionCopy_to_clipboard.setObjectName(u"actionCopy_to_clipboard")
         icon1 = QIcon()
-        icon1.addFile(u":/Icons/icons/copy.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon1.addFile(u":/Icons/icons/copy.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.actionCopy_to_clipboard.setIcon(icon1)
         self.actionSave = QAction(MainWindow)
         self.actionSave.setObjectName(u"actionSave")
         icon2 = QIcon()
-        icon2.addFile(u":/Icons/icons/import_profiles.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon2.addFile(u":/Icons/icons/import_profiles.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.actionSave.setIcon(icon2)
         self.verticalLayout_2 = QVBoxLayout(MainWindow)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
@@ -102,7 +102,7 @@ class Ui_MainWindow(object):
         self.gridLayout_26.addWidget(self.label, 2, 0, 1, 3)
 
 
-        self.formLayout.setWidget(0, QFormLayout.LabelRole, self.frame_71)
+        self.formLayout.setWidget(0, QFormLayout.ItemRole.LabelRole, self.frame_71)
 
         self.frame_72 = QFrame(self.frame_74)
         self.frame_72.setObjectName(u"frame_72")
@@ -161,7 +161,7 @@ class Ui_MainWindow(object):
         self.gridLayout_27.addWidget(self.label_111, 7, 0, 1, 1)
 
 
-        self.formLayout.setWidget(0, QFormLayout.FieldRole, self.frame_72)
+        self.formLayout.setWidget(0, QFormLayout.ItemRole.FieldRole, self.frame_72)
 
         self.frame_75 = QFrame(self.frame_74)
         self.frame_75.setObjectName(u"frame_75")
@@ -187,7 +187,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_37.addWidget(self.autoNminusXButton)
 
 
-        self.formLayout.setWidget(1, QFormLayout.SpanningRole, self.frame_75)
+        self.formLayout.setWidget(1, QFormLayout.ItemRole.SpanningRole, self.frame_75)
 
 
         self.verticalLayout_2.addWidget(self.frame_74)

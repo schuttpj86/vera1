@@ -8,7 +8,7 @@ import os
 import json
 import numpy as np
 import pandas as pd
-from typing import List, Set, Dict, Union, Tuple, TYPE_CHECKING, cast
+from typing import List, Set, Dict, Union, Tuple, TYPE_CHECKING
 from collections.abc import Callable
 from warnings import warn
 import networkx as nx
@@ -41,7 +41,8 @@ from VeraGridEngine.Devices.Diagrams.schematic_diagram import SchematicDiagram
 from VeraGridEngine.Devices.Diagrams.graphic_location import GraphicLocation
 from VeraGridEngine.Simulations.OPF.opf_ts_results import OptimalPowerFlowTimeSeriesResults
 from VeraGridEngine.Simulations.PowerFlow.power_flow_ts_results import PowerFlowTimeSeriesResults
-from VeraGridEngine.enumerations import DeviceType, ResultTypes, TerminalType, BusGraphicType
+from VeraGridEngine.Topology.VoltageLevels.common_functions import transform_bus_to_connectivity_grid
+from VeraGridEngine.enumerations import DeviceType, ResultTypes, BusGraphicType
 from VeraGridEngine.basic_structures import Vec, CxVec, IntVec, Logger
 
 from VeraGrid.Gui.Diagrams.SchematicWidget.terminal_item import BarTerminalItem, RoundTerminalItem
@@ -58,7 +59,6 @@ from VeraGrid.Gui.Diagrams.SchematicWidget.Branches.vsc_graphics import VscGraph
 from VeraGrid.Gui.Diagrams.SchematicWidget.Branches.upfc_graphics import UpfcGraphicItem
 from VeraGrid.Gui.Diagrams.SchematicWidget.Branches.series_reactance_graphics import SeriesReactanceGraphicItem
 from VeraGrid.Gui.Diagrams.SchematicWidget.Branches.switch_graphics import SwitchGraphicItem
-from VeraGrid.Gui.Diagrams.SchematicWidget.Branches.line_graphics_template import LineGraphicTemplateItem
 from VeraGrid.Gui.Diagrams.SchematicWidget.Branches.transformer3w_graphics import Transformer3WGraphicItem
 from VeraGrid.Gui.Diagrams.SchematicWidget.Injections.generator_graphics import GeneratorGraphicItem
 from VeraGrid.Gui.Diagrams.generic_graphics import ACTIVE, GenericDiagramWidget
@@ -124,7 +124,7 @@ class SchematicLibraryModel(QStandardItemModel):
         :return:
         """
         _icon = QIcon()
-        _icon.addPixmap(QPixmap(f":/Icons/icons/{icon_name}.svg"))
+        _icon.addPixmap(QPixmap(f":/Icons/icons/{icon_name}.png"))
         _item = QStandardItem(_icon, name)
         _item.setToolTip(f"Drag & drop {name} into the schematic")
         self.appendRow(_item)
@@ -2017,7 +2017,7 @@ class SchematicWidget(BaseDiagramWidget):
             image = self.get_image(transparent=False)
             image.save(filename)
 
-        elif extension == '.svg':
+        elif extension == '.png':
             w = self.editor_graphics_view.width()
             h = self.editor_graphics_view.height()
             svg_gen = QSvgGenerator()
@@ -4711,19 +4711,19 @@ class SchematicWidget(BaseDiagramWidget):
             if idx_bus_list[0][1] == line_graphics.api_object.bus_from:
                 idx, old_bus, old_bus_graphic_item = idx_bus_list[0]
                 idx, new_bus, new_bus_graphic_item = idx_bus_list[1]
-                side = 'f'
+
             elif idx_bus_list[1][1] == line_graphics.api_object.bus_from:
                 idx, new_bus, new_bus_graphic_item = idx_bus_list[0]
                 idx, old_bus, old_bus_graphic_item = idx_bus_list[1]
-                side = 'f'
+
             elif idx_bus_list[0][1] == line_graphics.api_object.bus_to:
                 idx, old_bus, old_bus_graphic_item = idx_bus_list[0]
                 idx, new_bus, new_bus_graphic_item = idx_bus_list[1]
-                side = 't'
+
             elif idx_bus_list[1][1] == line_graphics.api_object.bus_to:
                 idx, new_bus, new_bus_graphic_item = idx_bus_list[0]
                 idx, old_bus, old_bus_graphic_item = idx_bus_list[1]
-                side = 't'
+
             else:
                 error_msg(text="The 'from' or 'to' bus to change has not been selected!",
                           title='Change bus')
@@ -4734,14 +4734,17 @@ class SchematicWidget(BaseDiagramWidget):
                                  title='Change bus')
 
             if ok:
-                if side == 'f':
-                    line_graphics.api_object.bus_from = new_bus
-                    line_graphics.set_from_port(new_bus_graphic_item.get_terminal())
-                elif side == 't':
-                    line_graphics.api_object.bus_to = new_bus
-                    line_graphics.set_to_port(new_bus_graphic_item.get_terminal())
-                else:
-                    raise Exception('Unsupported side value {}'.format(side))
+                new_bus_graphic_item.get_terminal().reassign_terminal(
+                    graphic_obj=line_graphics,
+                    another_terminal=old_bus_graphic_item.get_terminal()
+                )
+
+                line_graphics.api_object.reassign_bus(
+                    old_bus=old_bus,
+                    new_bus=new_bus
+                )
+
+                new_bus_graphic_item.get_terminal().update()
 
         else:
             warning_msg("you must select the origin and destination buses!",
@@ -4877,6 +4880,43 @@ class SchematicWidget(BaseDiagramWidget):
                                              fluid_paths=fluid_paths)
 
         self.draw_additional_diagram(diagram=diagram)
+
+    def transform_busbar_to_connectivity_grid(self, bus_graphics: BusGraphicItem):
+        """
+        Transform the bus into a grid of buses to be able to compute the bus currents
+        :param bus_graphics: BusGraphicItem
+        """
+
+        # convert a bus into many small buses connected by impedances
+        new_buses, new_lines = transform_bus_to_connectivity_grid(grid=self.circuit,
+                                                                  busbar=bus_graphics.api_object)
+
+        # add the new buses
+        self.add_buses(buses=new_buses)
+
+        # connected branches
+        branch_graphics = bus_graphics.get_associated_branch_graphics()
+
+        # Note: graphical shunts have been added already
+        # the order of the buses matches the order of the branches because the
+        # transformation function already works like that
+        for i, branch_graphic in enumerate(branch_graphics):
+            new_bus_graphic: BusGraphicItem = self.graphics_manager.query(new_buses[i])
+
+            new_bus_graphic.terminal.reassign_terminal(
+                graphic_obj=branch_graphic,
+                another_terminal=bus_graphics.terminal
+            )
+
+            branch_graphic.api_object.reassign_bus(
+                old_bus=bus_graphics.api_object,
+                new_bus=new_bus_graphic.api_object
+            )
+
+            new_bus_graphic.get_terminal().update()
+
+        # Finally delete the old bus
+        self.delete_element_utility_function(device=bus_graphics.api_object)
 
 
 def generate_schematic_diagram(buses: List[Bus],

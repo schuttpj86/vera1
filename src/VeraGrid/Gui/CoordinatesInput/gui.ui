@@ -83,7 +83,7 @@
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/Icons/icons/import_profiles.svg</normaloff>:/Icons/icons/import_profiles.svg</iconset>
+              <normaloff>:/Icons/icons/import_profiles.png</normaloff>:/Icons/icons/import_profiles.png</iconset>
             </property>
            </widget>
           </item>
@@ -263,7 +263,7 @@
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/Icons/icons/gear.svg</normaloff>:/Icons/icons/gear.svg</iconset>
+              <normaloff>:/Icons/icons/gear.png</normaloff>:/Icons/icons/gear.png</iconset>
             </property>
            </widget>
           </item>
@@ -274,7 +274,7 @@
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/Icons/icons/transform.svg</normaloff>:/Icons/icons/transform.svg</iconset>
+              <normaloff>:/Icons/icons/transform.png</normaloff>:/Icons/icons/transform.png</iconset>
             </property>
            </widget>
           </item>

@@ -427,7 +427,7 @@ class ConfigurationMain(ResultsMain):
 
         add_menu_entry(menu=self.ui.menuplugins,
                        text="Reload",
-                       icon_path=":/Icons/icons/undo.svg",
+                       icon_path=":/Icons/icons/undo.png",
                        function_ptr=self.add_plugins)
 
         self.plugins_info.read()  # force refresh
@@ -453,7 +453,7 @@ class ConfigurationMain(ResultsMain):
                 add_menu_entry(
                     menu=self.ui.menuplugins,
                     text=plugin_info.name,
-                    icon_path=":/Icons/icons/plugin.svg",
+                    icon_path=":/Icons/icons/plugin.png",
                     icon_pixmap=plugin_info.icon,
                     function_ptr=lambda: self.launch_plugin(plugin_info.main_fcn)
                 )

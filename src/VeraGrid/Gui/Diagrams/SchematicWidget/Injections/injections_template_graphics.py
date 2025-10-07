@@ -259,19 +259,19 @@ class InjectionTemplateGraphicItem(GenericDiagramWidget, QGraphicsItemGroup):
         add_menu_entry(menu=menu,
                        text="Change bus",
                        function_ptr=self.change_bus,
-                       icon_path=":/Icons/icons/move_bus.svg")
+                       icon_path=":/Icons/icons/move_bus.png")
 
         add_menu_entry(menu=menu,
                        text="Plot profiles",
                        function_ptr=self.plot,
-                       icon_path=":/Icons/icons/plot.svg")
+                       icon_path=":/Icons/icons/plot.png")
 
         menu.addSeparator()
 
         add_menu_entry(menu=menu,
                        text="Delete",
                        function_ptr=self.delete,
-                       icon_path=":/Icons/icons/delete_schematic.svg")
+                       icon_path=":/Icons/icons/delete_schematic.png")
 
         return menu
 

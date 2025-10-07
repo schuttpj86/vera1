@@ -14,7 +14,7 @@ from VeraGridEngine.enumerations import (DeviceType, TimeFrame, BuildStatus, Win
                                          HvdcControlType, ActionType, AvailableTransferMode, ContingencyMethod,
                                          CpfParametrization, CpfStopAt, InvestmentEvaluationMethod, SolverType,
                                          InvestmentsEvaluationObjectives, NodalCapacityMethod, TimeGrouping,
-                                         ZonalGrouping, MIPSolvers, AcOpfMode, SubstationTypes, BranchGroupTypes,
+                                         ZonalGrouping, MIPSolvers, AcOpfMode, VoltageLevelTypes, BranchGroupTypes,
                                          BranchImpedanceMode, FaultType, TapChangerTypes, ContingencyOperationTypes,
                                          WindingType, MethodShortCircuit, PhasesShortCircuit, ShuntConnectionType,
                                          BusGraphicType, SwitchGraphicType, DynamicIntegrationMethod)
@@ -48,7 +48,7 @@ GCPROP_TYPES = Union[
     Type[BranchImpedanceMode],
     Type[FaultType],
     Type[TapChangerTypes],
-    Type[SubstationTypes],
+    Type[VoltageLevelTypes],
     Type[ContingencyOperationTypes],
     Type[BranchGroupTypes],
     Type[ConverterControlType],

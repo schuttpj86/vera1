@@ -32,7 +32,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="icons.qrc">
-    <normaloff>:/Program icon/VeraGrid_icon.svg</normaloff>:/Program icon/VeraGrid_icon.svg</iconset>
+    <normaloff>:/Program icon/VeraGrid_icon.png</normaloff>:/Program icon/VeraGrid_icon.png</iconset>
   </property>
   <property name="autoFillBackground">
    <bool>false</bool>
@@ -127,7 +127,7 @@ QProgressBar::chunk{
          </property>
          <property name="icon">
           <iconset resource="icons.qrc">
-           <normaloff>:/Icons/icons/delete.svg</normaloff>:/Icons/icons/delete.svg</iconset>
+           <normaloff>:/Icons/icons/delete.png</normaloff>:/Icons/icons/delete.png</iconset>
          </property>
         </widget>
        </item>
@@ -159,7 +159,7 @@ QProgressBar::chunk{
       <widget class="QWidget" name="GridTab">
        <attribute name="icon">
         <iconset resource="icons.qrc">
-         <normaloff>:/Icons/icons/schematic.svg</normaloff>:/Icons/icons/schematic.svg</iconset>
+         <normaloff>:/Icons/icons/schematic.png</normaloff>:/Icons/icons/schematic.png</iconset>
        </attribute>
        <attribute name="title">
         <string>Model</string>
@@ -205,7 +205,7 @@ QProgressBar::chunk{
           <widget class="QWidget" name="GridSectionTab">
            <attribute name="icon">
             <iconset resource="icons.qrc">
-             <normaloff>:/Icons/icons/schematic.svg</normaloff>:/Icons/icons/schematic.svg</iconset>
+             <normaloff>:/Icons/icons/schematic.png</normaloff>:/Icons/icons/schematic.png</iconset>
            </attribute>
            <attribute name="title">
             <string>Diagrams</string>
@@ -322,7 +322,7 @@ QProgressBar::chunk{
                      <widget class="QWidget" name="tab_3">
                       <attribute name="icon">
                        <iconset resource="icons.qrc">
-                        <normaloff>:/Icons/icons/show_color_controls.svg</normaloff>:/Icons/icons/show_color_controls.svg</iconset>
+                        <normaloff>:/Icons/icons/show_color_controls.png</normaloff>:/Icons/icons/show_color_controls.png</iconset>
                       </attribute>
                       <attribute name="title">
                        <string>Diagrams</string>
@@ -360,7 +360,7 @@ QProgressBar::chunk{
                      <widget class="QWidget" name="tab">
                       <attribute name="icon">
                        <iconset resource="icons.qrc">
-                        <normaloff>:/Icons/icons/data.svg</normaloff>:/Icons/icons/data.svg</iconset>
+                        <normaloff>:/Icons/icons/data.png</normaloff>:/Icons/icons/data.png</iconset>
                       </attribute>
                       <attribute name="title">
                        <string>Combinations</string>
@@ -390,7 +390,7 @@ QProgressBar::chunk{
                      <widget class="QWidget" name="tab_4">
                       <attribute name="icon">
                        <iconset resource="icons.qrc">
-                        <normaloff>:/Icons/icons/gear.svg</normaloff>:/Icons/icons/gear.svg</iconset>
+                        <normaloff>:/Icons/icons/gear.png</normaloff>:/Icons/icons/gear.png</iconset>
                       </attribute>
                       <attribute name="title">
                        <string>Settings</string>
@@ -1004,7 +1004,7 @@ QProgressBar::chunk{
                                 <string/>
                                </property>
                                <property name="pixmap">
-                                <pixmap resource="icons.qrc">:/Icons/icons/picture.svg</pixmap>
+                                <pixmap resource="icons.qrc">:/Icons/icons/picture.png</pixmap>
                                </property>
                                <property name="scaledContents">
                                 <bool>true</bool>
@@ -1102,7 +1102,7 @@ QProgressBar::chunk{
                                 <string/>
                                </property>
                                <property name="pixmap">
-                                <pixmap resource="icons.qrc">:/Icons/icons/map.svg</pixmap>
+                                <pixmap resource="icons.qrc">:/Icons/icons/map.png</pixmap>
                                </property>
                                <property name="scaledContents">
                                 <bool>true</bool>
@@ -1236,7 +1236,7 @@ QProgressBar::chunk{
                                 <string/>
                                </property>
                                <property name="pixmap">
-                                <pixmap resource="icons.qrc">:/Icons/icons/schematic.svg</pixmap>
+                                <pixmap resource="icons.qrc">:/Icons/icons/schematic.png</pixmap>
                                </property>
                                <property name="scaledContents">
                                 <bool>true</bool>
@@ -1435,7 +1435,7 @@ QProgressBar::chunk{
                         </property>
                         <property name="icon">
                          <iconset resource="icons.qrc">
-                          <normaloff>:/Icons/icons/color_grid.svg</normaloff>:/Icons/icons/color_grid.svg</iconset>
+                          <normaloff>:/Icons/icons/color_grid.png</normaloff>:/Icons/icons/color_grid.png</iconset>
                         </property>
                        </widget>
                       </item>
@@ -1464,7 +1464,7 @@ QProgressBar::chunk{
           <widget class="QWidget" name="DataTab">
            <attribute name="icon">
             <iconset resource="icons.qrc">
-             <normaloff>:/Icons/icons/data.svg</normaloff>:/Icons/icons/data.svg</iconset>
+             <normaloff>:/Icons/icons/data.png</normaloff>:/Icons/icons/data.png</iconset>
            </attribute>
            <attribute name="title">
             <string>Database</string>
@@ -1547,7 +1547,7 @@ QProgressBar::chunk{
                   <widget class="QWidget" name="tab_15">
                    <attribute name="icon">
                     <iconset resource="icons.qrc">
-                     <normaloff>:/Icons/icons/data.svg</normaloff>:/Icons/icons/data.svg</iconset>
+                     <normaloff>:/Icons/icons/data.png</normaloff>:/Icons/icons/data.png</iconset>
                    </attribute>
                    <attribute name="title">
                     <string>Objects</string>
@@ -1615,7 +1615,7 @@ QProgressBar::chunk{
                          </property>
                          <property name="icon">
                           <iconset resource="icons.qrc">
-                           <normaloff>:/Icons/icons/magnifying_glass.svg</normaloff>:/Icons/icons/magnifying_glass.svg</iconset>
+                           <normaloff>:/Icons/icons/magnifying_glass.png</normaloff>:/Icons/icons/magnifying_glass.png</iconset>
                          </property>
                         </widget>
                        </item>
@@ -1642,7 +1642,7 @@ QProgressBar::chunk{
                          </property>
                          <property name="icon">
                           <iconset resource="icons.qrc">
-                           <normaloff>:/Icons/icons/histogram.svg</normaloff>:/Icons/icons/histogram.svg</iconset>
+                           <normaloff>:/Icons/icons/histogram.png</normaloff>:/Icons/icons/histogram.png</iconset>
                          </property>
                         </widget>
                        </item>
@@ -1689,7 +1689,7 @@ QProgressBar::chunk{
                          </property>
                          <property name="icon">
                           <iconset resource="icons.qrc">
-                           <normaloff>:/Icons/icons/copy2left.svg</normaloff>:/Icons/icons/copy2left.svg</iconset>
+                           <normaloff>:/Icons/icons/copy2left.png</normaloff>:/Icons/icons/copy2left.png</iconset>
                          </property>
                         </widget>
                        </item>
@@ -1747,7 +1747,7 @@ QProgressBar::chunk{
                          </property>
                          <property name="icon">
                           <iconset resource="icons.qrc">
-                           <normaloff>:/Icons/icons/plus.svg</normaloff>:/Icons/icons/plus.svg</iconset>
+                           <normaloff>:/Icons/icons/plus.png</normaloff>:/Icons/icons/plus.png</iconset>
                          </property>
                         </widget>
                        </item>
@@ -1761,7 +1761,7 @@ QProgressBar::chunk{
                          </property>
                          <property name="icon">
                           <iconset resource="icons.qrc">
-                           <normaloff>:/Icons/icons/minus.svg</normaloff>:/Icons/icons/minus.svg</iconset>
+                           <normaloff>:/Icons/icons/minus.png</normaloff>:/Icons/icons/minus.png</iconset>
                          </property>
                         </widget>
                        </item>
@@ -1773,7 +1773,7 @@ QProgressBar::chunk{
                   <widget class="QWidget" name="tab_2">
                    <attribute name="icon">
                     <iconset resource="icons.qrc">
-                     <normaloff>:/Icons/icons/area_transfer.svg</normaloff>:/Icons/icons/area_transfer.svg</iconset>
+                     <normaloff>:/Icons/icons/area_transfer.png</normaloff>:/Icons/icons/area_transfer.png</iconset>
                    </attribute>
                    <attribute name="title">
                     <string>Associations</string>
@@ -1889,7 +1889,7 @@ QProgressBar::chunk{
                   <widget class="QWidget" name="tab_16">
                    <attribute name="icon">
                     <iconset resource="icons.qrc">
-                     <normaloff>:/Icons/icons/time_series.svg</normaloff>:/Icons/icons/time_series.svg</iconset>
+                     <normaloff>:/Icons/icons/time_series.png</normaloff>:/Icons/icons/time_series.png</iconset>
                    </attribute>
                    <attribute name="title">
                     <string>Time series</string>
@@ -1951,7 +1951,7 @@ QProgressBar::chunk{
                          </property>
                          <property name="icon">
                           <iconset resource="icons.qrc">
-                           <normaloff>:/Icons/icons/new.svg</normaloff>:/Icons/icons/new.svg</iconset>
+                           <normaloff>:/Icons/icons/new.png</normaloff>:/Icons/icons/new.png</iconset>
                          </property>
                         </widget>
                        </item>
@@ -1965,7 +1965,7 @@ QProgressBar::chunk{
                          </property>
                          <property name="icon">
                           <iconset resource="icons.qrc">
-                           <normaloff>:/Icons/icons/new (delete).svg</normaloff>:/Icons/icons/new (delete).svg</iconset>
+                           <normaloff>:/Icons/icons/new (delete).png</normaloff>:/Icons/icons/new (delete).png</iconset>
                          </property>
                         </widget>
                        </item>
@@ -1979,7 +1979,7 @@ QProgressBar::chunk{
                          </property>
                          <property name="icon">
                           <iconset resource="icons.qrc">
-                           <normaloff>:/Icons/icons/import_profiles.svg</normaloff>:/Icons/icons/import_profiles.svg</iconset>
+                           <normaloff>:/Icons/icons/import_profiles.png</normaloff>:/Icons/icons/import_profiles.png</iconset>
                          </property>
                          <property name="flat">
                           <bool>false</bool>
@@ -1996,7 +1996,7 @@ QProgressBar::chunk{
                          </property>
                          <property name="icon">
                           <iconset resource="icons.qrc">
-                           <normaloff>:/Icons/icons/import_models.svg</normaloff>:/Icons/icons/import_models.svg</iconset>
+                           <normaloff>:/Icons/icons/import_models.png</normaloff>:/Icons/icons/import_models.png</iconset>
                          </property>
                          <property name="flat">
                           <bool>false</bool>
@@ -2026,7 +2026,7 @@ QProgressBar::chunk{
                          </property>
                          <property name="icon">
                           <iconset resource="icons.qrc">
-                           <normaloff>:/Icons/icons/plot.svg</normaloff>:/Icons/icons/plot.svg</iconset>
+                           <normaloff>:/Icons/icons/plot.png</normaloff>:/Icons/icons/plot.png</iconset>
                          </property>
                         </widget>
                        </item>
@@ -2085,7 +2085,7 @@ QProgressBar::chunk{
                          </property>
                          <property name="icon">
                           <iconset resource="icons.qrc">
-                           <normaloff>:/Icons/icons/copy.svg</normaloff>:/Icons/icons/copy.svg</iconset>
+                           <normaloff>:/Icons/icons/copy.png</normaloff>:/Icons/icons/copy.png</iconset>
                          </property>
                         </widget>
                        </item>
@@ -2099,7 +2099,7 @@ QProgressBar::chunk{
                          </property>
                          <property name="icon">
                           <iconset resource="icons.qrc">
-                           <normaloff>:/Icons/icons/paste.svg</normaloff>:/Icons/icons/paste.svg</iconset>
+                           <normaloff>:/Icons/icons/paste.png</normaloff>:/Icons/icons/paste.png</iconset>
                          </property>
                         </widget>
                        </item>
@@ -2113,7 +2113,7 @@ QProgressBar::chunk{
                          </property>
                          <property name="icon">
                           <iconset resource="icons.qrc">
-                           <normaloff>:/Icons/icons/copy2right.svg</normaloff>:/Icons/icons/copy2right.svg</iconset>
+                           <normaloff>:/Icons/icons/copy2right.png</normaloff>:/Icons/icons/copy2right.png</iconset>
                          </property>
                         </widget>
                        </item>
@@ -2153,7 +2153,7 @@ QProgressBar::chunk{
                          </property>
                          <property name="icon">
                           <iconset resource="icons.qrc">
-                           <normaloff>:/Icons/icons/plus.svg</normaloff>:/Icons/icons/plus.svg</iconset>
+                           <normaloff>:/Icons/icons/plus.png</normaloff>:/Icons/icons/plus.png</iconset>
                          </property>
                         </widget>
                        </item>
@@ -2167,7 +2167,7 @@ QProgressBar::chunk{
                          </property>
                          <property name="icon">
                           <iconset resource="icons.qrc">
-                           <normaloff>:/Icons/icons/minus.svg</normaloff>:/Icons/icons/minus.svg</iconset>
+                           <normaloff>:/Icons/icons/minus.png</normaloff>:/Icons/icons/minus.png</iconset>
                          </property>
                         </widget>
                        </item>
@@ -2181,7 +2181,7 @@ QProgressBar::chunk{
                          </property>
                          <property name="icon">
                           <iconset resource="icons.qrc">
-                           <normaloff>:/Icons/icons/multiply.svg</normaloff>:/Icons/icons/multiply.svg</iconset>
+                           <normaloff>:/Icons/icons/multiply.png</normaloff>:/Icons/icons/multiply.png</iconset>
                          </property>
                         </widget>
                        </item>
@@ -2195,7 +2195,7 @@ QProgressBar::chunk{
                          </property>
                          <property name="icon">
                           <iconset resource="icons.qrc">
-                           <normaloff>:/Icons/icons/divide.svg</normaloff>:/Icons/icons/divide.svg</iconset>
+                           <normaloff>:/Icons/icons/divide.png</normaloff>:/Icons/icons/divide.png</iconset>
                          </property>
                         </widget>
                        </item>
@@ -2209,7 +2209,7 @@ QProgressBar::chunk{
                          </property>
                          <property name="icon">
                           <iconset resource="icons.qrc">
-                           <normaloff>:/Icons/icons/copy2up.svg</normaloff>:/Icons/icons/copy2up.svg</iconset>
+                           <normaloff>:/Icons/icons/copy2up.png</normaloff>:/Icons/icons/copy2up.png</iconset>
                          </property>
                         </widget>
                        </item>
@@ -2242,7 +2242,7 @@ QProgressBar::chunk{
           <widget class="QWidget" name="compiledArraysTab">
            <attribute name="icon">
             <iconset resource="icons.qrc">
-             <normaloff>:/Icons/icons/spmat.svg</normaloff>:/Icons/icons/spmat.svg</iconset>
+             <normaloff>:/Icons/icons/spmat.png</normaloff>:/Icons/icons/spmat.png</iconset>
            </attribute>
            <attribute name="title">
             <string>Compiled arrays</string>
@@ -2295,7 +2295,7 @@ QProgressBar::chunk{
                   </property>
                   <property name="icon">
                    <iconset resource="icons.qrc">
-                    <normaloff>:/Icons/icons/save.svg</normaloff>:/Icons/icons/save.svg</iconset>
+                    <normaloff>:/Icons/icons/save.png</normaloff>:/Icons/icons/save.png</iconset>
                   </property>
                  </widget>
                 </item>
@@ -2315,7 +2315,7 @@ QProgressBar::chunk{
                   </property>
                   <property name="icon">
                    <iconset resource="icons.qrc">
-                    <normaloff>:/Icons/icons/calculator.svg</normaloff>:/Icons/icons/calculator.svg</iconset>
+                    <normaloff>:/Icons/icons/calculator.png</normaloff>:/Icons/icons/calculator.png</iconset>
                   </property>
                  </widget>
                 </item>
@@ -2371,7 +2371,7 @@ QProgressBar::chunk{
                   </property>
                   <property name="icon">
                    <iconset resource="icons.qrc">
-                    <normaloff>:/Icons/icons/array.svg</normaloff>:/Icons/icons/array.svg</iconset>
+                    <normaloff>:/Icons/icons/array.png</normaloff>:/Icons/icons/array.png</iconset>
                   </property>
                  </widget>
                 </item>
@@ -2391,7 +2391,7 @@ QProgressBar::chunk{
                   </property>
                   <property name="icon">
                    <iconset resource="icons.qrc">
-                    <normaloff>:/Icons/icons/plot.svg</normaloff>:/Icons/icons/plot.svg</iconset>
+                    <normaloff>:/Icons/icons/plot.png</normaloff>:/Icons/icons/plot.png</iconset>
                   </property>
                  </widget>
                 </item>
@@ -2411,7 +2411,7 @@ QProgressBar::chunk{
                   </property>
                   <property name="icon">
                    <iconset resource="icons.qrc">
-                    <normaloff>:/Icons/icons/copy.svg</normaloff>:/Icons/icons/copy.svg</iconset>
+                    <normaloff>:/Icons/icons/copy.png</normaloff>:/Icons/icons/copy.png</iconset>
                   </property>
                  </widget>
                 </item>
@@ -2424,7 +2424,7 @@ QProgressBar::chunk{
           <widget class="QWidget" name="commentsTab">
            <attribute name="icon">
             <iconset resource="icons.qrc">
-             <normaloff>:/Icons/icons/edit.svg</normaloff>:/Icons/icons/edit.svg</iconset>
+             <normaloff>:/Icons/icons/edit.png</normaloff>:/Icons/icons/edit.png</iconset>
            </attribute>
            <attribute name="title">
             <string>Comments</string>
@@ -2446,7 +2446,7 @@ QProgressBar::chunk{
       <widget class="QWidget" name="ResultsTab">
        <attribute name="icon">
         <iconset resource="icons.qrc">
-         <normaloff>:/Icons/icons/plot.svg</normaloff>:/Icons/icons/plot.svg</iconset>
+         <normaloff>:/Icons/icons/plot.png</normaloff>:/Icons/icons/plot.png</iconset>
        </attribute>
        <attribute name="title">
         <string>Results</string>
@@ -2609,7 +2609,7 @@ QProgressBar::chunk{
                      </property>
                      <property name="icon">
                       <iconset resource="icons.qrc">
-                       <normaloff>:/Icons/icons/minus.svg</normaloff>:/Icons/icons/minus.svg</iconset>
+                       <normaloff>:/Icons/icons/minus.png</normaloff>:/Icons/icons/minus.png</iconset>
                      </property>
                     </widget>
                    </item>
@@ -2724,7 +2724,7 @@ QProgressBar::chunk{
                      </property>
                      <property name="icon">
                       <iconset resource="icons.qrc">
-                       <normaloff>:/Icons/icons/loadc.svg</normaloff>:/Icons/icons/loadc.svg</iconset>
+                       <normaloff>:/Icons/icons/loadc.png</normaloff>:/Icons/icons/loadc.png</iconset>
                      </property>
                     </widget>
                    </item>
@@ -2747,7 +2747,7 @@ QProgressBar::chunk{
               <widget class="QWidget" name="tab_7">
                <attribute name="icon">
                 <iconset resource="icons.qrc">
-                 <normaloff>:/Icons/icons/array.svg</normaloff>:/Icons/icons/array.svg</iconset>
+                 <normaloff>:/Icons/icons/array.png</normaloff>:/Icons/icons/array.png</iconset>
                </attribute>
                <attribute name="title">
                 <string>Tables</string>
@@ -2866,7 +2866,7 @@ QProgressBar::chunk{
                         </property>
                         <property name="icon">
                          <iconset resource="icons.qrc">
-                          <normaloff>:/Icons/icons/magnifying_glass.svg</normaloff>:/Icons/icons/magnifying_glass.svg</iconset>
+                          <normaloff>:/Icons/icons/magnifying_glass.png</normaloff>:/Icons/icons/magnifying_glass.png</iconset>
                         </property>
                        </widget>
                       </item>
@@ -2900,7 +2900,7 @@ QProgressBar::chunk{
                         </property>
                         <property name="icon">
                          <iconset resource="icons.qrc">
-                          <normaloff>:/Icons/icons/transpose.svg</normaloff>:/Icons/icons/transpose.svg</iconset>
+                          <normaloff>:/Icons/icons/transpose.png</normaloff>:/Icons/icons/transpose.png</iconset>
                         </property>
                        </widget>
                       </item>
@@ -2917,7 +2917,7 @@ QProgressBar::chunk{
                         </property>
                         <property name="icon">
                          <iconset resource="icons.qrc">
-                          <normaloff>:/Icons/icons/cdf.svg</normaloff>:/Icons/icons/cdf.svg</iconset>
+                          <normaloff>:/Icons/icons/cdf.png</normaloff>:/Icons/icons/cdf.png</iconset>
                         </property>
                        </widget>
                       </item>
@@ -2934,7 +2934,7 @@ QProgressBar::chunk{
                         </property>
                         <property name="icon">
                          <iconset resource="icons.qrc">
-                          <normaloff>:/Icons/icons/abs.svg</normaloff>:/Icons/icons/abs.svg</iconset>
+                          <normaloff>:/Icons/icons/abs.png</normaloff>:/Icons/icons/abs.png</iconset>
                         </property>
                        </widget>
                       </item>
@@ -2951,7 +2951,7 @@ QProgressBar::chunk{
                         </property>
                         <property name="icon">
                          <iconset resource="icons.qrc">
-                          <normaloff>:/Icons/icons/stacked_plot.svg</normaloff>:/Icons/icons/stacked_plot.svg</iconset>
+                          <normaloff>:/Icons/icons/stacked_plot.png</normaloff>:/Icons/icons/stacked_plot.png</iconset>
                         </property>
                        </widget>
                       </item>
@@ -2965,7 +2965,7 @@ QProgressBar::chunk{
                         </property>
                         <property name="icon">
                          <iconset resource="icons.qrc">
-                          <normaloff>:/Icons/icons/copy.svg</normaloff>:/Icons/icons/copy.svg</iconset>
+                          <normaloff>:/Icons/icons/copy.png</normaloff>:/Icons/icons/copy.png</iconset>
                         </property>
                        </widget>
                       </item>
@@ -2979,7 +2979,7 @@ QProgressBar::chunk{
                         </property>
                         <property name="icon">
                          <iconset resource="icons.qrc">
-                          <normaloff>:/Icons/icons/array.svg</normaloff>:/Icons/icons/array.svg</iconset>
+                          <normaloff>:/Icons/icons/array.png</normaloff>:/Icons/icons/array.png</iconset>
                         </property>
                        </widget>
                       </item>
@@ -2993,7 +2993,7 @@ QProgressBar::chunk{
                         </property>
                         <property name="icon">
                          <iconset resource="icons.qrc">
-                          <normaloff>:/Icons/icons/save.svg</normaloff>:/Icons/icons/save.svg</iconset>
+                          <normaloff>:/Icons/icons/save.png</normaloff>:/Icons/icons/save.png</iconset>
                         </property>
                        </widget>
                       </item>
@@ -3007,7 +3007,7 @@ QProgressBar::chunk{
                         </property>
                         <property name="icon">
                          <iconset resource="icons.qrc">
-                          <normaloff>:/Icons/icons/plot.svg</normaloff>:/Icons/icons/plot.svg</iconset>
+                          <normaloff>:/Icons/icons/plot.png</normaloff>:/Icons/icons/plot.png</iconset>
                         </property>
                        </widget>
                       </item>
@@ -3022,7 +3022,7 @@ QProgressBar::chunk{
               <widget class="QWidget" name="tab_14">
                <attribute name="icon">
                 <iconset resource="icons.qrc">
-                 <normaloff>:/Icons/icons/data.svg</normaloff>:/Icons/icons/data.svg</iconset>
+                 <normaloff>:/Icons/icons/data.png</normaloff>:/Icons/icons/data.png</iconset>
                </attribute>
                <attribute name="title">
                 <string>Logs</string>
@@ -3087,7 +3087,7 @@ QProgressBar::chunk{
                      </property>
                      <property name="icon">
                       <iconset resource="icons.qrc">
-                       <normaloff>:/Icons/icons/save.svg</normaloff>:/Icons/icons/save.svg</iconset>
+                       <normaloff>:/Icons/icons/save.png</normaloff>:/Icons/icons/save.png</iconset>
                      </property>
                     </widget>
                    </item>
@@ -3107,7 +3107,7 @@ QProgressBar::chunk{
       <widget class="QWidget" name="main_console_tab">
        <attribute name="icon">
         <iconset resource="icons.qrc">
-         <normaloff>:/Icons/icons/console.svg</normaloff>:/Icons/icons/console.svg</iconset>
+         <normaloff>:/Icons/icons/console.png</normaloff>:/Icons/icons/console.png</iconset>
        </attribute>
        <attribute name="title">
         <string>Scripting</string>
@@ -3202,7 +3202,7 @@ QProgressBar::chunk{
                     </property>
                     <property name="icon">
                      <iconset resource="icons.qrc">
-                      <normaloff>:/Icons/icons/new2c.svg</normaloff>:/Icons/icons/new2c.svg</iconset>
+                      <normaloff>:/Icons/icons/new2c.png</normaloff>:/Icons/icons/new2c.png</iconset>
                     </property>
                    </widget>
                   </item>
@@ -3216,7 +3216,7 @@ QProgressBar::chunk{
                     </property>
                     <property name="icon">
                      <iconset resource="icons.qrc">
-                      <normaloff>:/Icons/icons/save.svg</normaloff>:/Icons/icons/save.svg</iconset>
+                      <normaloff>:/Icons/icons/save.png</normaloff>:/Icons/icons/save.png</iconset>
                     </property>
                    </widget>
                   </item>
@@ -3251,7 +3251,7 @@ QProgressBar::chunk{
                     </property>
                     <property name="icon">
                      <iconset resource="icons.qrc">
-                      <normaloff>:/Icons/icons/next.svg</normaloff>:/Icons/icons/next.svg</iconset>
+                      <normaloff>:/Icons/icons/next.png</normaloff>:/Icons/icons/next.png</iconset>
                     </property>
                    </widget>
                   </item>
@@ -3311,7 +3311,7 @@ QProgressBar::chunk{
                   <widget class="QWidget" name="pythonConsoleTab">
                    <attribute name="icon">
                     <iconset resource="icons.qrc">
-                     <normaloff>:/Icons/icons/console.svg</normaloff>:/Icons/icons/console.svg</iconset>
+                     <normaloff>:/Icons/icons/console.png</normaloff>:/Icons/icons/console.png</iconset>
                    </attribute>
                    <attribute name="title">
                     <string>Python console</string>
@@ -3394,7 +3394,7 @@ QProgressBar::chunk{
                             </property>
                             <property name="icon">
                              <iconset resource="icons.qrc">
-                              <normaloff>:/Icons/icons/clear_runs.svg</normaloff>:/Icons/icons/clear_runs.svg</iconset>
+                              <normaloff>:/Icons/icons/clear_runs.png</normaloff>:/Icons/icons/clear_runs.png</iconset>
                             </property>
                            </widget>
                           </item>
@@ -3412,7 +3412,7 @@ QProgressBar::chunk{
                   <widget class="QWidget" name="sourceCodeTab">
                    <attribute name="icon">
                     <iconset resource="icons.qrc">
-                     <normaloff>:/Icons/icons/data.svg</normaloff>:/Icons/icons/data.svg</iconset>
+                     <normaloff>:/Icons/icons/data.png</normaloff>:/Icons/icons/data.png</iconset>
                    </attribute>
                    <attribute name="title">
                     <string>Source code</string>
@@ -3454,7 +3454,7 @@ QProgressBar::chunk{
       <widget class="QWidget" name="SettingsTab">
        <attribute name="icon">
         <iconset resource="icons.qrc">
-         <normaloff>:/Icons/icons/gear.svg</normaloff>:/Icons/icons/gear.svg</iconset>
+         <normaloff>:/Icons/icons/gear.png</normaloff>:/Icons/icons/gear.png</iconset>
        </attribute>
        <attribute name="title">
         <string>Settings</string>
@@ -3520,7 +3520,7 @@ QProgressBar::chunk{
                  <string/>
                 </property>
                 <property name="pixmap">
-                 <pixmap resource="icons.qrc">:/Icons/icons/gear.svg</pixmap>
+                 <pixmap resource="icons.qrc">:/Icons/icons/gear.png</pixmap>
                 </property>
                 <property name="scaledContents">
                  <bool>true</bool>
@@ -3811,7 +3811,7 @@ QProgressBar::chunk{
                     <string/>
                    </property>
                    <property name="pixmap">
-                    <pixmap resource="icons.qrc">:/Icons/icons/piece.svg</pixmap>
+                    <pixmap resource="icons.qrc">:/Icons/icons/piece.png</pixmap>
                    </property>
                    <property name="scaledContents">
                     <bool>true</bool>
@@ -3931,7 +3931,7 @@ QProgressBar::chunk{
                     <string/>
                    </property>
                    <property name="pixmap">
-                    <pixmap resource="icons.qrc">:/Icons/icons/plot.svg</pixmap>
+                    <pixmap resource="icons.qrc">:/Icons/icons/plot.png</pixmap>
                    </property>
                    <property name="scaledContents">
                     <bool>true</bool>
@@ -4088,7 +4088,7 @@ QProgressBar::chunk{
            </property>
            <attribute name="icon">
             <iconset resource="icons.qrc">
-             <normaloff>:/Icons/icons/pf.svg</normaloff>:/Icons/icons/pf.svg</iconset>
+             <normaloff>:/Icons/icons/pf.png</normaloff>:/Icons/icons/pf.png</iconset>
            </attribute>
            <attribute name="title">
             <string>Pf</string>
@@ -4115,7 +4115,7 @@ QProgressBar::chunk{
                <string/>
               </property>
               <property name="pixmap">
-               <pixmap resource="icons.qrc">:/Icons/icons/pf.svg</pixmap>
+               <pixmap resource="icons.qrc">:/Icons/icons/pf.png</pixmap>
               </property>
               <property name="scaledContents">
                <bool>true</bool>
@@ -4255,7 +4255,7 @@ QProgressBar::chunk{
                <string/>
               </property>
               <property name="pixmap">
-               <pixmap resource="icons.qrc">:/Icons/icons/ptdf.svg</pixmap>
+               <pixmap resource="icons.qrc">:/Icons/icons/ptdf.png</pixmap>
               </property>
               <property name="scaledContents">
                <bool>true</bool>
@@ -5022,7 +5022,7 @@ QProgressBar::chunk{
            </property>
            <attribute name="icon">
             <iconset resource="icons.qrc">
-             <normaloff>:/Icons/icons/continuation_power_flow.svg</normaloff>:/Icons/icons/continuation_power_flow.svg</iconset>
+             <normaloff>:/Icons/icons/continuation_power_flow.png</normaloff>:/Icons/icons/continuation_power_flow.png</iconset>
            </attribute>
            <attribute name="title">
             <string>Cpf</string>
@@ -5309,7 +5309,7 @@ QProgressBar::chunk{
                      <string/>
                     </property>
                     <property name="pixmap">
-                     <pixmap resource="icons.qrc">:/Icons/icons/continuation_power_flow.svg</pixmap>
+                     <pixmap resource="icons.qrc">:/Icons/icons/continuation_power_flow.png</pixmap>
                     </property>
                     <property name="scaledContents">
                      <bool>true</bool>
@@ -5435,7 +5435,7 @@ QProgressBar::chunk{
            </property>
            <attribute name="icon">
             <iconset resource="icons.qrc">
-             <normaloff>:/Icons/icons/dcopf.svg</normaloff>:/Icons/icons/dcopf.svg</iconset>
+             <normaloff>:/Icons/icons/dcopf.png</normaloff>:/Icons/icons/dcopf.png</iconset>
            </attribute>
            <attribute name="title">
             <string>Opf</string>
@@ -6173,7 +6173,7 @@ QProgressBar::chunk{
                <string/>
               </property>
               <property name="pixmap">
-               <pixmap resource="icons.qrc">:/Icons/icons/dcopf.svg</pixmap>
+               <pixmap resource="icons.qrc">:/Icons/icons/dcopf.png</pixmap>
               </property>
               <property name="scaledContents">
                <bool>true</bool>
@@ -6188,7 +6188,7 @@ QProgressBar::chunk{
            </property>
            <attribute name="icon">
             <iconset resource="icons.qrc">
-             <normaloff>:/Icons/icons/ntc_opf.svg</normaloff>:/Icons/icons/ntc_opf.svg</iconset>
+             <normaloff>:/Icons/icons/ntc_opf.png</normaloff>:/Icons/icons/ntc_opf.png</iconset>
            </attribute>
            <attribute name="title">
             <string>Ntc</string>
@@ -6646,7 +6646,7 @@ QProgressBar::chunk{
                <string/>
               </property>
               <property name="pixmap">
-               <pixmap resource="icons.qrc">:/Icons/icons/ntc_opf.svg</pixmap>
+               <pixmap resource="icons.qrc">:/Icons/icons/ntc_opf.png</pixmap>
               </property>
               <property name="scaledContents">
                <bool>true</bool>
@@ -6810,7 +6810,7 @@ QProgressBar::chunk{
            </property>
            <attribute name="icon">
             <iconset resource="icons.qrc">
-             <normaloff>:/Icons/icons/nodal_capacity.svg</normaloff>:/Icons/icons/nodal_capacity.svg</iconset>
+             <normaloff>:/Icons/icons/nodal_capacity.png</normaloff>:/Icons/icons/nodal_capacity.png</iconset>
            </attribute>
            <attribute name="title">
             <string>Nhc</string>
@@ -6937,7 +6937,7 @@ QProgressBar::chunk{
                <string/>
               </property>
               <property name="pixmap">
-               <pixmap resource="icons.qrc">:/Icons/icons/nodal_capacity.svg</pixmap>
+               <pixmap resource="icons.qrc">:/Icons/icons/nodal_capacity.png</pixmap>
               </property>
               <property name="scaledContents">
                <bool>true</bool>
@@ -7067,7 +7067,7 @@ QProgressBar::chunk{
            </property>
            <attribute name="icon">
             <iconset resource="icons.qrc">
-             <normaloff>:/Icons/icons/area_transfer.svg</normaloff>:/Icons/icons/area_transfer.svg</iconset>
+             <normaloff>:/Icons/icons/area_transfer.png</normaloff>:/Icons/icons/area_transfer.png</iconset>
            </attribute>
            <attribute name="title">
             <string>Txfr</string>
@@ -7202,7 +7202,7 @@ QProgressBar::chunk{
                   <string/>
                  </property>
                  <property name="pixmap">
-                  <pixmap resource="icons.qrc">:/Icons/icons/area_transfer.svg</pixmap>
+                  <pixmap resource="icons.qrc">:/Icons/icons/area_transfer.png</pixmap>
                  </property>
                  <property name="scaledContents">
                   <bool>true</bool>
@@ -7295,7 +7295,7 @@ QProgressBar::chunk{
            </property>
            <attribute name="icon">
             <iconset resource="icons.qrc">
-             <normaloff>:/Icons/icons/otdf.svg</normaloff>:/Icons/icons/otdf.svg</iconset>
+             <normaloff>:/Icons/icons/otdf.png</normaloff>:/Icons/icons/otdf.png</iconset>
            </attribute>
            <attribute name="title">
             <string>Con</string>
@@ -7487,7 +7487,7 @@ QProgressBar::chunk{
                      <string/>
                     </property>
                     <property name="pixmap">
-                     <pixmap resource="icons.qrc">:/Icons/icons/otdf.svg</pixmap>
+                     <pixmap resource="icons.qrc">:/Icons/icons/otdf.png</pixmap>
                     </property>
                     <property name="scaledContents">
                      <bool>true</bool>
@@ -7788,7 +7788,7 @@ QProgressBar::chunk{
           <widget class="QWidget" name="rms_tab">
            <attribute name="icon">
             <iconset resource="icons.qrc">
-             <normaloff>:/Icons/icons/dyn.svg</normaloff>:/Icons/icons/dyn.svg</iconset>
+             <normaloff>:/Icons/icons/dyn.png</normaloff>:/Icons/icons/dyn.png</iconset>
            </attribute>
            <attribute name="title">
             <string>Dyn</string>
@@ -7824,7 +7824,7 @@ QProgressBar::chunk{
                   <string/>
                  </property>
                  <property name="pixmap">
-                  <pixmap resource="icons.qrc">:/Icons/icons/dyn.svg</pixmap>
+                  <pixmap resource="icons.qrc">:/Icons/icons/dyn.png</pixmap>
                  </property>
                  <property name="scaledContents">
                   <bool>true</bool>
@@ -8191,7 +8191,7 @@ QProgressBar::chunk{
                   <string/>
                  </property>
                  <property name="pixmap">
-                  <pixmap resource="icons.qrc">:/Icons/icons/ss_icon.svg</pixmap>
+                  <pixmap resource="icons.qrc">:/Icons/icons/ss_icon.png</pixmap>
                  </property>
                  <property name="scaledContents">
                   <bool>true</bool>
@@ -8525,7 +8525,7 @@ QProgressBar::chunk{
            </property>
            <attribute name="icon">
             <iconset resource="icons.qrc">
-             <normaloff>:/Icons/icons/clustering.svg</normaloff>:/Icons/icons/clustering.svg</iconset>
+             <normaloff>:/Icons/icons/clustering.png</normaloff>:/Icons/icons/clustering.png</iconset>
            </attribute>
            <attribute name="title">
             <string>ML</string>
@@ -8817,7 +8817,7 @@ QProgressBar::chunk{
                   <string/>
                  </property>
                  <property name="pixmap">
-                  <pixmap resource="icons.qrc">:/Icons/icons/color_grid.svg</pixmap>
+                  <pixmap resource="icons.qrc">:/Icons/icons/color_grid.png</pixmap>
                  </property>
                  <property name="scaledContents">
                   <bool>true</bool>
@@ -9070,7 +9070,7 @@ QProgressBar::chunk{
                   <string/>
                  </property>
                  <property name="pixmap">
-                  <pixmap resource="icons.qrc">:/Icons/icons/clustering.svg</pixmap>
+                  <pixmap resource="icons.qrc">:/Icons/icons/clustering.png</pixmap>
                  </property>
                  <property name="scaledContents">
                   <bool>true</bool>
@@ -9182,7 +9182,7 @@ QProgressBar::chunk{
                   <string/>
                  </property>
                  <property name="pixmap">
-                  <pixmap resource="icons.qrc">:/Icons/icons/expansion_planning.svg</pixmap>
+                  <pixmap resource="icons.qrc">:/Icons/icons/expansion_planning.png</pixmap>
                  </property>
                  <property name="scaledContents">
                   <bool>true</bool>
@@ -9387,7 +9387,7 @@ QProgressBar::chunk{
                   <string/>
                  </property>
                  <property name="pixmap">
-                  <pixmap resource="icons.qrc">:/Icons/icons/blackout.svg</pixmap>
+                  <pixmap resource="icons.qrc">:/Icons/icons/blackout.png</pixmap>
                  </property>
                  <property name="scaledContents">
                   <bool>true</bool>
@@ -9568,7 +9568,7 @@ QProgressBar::chunk{
                   <string/>
                  </property>
                  <property name="pixmap">
-                  <pixmap resource="icons.qrc">:/Icons/icons/reliability.svg</pixmap>
+                  <pixmap resource="icons.qrc">:/Icons/icons/reliability.png</pixmap>
                  </property>
                  <property name="scaledContents">
                   <bool>true</bool>
@@ -9687,7 +9687,7 @@ QProgressBar::chunk{
                   <string/>
                  </property>
                  <property name="pixmap">
-                  <pixmap resource="icons.qrc">:/Icons/icons/stochastic_power_flow.svg</pixmap>
+                  <pixmap resource="icons.qrc">:/Icons/icons/stochastic_power_flow.png</pixmap>
                  </property>
                  <property name="scaledContents">
                   <bool>true</bool>
@@ -9868,7 +9868,7 @@ QProgressBar::chunk{
            </property>
            <attribute name="icon">
             <iconset resource="icons.qrc">
-             <normaloff>:/Icons/icons/automatic_layout.svg</normaloff>:/Icons/icons/automatic_layout.svg</iconset>
+             <normaloff>:/Icons/icons/automatic_layout.png</normaloff>:/Icons/icons/automatic_layout.png</iconset>
            </attribute>
            <attribute name="title">
             <string>Tplgy</string>
@@ -9941,7 +9941,7 @@ QProgressBar::chunk{
                      <string/>
                     </property>
                     <property name="pixmap">
-                     <pixmap resource="icons.qrc">:/Icons/icons/grid_reduction.svg</pixmap>
+                     <pixmap resource="icons.qrc">:/Icons/icons/grid_reduction.png</pixmap>
                     </property>
                     <property name="scaledContents">
                      <bool>true</bool>
@@ -10174,7 +10174,7 @@ QProgressBar::chunk{
                      <string/>
                     </property>
                     <property name="pixmap">
-                     <pixmap resource="icons.qrc">:/Icons/icons/rate_br.svg</pixmap>
+                     <pixmap resource="icons.qrc">:/Icons/icons/rate_br.png</pixmap>
                     </property>
                     <property name="scaledContents">
                      <bool>true</bool>
@@ -10370,7 +10370,7 @@ QProgressBar::chunk{
            </property>
            <attribute name="icon">
             <iconset resource="icons.qrc">
-             <normaloff>:/Icons/icons/new2c.svg</normaloff>:/Icons/icons/new2c.svg</iconset>
+             <normaloff>:/Icons/icons/new2c.png</normaloff>:/Icons/icons/new2c.png</iconset>
            </attribute>
            <attribute name="title">
             <string>File</string>
@@ -10572,7 +10572,7 @@ QProgressBar::chunk{
                   <string/>
                  </property>
                  <property name="pixmap">
-                  <pixmap resource="icons.qrc">:/Icons/icons/new2c.svg</pixmap>
+                  <pixmap resource="icons.qrc">:/Icons/icons/new2c.png</pixmap>
                  </property>
                  <property name="scaledContents">
                   <bool>true</bool>
@@ -10727,7 +10727,7 @@ QProgressBar::chunk{
                   <string/>
                  </property>
                  <property name="pixmap">
-                  <pixmap resource="icons.qrc">:/Icons/icons/new2c.svg</pixmap>
+                  <pixmap resource="icons.qrc">:/Icons/icons/new2c.png</pixmap>
                  </property>
                  <property name="scaledContents">
                   <bool>true</bool>
@@ -11023,7 +11023,7 @@ QProgressBar::chunk{
                   <string/>
                  </property>
                  <property name="pixmap">
-                  <pixmap resource="icons.qrc">:/Icons/icons/new2.svg</pixmap>
+                  <pixmap resource="icons.qrc">:/Icons/icons/new2.png</pixmap>
                  </property>
                  <property name="scaledContents">
                   <bool>true</bool>
@@ -11060,7 +11060,7 @@ QProgressBar::chunk{
           <widget class="QWidget" name="tab_5">
            <attribute name="icon">
             <iconset resource="icons.qrc">
-             <normaloff>:/Icons/icons/server.svg</normaloff>:/Icons/icons/server.svg</iconset>
+             <normaloff>:/Icons/icons/server.png</normaloff>:/Icons/icons/server.png</iconset>
            </attribute>
            <attribute name="title">
             <string>Server</string>
@@ -11297,6 +11297,8 @@ QProgressBar::chunk{
     <addaction name="actionShort_Circuit"/>
     <addaction name="actionVoltage_stability"/>
     <addaction name="actionContingency_analysis"/>
+    <addaction name="actionRun_Dynamic_RMS_Simulation"/>
+    <addaction name="actionRun_Small_Signal_RMS_Simulation"/>
     <addaction name="separator"/>
     <addaction name="actionOPF"/>
     <addaction name="actionOpf_to_Power_flow"/>
@@ -11310,7 +11312,6 @@ QProgressBar::chunk{
     <addaction name="actionFind_node_groups"/>
     <addaction name="actionPower_flow_Stochastic"/>
     <addaction name="actionInvestments_evaluation"/>
-    <addaction name="actionAdd_selected_as_new_investment"/>
     <addaction name="actionReliability"/>
     <addaction name="actionBlackout_cascade"/>
     <addaction name="separator"/>
@@ -11337,9 +11338,6 @@ QProgressBar::chunk{
     <addaction name="actionScale"/>
     <addaction name="separator"/>
     <addaction name="actionLaunch_data_analysis_tool"/>
-    <addaction name="actionInitialize_contingencies"/>
-    <addaction name="actionAdd_selected_to_contingency"/>
-    <addaction name="actionAdd_selected_as_remedial_action"/>
     <addaction name="actionSubstation_wizard"/>
     <addaction name="actionFix_generators_active_based_on_the_power"/>
     <addaction name="actionFix_loads_active_based_on_the_power"/>
@@ -11387,10 +11385,21 @@ QProgressBar::chunk{
      <string>plugins</string>
     </property>
    </widget>
+   <widget class="QMenu" name="menuEvents">
+    <property name="title">
+     <string>Events</string>
+    </property>
+    <addaction name="actionInitialize_contingencies"/>
+    <addaction name="actionAdd_selected_to_contingency"/>
+    <addaction name="actionAdd_selected_as_new_investment"/>
+    <addaction name="actionAdd_selected_as_remedial_action"/>
+    <addaction name="actionAdd_rms_event_to_selected"/>
+   </widget>
    <addaction name="menuProject"/>
    <addaction name="menuActions"/>
    <addaction name="menuDiagrams"/>
    <addaction name="menuModel"/>
+   <addaction name="menuEvents"/>
    <addaction name="menuSimulations"/>
    <addaction name="menuplugins"/>
    <addaction name="menuAbout"/>
@@ -11454,7 +11463,6 @@ QProgressBar::chunk{
    <addaction name="actionactivate_time_series"/>
    <addaction name="separator"/>
    <addaction name="actionAdd_selected_to_contingency"/>
-   <addaction name="actionAdd_selected_as_remedial_action"/>
    <addaction name="actionAdd_selected_as_new_investment"/>
    <addaction name="separator"/>
    <addaction name="actionBigger_nodes"/>
@@ -11469,7 +11477,7 @@ QProgressBar::chunk{
   <action name="actionOpen_file">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/loadc.svg</normaloff>:/Icons/icons/loadc.svg</iconset>
+     <normaloff>:/Icons/icons/loadc.png</normaloff>:/Icons/icons/loadc.png</iconset>
    </property>
    <property name="text">
     <string>Open file</string>
@@ -11486,7 +11494,7 @@ QProgressBar::chunk{
   <action name="actionSave">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/savec.svg</normaloff>:/Icons/icons/savec.svg</iconset>
+     <normaloff>:/Icons/icons/savec.png</normaloff>:/Icons/icons/savec.png</iconset>
    </property>
    <property name="text">
     <string>Save</string>
@@ -11503,7 +11511,7 @@ QProgressBar::chunk{
   <action name="actionTakePicture">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/picture.svg</normaloff>:/Icons/icons/picture.svg</iconset>
+     <normaloff>:/Icons/icons/picture.png</normaloff>:/Icons/icons/picture.png</iconset>
    </property>
    <property name="text">
     <string>Take picture</string>
@@ -11517,7 +11525,7 @@ QProgressBar::chunk{
   <action name="actionNew_project">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/new2c.svg</normaloff>:/Icons/icons/new2c.svg</iconset>
+     <normaloff>:/Icons/icons/new2c.png</normaloff>:/Icons/icons/new2c.png</iconset>
    </property>
    <property name="text">
     <string>New project</string>
@@ -11534,7 +11542,7 @@ QProgressBar::chunk{
   <action name="actionPower_flow">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/pf.svg</normaloff>:/Icons/icons/pf.svg</iconset>
+     <normaloff>:/Icons/icons/pf.png</normaloff>:/Icons/icons/pf.png</iconset>
    </property>
    <property name="text">
     <string>Power Flow</string>
@@ -11557,7 +11565,7 @@ QProgressBar::chunk{
   <action name="actionPower_Flow_Time_series">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/pf_ts.svg</normaloff>:/Icons/icons/pf_ts.svg</iconset>
+     <normaloff>:/Icons/icons/pf_ts.png</normaloff>:/Icons/icons/pf_ts.png</iconset>
    </property>
    <property name="text">
     <string>Power flow time series</string>
@@ -11577,7 +11585,7 @@ QProgressBar::chunk{
   <action name="actionBigger_nodes">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/plus (gray).svg</normaloff>:/Icons/icons/plus (gray).svg</iconset>
+     <normaloff>:/Icons/icons/plus (gray).png</normaloff>:/Icons/icons/plus (gray).png</iconset>
    </property>
    <property name="text">
     <string>Expand</string>
@@ -11597,7 +11605,7 @@ QProgressBar::chunk{
   <action name="actionSmaller_nodes">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/minus (gray).svg</normaloff>:/Icons/icons/minus (gray).svg</iconset>
+     <normaloff>:/Icons/icons/minus (gray).png</normaloff>:/Icons/icons/minus (gray).png</iconset>
    </property>
    <property name="text">
     <string>Shrink</string>
@@ -11617,7 +11625,7 @@ QProgressBar::chunk{
   <action name="actionPower_flow_Stochastic">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/stochastic_pf.svg</normaloff>:/Icons/icons/stochastic_pf.svg</iconset>
+     <normaloff>:/Icons/icons/stochastic_pf.png</normaloff>:/Icons/icons/stochastic_pf.png</iconset>
    </property>
    <property name="text">
     <string>Stochastic power flow</string>
@@ -11634,7 +11642,7 @@ QProgressBar::chunk{
   <action name="actionVoltage_stability">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/continuation_power_flow.svg</normaloff>:/Icons/icons/continuation_power_flow.svg</iconset>
+     <normaloff>:/Icons/icons/continuation_power_flow.png</normaloff>:/Icons/icons/continuation_power_flow.png</iconset>
    </property>
    <property name="text">
     <string>Continuation power flow</string>
@@ -11651,7 +11659,7 @@ QProgressBar::chunk{
   <action name="actionAbout">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Program icon/VeraGrid_icon.svg</normaloff>:/Program icon/VeraGrid_icon.svg</iconset>
+     <normaloff>:/Program icon/VeraGrid_icon.png</normaloff>:/Program icon/VeraGrid_icon.png</iconset>
    </property>
    <property name="text">
     <string>About</string>
@@ -11665,7 +11673,7 @@ QProgressBar::chunk{
   <action name="actionCenter_view">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/resize.svg</normaloff>:/Icons/icons/resize.svg</iconset>
+     <normaloff>:/Icons/icons/resize.png</normaloff>:/Icons/icons/resize.png</iconset>
    </property>
    <property name="text">
     <string>center view</string>
@@ -11685,7 +11693,7 @@ QProgressBar::chunk{
   <action name="actionShort_Circuit">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/short_circuit.svg</normaloff>:/Icons/icons/short_circuit.svg</iconset>
+     <normaloff>:/Icons/icons/short_circuit.png</normaloff>:/Icons/icons/short_circuit.png</iconset>
    </property>
    <property name="text">
     <string>Short Circuit</string>
@@ -11702,7 +11710,7 @@ QProgressBar::chunk{
   <action name="actionAutoatic_layout">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/automatic_layout.svg</normaloff>:/Icons/icons/automatic_layout.svg</iconset>
+     <normaloff>:/Icons/icons/automatic_layout.png</normaloff>:/Icons/icons/automatic_layout.png</iconset>
    </property>
    <property name="text">
     <string>Automatic grid layout</string>
@@ -11722,7 +11730,7 @@ QProgressBar::chunk{
    </property>
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/blackout.svg</normaloff>:/Icons/icons/blackout.svg</iconset>
+     <normaloff>:/Icons/icons/blackout.png</normaloff>:/Icons/icons/blackout.png</iconset>
    </property>
    <property name="text">
     <string>Blackout cascade</string>
@@ -11739,7 +11747,7 @@ QProgressBar::chunk{
   <action name="actionOPF">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/dcopf.svg</normaloff>:/Icons/icons/dcopf.svg</iconset>
+     <normaloff>:/Icons/icons/dcopf.png</normaloff>:/Icons/icons/dcopf.png</iconset>
    </property>
    <property name="text">
     <string>Optimal power flow</string>
@@ -11759,7 +11767,7 @@ QProgressBar::chunk{
   <action name="actionOPF_time_series">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/dcopf_ts.svg</normaloff>:/Icons/icons/dcopf_ts.svg</iconset>
+     <normaloff>:/Icons/icons/dcopf_ts.png</normaloff>:/Icons/icons/dcopf_ts.png</iconset>
    </property>
    <property name="text">
     <string>Optimal power flow time series</string>
@@ -11779,7 +11787,7 @@ QProgressBar::chunk{
   <action name="actionDetect_transformers">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/detect_tr.svg</normaloff>:/Icons/icons/detect_tr.svg</iconset>
+     <normaloff>:/Icons/icons/detect_tr.png</normaloff>:/Icons/icons/detect_tr.png</iconset>
    </property>
    <property name="text">
     <string>Detect transformers</string>
@@ -11796,7 +11804,7 @@ QProgressBar::chunk{
   <action name="actionAuto_rate_branches">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/rate_br.svg</normaloff>:/Icons/icons/rate_br.svg</iconset>
+     <normaloff>:/Icons/icons/rate_br.png</normaloff>:/Icons/icons/rate_br.png</iconset>
    </property>
    <property name="text">
     <string>Auto rate branches</string>
@@ -11813,7 +11821,7 @@ QProgressBar::chunk{
   <action name="actionExport_all_the_device_s_profiles">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/save.svg</normaloff>:/Icons/icons/save.svg</iconset>
+     <normaloff>:/Icons/icons/save.png</normaloff>:/Icons/icons/save.png</iconset>
    </property>
    <property name="text">
     <string>Export devices' profiles</string>
@@ -11830,7 +11838,7 @@ QProgressBar::chunk{
    </property>
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/storage_loc.svg</normaloff>:/Icons/icons/storage_loc.svg</iconset>
+     <normaloff>:/Icons/icons/storage_loc.png</normaloff>:/Icons/icons/storage_loc.png</iconset>
    </property>
    <property name="text">
     <string>Storage location suggestion</string>
@@ -11847,7 +11855,7 @@ QProgressBar::chunk{
   <action name="actionLaunch_data_analysis_tool">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/inputs_analysis 2.svg</normaloff>:/Icons/icons/inputs_analysis 2.svg</iconset>
+     <normaloff>:/Icons/icons/inputs_analysis 2.png</normaloff>:/Icons/icons/inputs_analysis 2.png</iconset>
    </property>
    <property name="text">
     <string>Launch data analysis tool</string>
@@ -11867,7 +11875,7 @@ QProgressBar::chunk{
   <action name="actionOnline_documentation">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/new.svg</normaloff>:/Icons/icons/new.svg</iconset>
+     <normaloff>:/Icons/icons/new.png</normaloff>:/Icons/icons/new.png</iconset>
    </property>
    <property name="text">
     <string>Online documentation</string>
@@ -11884,7 +11892,7 @@ QProgressBar::chunk{
   <action name="actionExport_all_results">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/export_pickle.svg</normaloff>:/Icons/icons/export_pickle.svg</iconset>
+     <normaloff>:/Icons/icons/export_pickle.png</normaloff>:/Icons/icons/export_pickle.png</iconset>
    </property>
    <property name="text">
     <string>Export results</string>
@@ -11901,7 +11909,7 @@ QProgressBar::chunk{
   <action name="actionSave_as">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/save.svg</normaloff>:/Icons/icons/save.svg</iconset>
+     <normaloff>:/Icons/icons/save.png</normaloff>:/Icons/icons/save.png</iconset>
    </property>
    <property name="text">
     <string>Save as</string>
@@ -11915,7 +11923,7 @@ QProgressBar::chunk{
   <action name="actionDelete_selected">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/delete_schematic.svg</normaloff>:/Icons/icons/delete_schematic.svg</iconset>
+     <normaloff>:/Icons/icons/delete_schematic.png</normaloff>:/Icons/icons/delete_schematic.png</iconset>
    </property>
    <property name="text">
     <string>Delete selected</string>
@@ -11935,7 +11943,7 @@ QProgressBar::chunk{
   <action name="actionLinearAnalysis">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/ptdf.svg</normaloff>:/Icons/icons/ptdf.svg</iconset>
+     <normaloff>:/Icons/icons/ptdf.png</normaloff>:/Icons/icons/ptdf.png</iconset>
    </property>
    <property name="text">
     <string>Linear analysis</string>
@@ -11955,7 +11963,7 @@ QProgressBar::chunk{
   <action name="actionReset_console">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/undo.svg</normaloff>:/Icons/icons/undo.svg</iconset>
+     <normaloff>:/Icons/icons/undo.png</normaloff>:/Icons/icons/undo.png</iconset>
    </property>
    <property name="text">
     <string>Reset console</string>
@@ -11972,7 +11980,7 @@ QProgressBar::chunk{
    </property>
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/dcopf2ts.svg</normaloff>:/Icons/icons/dcopf2ts.svg</iconset>
+     <normaloff>:/Icons/icons/dcopf2ts.png</normaloff>:/Icons/icons/dcopf2ts.png</iconset>
    </property>
    <property name="text">
     <string>Set OPF results to power flow (non destructive)</string>
@@ -11989,7 +11997,7 @@ QProgressBar::chunk{
   <action name="actionTry_to_fix_buses_location">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/move_bus.svg</normaloff>:/Icons/icons/move_bus.svg</iconset>
+     <normaloff>:/Icons/icons/move_bus.png</normaloff>:/Icons/icons/move_bus.png</iconset>
    </property>
    <property name="text">
     <string>Correct buses location</string>
@@ -12006,7 +12014,7 @@ QProgressBar::chunk{
   <action name="actionSet_OPF_generation_to_profiles">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/dcopf2ts.svg</normaloff>:/Icons/icons/dcopf2ts.svg</iconset>
+     <normaloff>:/Icons/icons/dcopf2ts.png</normaloff>:/Icons/icons/dcopf2ts.png</iconset>
    </property>
    <property name="text">
     <string>Copy OPF generation to database (destructive)</string>
@@ -12023,7 +12031,7 @@ QProgressBar::chunk{
   <action name="actionPTDF_time_series">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/ptdf_ts.svg</normaloff>:/Icons/icons/ptdf_ts.svg</iconset>
+     <normaloff>:/Icons/icons/ptdf_ts.png</normaloff>:/Icons/icons/ptdf_ts.png</iconset>
    </property>
    <property name="text">
     <string>Linear analysis time series power flow</string>
@@ -12043,7 +12051,7 @@ QProgressBar::chunk{
   <action name="actionAdd_circuit">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/load_add.svg</normaloff>:/Icons/icons/load_add.svg</iconset>
+     <normaloff>:/Icons/icons/load_add.png</normaloff>:/Icons/icons/load_add.png</iconset>
    </property>
    <property name="text">
     <string>Import circuit</string>
@@ -12066,7 +12074,7 @@ QProgressBar::chunk{
    </property>
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/sync.svg</normaloff>:/Icons/icons/sync.svg</iconset>
+     <normaloff>:/Icons/icons/sync.png</normaloff>:/Icons/icons/sync.png</iconset>
    </property>
    <property name="text">
     <string>Sync</string>
@@ -12078,7 +12086,7 @@ QProgressBar::chunk{
   <action name="actionDrawSchematic">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/grid_icon.svg</normaloff>:/Icons/icons/grid_icon.svg</iconset>
+     <normaloff>:/Icons/icons/grid_icon.png</normaloff>:/Icons/icons/grid_icon.png</iconset>
    </property>
    <property name="text">
     <string>Draw schematic</string>
@@ -12087,7 +12095,7 @@ QProgressBar::chunk{
   <action name="actionSigma_analysis">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/sigma.svg</normaloff>:/Icons/icons/sigma.svg</iconset>
+     <normaloff>:/Icons/icons/sigma.png</normaloff>:/Icons/icons/sigma.png</iconset>
    </property>
    <property name="text">
     <string>Sigma analysis</string>
@@ -12104,7 +12112,7 @@ QProgressBar::chunk{
   <action name="actionClear_stuff_running_right_now">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/clear_runs.svg</normaloff>:/Icons/icons/clear_runs.svg</iconset>
+     <normaloff>:/Icons/icons/clear_runs.png</normaloff>:/Icons/icons/clear_runs.png</iconset>
    </property>
    <property name="text">
     <string>Clear &quot;stuff running right now&quot;</string>
@@ -12118,7 +12126,7 @@ QProgressBar::chunk{
   <action name="actionAdd_default_catalogue">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/CatalogueAdd.svg</normaloff>:/Icons/icons/CatalogueAdd.svg</iconset>
+     <normaloff>:/Icons/icons/CatalogueAdd.png</normaloff>:/Icons/icons/CatalogueAdd.png</iconset>
    </property>
    <property name="text">
     <string>Add default catalogue</string>
@@ -12135,7 +12143,7 @@ QProgressBar::chunk{
    </property>
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/color_grid2.svg</normaloff>:/Icons/icons/color_grid2.svg</iconset>
+     <normaloff>:/Icons/icons/color_grid2.png</normaloff>:/Icons/icons/color_grid2.png</iconset>
    </property>
    <property name="text">
     <string>Find node groups</string>
@@ -12152,7 +12160,7 @@ QProgressBar::chunk{
   <action name="actiongrid_Generator">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/automatic_layout.svg</normaloff>:/Icons/icons/automatic_layout.svg</iconset>
+     <normaloff>:/Icons/icons/automatic_layout.png</normaloff>:/Icons/icons/automatic_layout.png</iconset>
    </property>
    <property name="text">
     <string>Grid Generator</string>
@@ -12169,7 +12177,7 @@ QProgressBar::chunk{
   <action name="actionImportPlexosNodeLoad">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/load.svg</normaloff>:/Icons/icons/load.svg</iconset>
+     <normaloff>:/Icons/icons/load.png</normaloff>:/Icons/icons/load.png</iconset>
    </property>
    <property name="text">
     <string>Node load</string>
@@ -12178,7 +12186,7 @@ QProgressBar::chunk{
   <action name="actionImportPlexosGeneratorGeneration">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/load.svg</normaloff>:/Icons/icons/load.svg</iconset>
+     <normaloff>:/Icons/icons/load.png</normaloff>:/Icons/icons/load.png</iconset>
    </property>
    <property name="text">
     <string>Generator generation</string>
@@ -12187,7 +12195,7 @@ QProgressBar::chunk{
   <action name="actionOTDF_time_series">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/otdf_ts.svg</normaloff>:/Icons/icons/otdf_ts.svg</iconset>
+     <normaloff>:/Icons/icons/otdf_ts.png</normaloff>:/Icons/icons/otdf_ts.png</iconset>
    </property>
    <property name="text">
     <string>Contingency analysis time series</string>
@@ -12207,7 +12215,7 @@ QProgressBar::chunk{
   <action name="actionImportPlexosBranchRates">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/load.svg</normaloff>:/Icons/icons/load.svg</iconset>
+     <normaloff>:/Icons/icons/load.png</normaloff>:/Icons/icons/load.png</iconset>
    </property>
    <property name="text">
     <string>Branch rates</string>
@@ -12216,7 +12224,7 @@ QProgressBar::chunk{
   <action name="actionSetSelectedBusArea">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/area.svg</normaloff>:/Icons/icons/area.svg</iconset>
+     <normaloff>:/Icons/icons/area.png</normaloff>:/Icons/icons/area.png</iconset>
    </property>
    <property name="text">
     <string>Set selected buses' Area</string>
@@ -12230,7 +12238,7 @@ QProgressBar::chunk{
   <action name="actionSetSelectedBusZone">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/zone.svg</normaloff>:/Icons/icons/zone.svg</iconset>
+     <normaloff>:/Icons/icons/zone.png</normaloff>:/Icons/icons/zone.png</iconset>
    </property>
    <property name="text">
     <string>Set selected buses' Zone</string>
@@ -12244,7 +12252,7 @@ QProgressBar::chunk{
   <action name="actionSetSelectedBusCountry">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/map.svg</normaloff>:/Icons/icons/map.svg</iconset>
+     <normaloff>:/Icons/icons/map.png</normaloff>:/Icons/icons/map.png</iconset>
    </property>
    <property name="text">
     <string>Set seleted buses' Country</string>
@@ -12258,7 +12266,7 @@ QProgressBar::chunk{
   <action name="actionImport_bus_coordinates">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/load_add.svg</normaloff>:/Icons/icons/load_add.svg</iconset>
+     <normaloff>:/Icons/icons/load_add.png</normaloff>:/Icons/icons/load_add.png</iconset>
    </property>
    <property name="text">
     <string>Import bus coordinates</string>
@@ -12272,7 +12280,7 @@ QProgressBar::chunk{
   <action name="actionATC">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/atc.svg</normaloff>:/Icons/icons/atc.svg</iconset>
+     <normaloff>:/Icons/icons/atc.png</normaloff>:/Icons/icons/atc.png</iconset>
    </property>
    <property name="text">
     <string>Available Transfer Capacity</string>
@@ -12289,7 +12297,7 @@ QProgressBar::chunk{
   <action name="actionATC_Time_Series">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/atc_ts.svg</normaloff>:/Icons/icons/atc_ts.svg</iconset>
+     <normaloff>:/Icons/icons/atc_ts.png</normaloff>:/Icons/icons/atc_ts.png</iconset>
    </property>
    <property name="text">
     <string>Available Transfer Capacity Time Series</string>
@@ -12306,7 +12314,7 @@ QProgressBar::chunk{
   <action name="actionContingency_analysis">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/otdf.svg</normaloff>:/Icons/icons/otdf.svg</iconset>
+     <normaloff>:/Icons/icons/otdf.png</normaloff>:/Icons/icons/otdf.png</iconset>
    </property>
    <property name="text">
     <string>Contingency analysis</string>
@@ -12326,7 +12334,7 @@ QProgressBar::chunk{
   <action name="actionOptimal_Net_Transfer_Capacity">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/ntc_opf.svg</normaloff>:/Icons/icons/ntc_opf.svg</iconset>
+     <normaloff>:/Icons/icons/ntc_opf.png</normaloff>:/Icons/icons/ntc_opf.png</iconset>
    </property>
    <property name="text">
     <string>Optimal net transfer capacity</string>
@@ -12343,7 +12351,7 @@ QProgressBar::chunk{
   <action name="actionSet_schematic_positions_from_GPS_coordinates">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/map.svg</normaloff>:/Icons/icons/map.svg</iconset>
+     <normaloff>:/Icons/icons/map.png</normaloff>:/Icons/icons/map.png</iconset>
    </property>
    <property name="text">
     <string>Set schematic (x,y) from (lat,lon)</string>
@@ -12357,7 +12365,7 @@ QProgressBar::chunk{
   <action name="actionInputs_analysis">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/stats.svg</normaloff>:/Icons/icons/stats.svg</iconset>
+     <normaloff>:/Icons/icons/stats.png</normaloff>:/Icons/icons/stats.png</iconset>
    </property>
    <property name="text">
     <string>Inputs analysis</string>
@@ -12377,7 +12385,7 @@ QProgressBar::chunk{
   <action name="actionFuse_devices">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/fusion.svg</normaloff>:/Icons/icons/fusion.svg</iconset>
+     <normaloff>:/Icons/icons/fusion.png</normaloff>:/Icons/icons/fusion.png</iconset>
    </property>
    <property name="text">
     <string>Fuse devices</string>
@@ -12394,7 +12402,7 @@ QProgressBar::chunk{
   <action name="actionDelete_inconsistencies">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/delete.svg</normaloff>:/Icons/icons/delete.svg</iconset>
+     <normaloff>:/Icons/icons/delete.png</normaloff>:/Icons/icons/delete.png</iconset>
    </property>
    <property name="text">
     <string>Delete inconsistencies</string>
@@ -12411,7 +12419,7 @@ QProgressBar::chunk{
   <action name="actionOptimal_Net_Transfer_Capacity_Time_Series">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/ntc_opf_ts.svg</normaloff>:/Icons/icons/ntc_opf_ts.svg</iconset>
+     <normaloff>:/Icons/icons/ntc_opf_ts.png</normaloff>:/Icons/icons/ntc_opf_ts.png</iconset>
    </property>
    <property name="text">
     <string>Optimal NTC time series</string>
@@ -12428,7 +12436,7 @@ QProgressBar::chunk{
   <action name="actionre_index_time">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/data.svg</normaloff>:/Icons/icons/data.svg</iconset>
+     <normaloff>:/Icons/icons/data.png</normaloff>:/Icons/icons/data.png</iconset>
    </property>
    <property name="text">
     <string>re-index time</string>
@@ -12442,7 +12450,7 @@ QProgressBar::chunk{
   <action name="actionFix_generators_active_based_on_the_power">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/remedial_action.svg</normaloff>:/Icons/icons/remedial_action.svg</iconset>
+     <normaloff>:/Icons/icons/remedial_action.png</normaloff>:/Icons/icons/remedial_action.png</iconset>
    </property>
    <property name="text">
     <string>Fix generators active based on the power</string>
@@ -12456,7 +12464,7 @@ QProgressBar::chunk{
   <action name="actionFix_loads_active_based_on_the_power">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/remedial_action.svg</normaloff>:/Icons/icons/remedial_action.svg</iconset>
+     <normaloff>:/Icons/icons/remedial_action.png</normaloff>:/Icons/icons/remedial_action.png</iconset>
    </property>
    <property name="text">
     <string>Fix loads active based on the power</string>
@@ -12473,7 +12481,7 @@ QProgressBar::chunk{
   <action name="actionImport_contingencies">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/load_add.svg</normaloff>:/Icons/icons/load_add.svg</iconset>
+     <normaloff>:/Icons/icons/load_add.png</normaloff>:/Icons/icons/load_add.png</iconset>
    </property>
    <property name="text">
     <string>Import contingencies</string>
@@ -12487,7 +12495,7 @@ QProgressBar::chunk{
   <action name="actionInitialize_contingencies">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/contingency_wizzard.svg</normaloff>:/Icons/icons/contingency_wizzard.svg</iconset>
+     <normaloff>:/Icons/icons/contingency_wizzard.png</normaloff>:/Icons/icons/contingency_wizzard.png</iconset>
    </property>
    <property name="text">
     <string>Initialize contingencies</string>
@@ -12504,7 +12512,7 @@ QProgressBar::chunk{
   <action name="actionExport_contingencies">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/save.svg</normaloff>:/Icons/icons/save.svg</iconset>
+     <normaloff>:/Icons/icons/save.png</normaloff>:/Icons/icons/save.png</iconset>
    </property>
    <property name="text">
     <string>Export contingencies</string>
@@ -12518,7 +12526,7 @@ QProgressBar::chunk{
   <action name="actionAdd_selected_to_contingency">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/add_contingency.svg</normaloff>:/Icons/icons/add_contingency.svg</iconset>
+     <normaloff>:/Icons/icons/add_contingency.png</normaloff>:/Icons/icons/add_contingency.png</iconset>
    </property>
    <property name="text">
     <string>Add selected as new contingency</string>
@@ -12538,7 +12546,7 @@ QProgressBar::chunk{
   <action name="actionAdd_selected_as_new_investment">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/investment.svg</normaloff>:/Icons/icons/investment.svg</iconset>
+     <normaloff>:/Icons/icons/investment.png</normaloff>:/Icons/icons/investment.png</iconset>
    </property>
    <property name="text">
     <string>Add selected as new investment</string>
@@ -12558,7 +12566,7 @@ QProgressBar::chunk{
   <action name="actionZoom_in">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/zoom_in.svg</normaloff>:/Icons/icons/zoom_in.svg</iconset>
+     <normaloff>:/Icons/icons/zoom_in.png</normaloff>:/Icons/icons/zoom_in.png</iconset>
    </property>
    <property name="text">
     <string>Zoom in</string>
@@ -12575,7 +12583,7 @@ QProgressBar::chunk{
   <action name="actionZoom_out">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/zoom_out.svg</normaloff>:/Icons/icons/zoom_out.svg</iconset>
+     <normaloff>:/Icons/icons/zoom_out.png</normaloff>:/Icons/icons/zoom_out.png</iconset>
    </property>
    <property name="text">
     <string>Zoom out</string>
@@ -12592,7 +12600,7 @@ QProgressBar::chunk{
   <action name="actionClustering">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/clustering.svg</normaloff>:/Icons/icons/clustering.svg</iconset>
+     <normaloff>:/Icons/icons/clustering.png</normaloff>:/Icons/icons/clustering.png</iconset>
    </property>
    <property name="text">
     <string>Clustering</string>
@@ -12615,7 +12623,7 @@ QProgressBar::chunk{
    </property>
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/clustering_use.svg</normaloff>:/Icons/icons/clustering_use.svg</iconset>
+     <normaloff>:/Icons/icons/clustering_use.png</normaloff>:/Icons/icons/clustering_use.png</iconset>
    </property>
    <property name="text">
     <string>Use clustering</string>
@@ -12632,7 +12640,7 @@ QProgressBar::chunk{
   <action name="actionInvestments_evaluation">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/expansion_planning.svg</normaloff>:/Icons/icons/expansion_planning.svg</iconset>
+     <normaloff>:/Icons/icons/expansion_planning.png</normaloff>:/Icons/icons/expansion_planning.png</iconset>
    </property>
    <property name="text">
     <string>Investments evaluation</string>
@@ -12652,7 +12660,7 @@ QProgressBar::chunk{
   <action name="actionNew_bus_branch_diagram_from_selection">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/schematic.svg</normaloff>:/Icons/icons/schematic.svg</iconset>
+     <normaloff>:/Icons/icons/schematic.png</normaloff>:/Icons/icons/schematic.png</iconset>
    </property>
    <property name="text">
     <string>New schematic from selection</string>
@@ -12666,7 +12674,7 @@ QProgressBar::chunk{
   <action name="actionAdd_general_bus_branch_diagram">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/schematic.svg</normaloff>:/Icons/icons/schematic.svg</iconset>
+     <normaloff>:/Icons/icons/schematic.png</normaloff>:/Icons/icons/schematic.png</iconset>
    </property>
    <property name="text">
     <string>New schematic</string>
@@ -12680,7 +12688,7 @@ QProgressBar::chunk{
   <action name="actionAdd_map">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/map (add).svg</normaloff>:/Icons/icons/map (add).svg</iconset>
+     <normaloff>:/Icons/icons/map (add).png</normaloff>:/Icons/icons/map (add).png</iconset>
    </property>
    <property name="text">
     <string>New map</string>
@@ -12694,7 +12702,7 @@ QProgressBar::chunk{
   <action name="actionRemove_selected_diagram">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/minus (gray).svg</normaloff>:/Icons/icons/minus (gray).svg</iconset>
+     <normaloff>:/Icons/icons/minus (gray).png</normaloff>:/Icons/icons/minus (gray).png</iconset>
    </property>
    <property name="text">
     <string>Remove selected diagram</string>
@@ -12703,7 +12711,7 @@ QProgressBar::chunk{
   <action name="actionReport_a_bug">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/bug.svg</normaloff>:/Icons/icons/bug.svg</iconset>
+     <normaloff>:/Icons/icons/bug.png</normaloff>:/Icons/icons/bug.png</iconset>
    </property>
    <property name="text">
     <string>Report a bug or feature</string>
@@ -12717,7 +12725,7 @@ QProgressBar::chunk{
   <action name="actionSearchDiagram">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/magnifying_glass.svg</normaloff>:/Icons/icons/magnifying_glass.svg</iconset>
+     <normaloff>:/Icons/icons/magnifying_glass.png</normaloff>:/Icons/icons/magnifying_glass.png</iconset>
    </property>
    <property name="text">
     <string>Search</string>
@@ -12731,7 +12739,7 @@ QProgressBar::chunk{
   <action name="actionProcess_topology">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/schematic.svg</normaloff>:/Icons/icons/schematic.svg</iconset>
+     <normaloff>:/Icons/icons/schematic.png</normaloff>:/Icons/icons/schematic.png</iconset>
    </property>
    <property name="text">
     <string>Process topology</string>
@@ -12745,7 +12753,7 @@ QProgressBar::chunk{
   <action name="actionEdit_simulation_time_limits">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/time_series span.svg</normaloff>:/Icons/icons/time_series span.svg</iconset>
+     <normaloff>:/Icons/icons/time_series span.png</normaloff>:/Icons/icons/time_series span.png</iconset>
    </property>
    <property name="text">
     <string>Edit simulation time limits</string>
@@ -12765,7 +12773,7 @@ QProgressBar::chunk{
    </property>
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/time_series set.svg</normaloff>:/Icons/icons/time_series set.svg</iconset>
+     <normaloff>:/Icons/icons/time_series set.png</normaloff>:/Icons/icons/time_series set.png</iconset>
    </property>
    <property name="text">
     <string>activate time series</string>
@@ -12785,7 +12793,7 @@ QProgressBar::chunk{
   <action name="actionClean_database">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/clear_runs.svg</normaloff>:/Icons/icons/clear_runs.svg</iconset>
+     <normaloff>:/Icons/icons/clear_runs.png</normaloff>:/Icons/icons/clear_runs.png</iconset>
    </property>
    <property name="text">
     <string>Clean database</string>
@@ -12802,7 +12810,7 @@ QProgressBar::chunk{
   <action name="actionScale">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/scale.svg</normaloff>:/Icons/icons/scale.svg</iconset>
+     <normaloff>:/Icons/icons/scale.png</normaloff>:/Icons/icons/scale.png</iconset>
    </property>
    <property name="text">
     <string>Scale</string>
@@ -12819,7 +12827,7 @@ QProgressBar::chunk{
   <action name="actionDisable_all_results_tags">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/uncheck_all.svg</normaloff>:/Icons/icons/uncheck_all.svg</iconset>
+     <normaloff>:/Icons/icons/uncheck_all.png</normaloff>:/Icons/icons/uncheck_all.png</iconset>
    </property>
    <property name="text">
     <string>Disable all results tags</string>
@@ -12833,7 +12841,7 @@ QProgressBar::chunk{
   <action name="actionEnable_all_results_tags">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/check_all.svg</normaloff>:/Icons/icons/check_all.svg</iconset>
+     <normaloff>:/Icons/icons/check_all.png</normaloff>:/Icons/icons/check_all.png</iconset>
    </property>
    <property name="text">
     <string>Enable all results tags</string>
@@ -12847,7 +12855,7 @@ QProgressBar::chunk{
   <action name="actionDetect_substations">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/substation.svg</normaloff>:/Icons/icons/substation.svg</iconset>
+     <normaloff>:/Icons/icons/substation.png</normaloff>:/Icons/icons/substation.png</iconset>
    </property>
    <property name="text">
     <string>Detect substations</string>
@@ -12861,7 +12869,7 @@ QProgressBar::chunk{
   <action name="actionNodal_capacity">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/nodal_capacity.svg</normaloff>:/Icons/icons/nodal_capacity.svg</iconset>
+     <normaloff>:/Icons/icons/nodal_capacity.png</normaloff>:/Icons/icons/nodal_capacity.png</iconset>
    </property>
    <property name="text">
     <string>Nodal capacity</string>
@@ -12881,7 +12889,7 @@ QProgressBar::chunk{
    </property>
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/server.svg</normaloff>:/Icons/icons/server.svg</iconset>
+     <normaloff>:/Icons/icons/server.png</normaloff>:/Icons/icons/server.png</iconset>
    </property>
    <property name="text">
     <string>Enable server mode</string>
@@ -12895,7 +12903,7 @@ QProgressBar::chunk{
   <action name="actionRecord_video">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/record.svg</normaloff>:/Icons/icons/record.svg</iconset>
+     <normaloff>:/Icons/icons/record.png</normaloff>:/Icons/icons/record.png</iconset>
    </property>
    <property name="text">
     <string>Record video</string>
@@ -12912,7 +12920,7 @@ QProgressBar::chunk{
   <action name="actionExport_circuit_differential">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/export_pickle.svg</normaloff>:/Icons/icons/export_pickle.svg</iconset>
+     <normaloff>:/Icons/icons/export_pickle.png</normaloff>:/Icons/icons/export_pickle.png</iconset>
    </property>
    <property name="text">
     <string>Save  differential</string>
@@ -12926,7 +12934,7 @@ QProgressBar::chunk{
   <action name="actionAdd_custom_catalogue">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/CataloguePrivate.svg</normaloff>:/Icons/icons/CataloguePrivate.svg</iconset>
+     <normaloff>:/Icons/icons/CataloguePrivate.png</normaloff>:/Icons/icons/CataloguePrivate.png</iconset>
    </property>
    <property name="text">
     <string>Import catalogue</string>
@@ -12943,7 +12951,7 @@ QProgressBar::chunk{
   <action name="actionExportCatalogue">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/CataloguePrivate.svg</normaloff>:/Icons/icons/CataloguePrivate.svg</iconset>
+     <normaloff>:/Icons/icons/CataloguePrivate.png</normaloff>:/Icons/icons/CataloguePrivate.png</iconset>
    </property>
    <property name="text">
     <string>Export catalogue</string>
@@ -12957,7 +12965,7 @@ QProgressBar::chunk{
   <action name="actionConsolidate_diagram_coordinates">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/assign_to_profile.svg</normaloff>:/Icons/icons/assign_to_profile.svg</iconset>
+     <normaloff>:/Icons/icons/assign_to_profile.png</normaloff>:/Icons/icons/assign_to_profile.png</iconset>
    </property>
    <property name="text">
     <string>Consolidate coordinates</string>
@@ -12971,13 +12979,18 @@ QProgressBar::chunk{
   <action name="actionAdd_selected_as_remedial_action">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/add_remedial_action.svg</normaloff>:/Icons/icons/add_remedial_action.svg</iconset>
+     <normaloff>:/Icons/icons/add_remedial_action.png</normaloff>:/Icons/icons/add_remedial_action.png</iconset>
    </property>
    <property name="text">
     <string>Add selected as new remedial action</string>
    </property>
    <property name="toolTip">
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Add remedial action&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Create a new remedial action from the schematic selection&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
    </property>
    <property name="shortcut">
     <string>Ctrl+A, Ctrl+R</string>
@@ -12986,7 +12999,7 @@ QProgressBar::chunk{
   <action name="actionDetect_facilities">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/powerplant.svg</normaloff>:/Icons/icons/powerplant.svg</iconset>
+     <normaloff>:/Icons/icons/powerplant.png</normaloff>:/Icons/icons/powerplant.png</iconset>
    </property>
    <property name="text">
     <string>Detect facilities</string>
@@ -12995,7 +13008,7 @@ QProgressBar::chunk{
   <action name="actionRotate">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/undo.svg</normaloff>:/Icons/icons/undo.svg</iconset>
+     <normaloff>:/Icons/icons/undo.png</normaloff>:/Icons/icons/undo.png</iconset>
    </property>
    <property name="text">
     <string>Rotate</string>
@@ -13009,7 +13022,7 @@ QProgressBar::chunk{
   <action name="actionReset_coordinates">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/down.svg</normaloff>:/Icons/icons/down.svg</iconset>
+     <normaloff>:/Icons/icons/down.png</normaloff>:/Icons/icons/down.png</iconset>
    </property>
    <property name="text">
     <string>Reset diagram coordinates to database values</string>
@@ -13023,7 +13036,7 @@ QProgressBar::chunk{
   <action name="actionReliability">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/reliability.svg</normaloff>:/Icons/icons/reliability.svg</iconset>
+     <normaloff>:/Icons/icons/reliability.png</normaloff>:/Icons/icons/reliability.png</iconset>
    </property>
    <property name="text">
     <string>Reliability analysis</string>
@@ -13043,7 +13056,7 @@ QProgressBar::chunk{
   <action name="actionColor_buses_by">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/grid_icon.svg</normaloff>:/Icons/icons/grid_icon.svg</iconset>
+     <normaloff>:/Icons/icons/grid_icon.png</normaloff>:/Icons/icons/grid_icon.png</iconset>
    </property>
    <property name="text">
     <string>Color buses by...</string>
@@ -13057,7 +13070,7 @@ QProgressBar::chunk{
   <action name="actionColor_substations_by">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/grid_icon.svg</normaloff>:/Icons/icons/grid_icon.svg</iconset>
+     <normaloff>:/Icons/icons/grid_icon.png</normaloff>:/Icons/icons/grid_icon.png</iconset>
    </property>
    <property name="text">
     <string>Color substations by...</string>
@@ -13074,7 +13087,7 @@ QProgressBar::chunk{
   <action name="actionSelect_buses_by">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/grid_icon.svg</normaloff>:/Icons/icons/grid_icon.svg</iconset>
+     <normaloff>:/Icons/icons/grid_icon.png</normaloff>:/Icons/icons/grid_icon.png</iconset>
    </property>
    <property name="text">
     <string>Select buses by...</string>
@@ -13091,7 +13104,7 @@ QProgressBar::chunk{
   <action name="actionGrid_reduction">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/schematic.svg</normaloff>:/Icons/icons/schematic.svg</iconset>
+     <normaloff>:/Icons/icons/schematic.png</normaloff>:/Icons/icons/schematic.png</iconset>
    </property>
    <property name="text">
     <string>Grid reduction</string>
@@ -13103,7 +13116,7 @@ QProgressBar::chunk{
   <action name="actionSubstation_wizard">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/substation.svg</normaloff>:/Icons/icons/substation.svg</iconset>
+     <normaloff>:/Icons/icons/substation.png</normaloff>:/Icons/icons/substation.png</iconset>
    </property>
    <property name="text">
     <string>Substation wizard</string>
@@ -13121,10 +13134,10 @@ QProgressBar::chunk{
   <action name="actionRun_Dynamic_RMS_Simulation">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/dyn.svg</normaloff>:/Icons/icons/dyn.svg</iconset>
+     <normaloff>:/Icons/icons/dyn.png</normaloff>:/Icons/icons/dyn.png</iconset>
    </property>
    <property name="text">
-    <string>Run Dynamic RMS Simulation</string>
+    <string>Dynamic RMS Simulation</string>
    </property>
    <property name="toolTip">
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;RMS Simulation&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Run a dynamic RMS simulation&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -13136,19 +13149,39 @@ QProgressBar::chunk{
   <action name="actionRun_Small_Signal_RMS_Simulation">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/ss_icon.svg</normaloff>:/Icons/icons/ss_icon.svg</iconset>
+     <normaloff>:/Icons/icons/ss_icon.png</normaloff>:/Icons/icons/ss_icon.png</iconset>
    </property>
    <property name="text">
-    <string>Run Small-Signal RMS Simulation</string>
+    <string>Small-Signal RMS Simulation</string>
    </property>
    <property name="iconText">
-    <string>Run Small-Signal RMS Simulation</string>
+    <string>Small-Signal RMS Simulation</string>
    </property>
    <property name="toolTip">
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Small Signal Simulation&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Run a Small Signal stability analysis simulation&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::TextHeuristicRole</enum>
+   </property>
+  </action>
+  <action name="actionAdd_rms_event_to_selected">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/Icons/icons/dyn_add.png</normaloff>:/Icons/icons/dyn_add.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add rms event to selected</string>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Add RMS event&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Create a new RMS event to the schematic selection&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
  </widget>

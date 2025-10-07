@@ -76,71 +76,71 @@ class TransformerGraphicItem(LineGraphicTemplateItem):
             add_menu_entry(menu=menu,
                            text="Delete",
                            function_ptr=self.delete,
-                           icon_path=":/Icons/icons/delete3.svg")
+                           icon_path=":/Icons/icons/delete3.png")
 
             add_menu_entry(menu=menu,
                            text="Edit template",
                            function_ptr=self.edit,
-                           icon_path=":/Icons/icons/edit.svg")
+                           icon_path=":/Icons/icons/edit.png")
 
             menu.addSection('Tap changer')
 
             add_menu_entry(menu=menu,
                            text="Edit tap changer",
                            function_ptr=self.edit_tap_changer,
-                           icon_path=":/Icons/icons/edit.svg")
+                           icon_path=":/Icons/icons/edit.png")
 
             add_menu_entry(menu=menu,
                            text="Tap up",
                            function_ptr=self.tap_up,
-                           icon_path=":/Icons/icons/up.svg")
+                           icon_path=":/Icons/icons/up.png")
 
             add_menu_entry(menu=menu,
                            text="Tap down",
                            function_ptr=self.tap_down,
-                           icon_path=":/Icons/icons/down.svg")
+                           icon_path=":/Icons/icons/down.png")
 
             add_menu_entry(menu=menu,
                            text="Control V from",
                            function_ptr=self.control_v_from,
-                           icon_path=":/Icons/icons/edit.svg")
+                           icon_path=":/Icons/icons/edit.png")
 
             add_menu_entry(menu=menu,
                            text="Control V to",
                            function_ptr=self.control_v_to,
-                           icon_path=":/Icons/icons/edit.svg")
+                           icon_path=":/Icons/icons/edit.png")
 
             menu.addSeparator()
 
             add_menu_entry(menu=menu,
                            text="Plot profiles",
                            function_ptr=self.plot_profiles,
-                           icon_path=":/Icons/icons/plot.svg")
+                           icon_path=":/Icons/icons/plot.png")
 
             add_menu_entry(menu=menu,
                            text="Add to catalogue",
                            function_ptr=self.add_to_catalogue,
-                           icon_path=":/Icons/icons/Catalogue.svg")
+                           icon_path=":/Icons/icons/Catalogue.png")
 
             add_menu_entry(menu=menu,
                            text="Assign rate to profile",
                            function_ptr=self.assign_rate_to_profile,
-                           icon_path=":/Icons/icons/assign_to_profile.svg")
+                           icon_path=":/Icons/icons/assign_to_profile.png")
 
             add_menu_entry(menu=menu,
                            text="Assign active state to profile",
                            function_ptr=self.assign_status_to_profile,
-                           icon_path=":/Icons/icons/assign_to_profile.svg")
+                           icon_path=":/Icons/icons/assign_to_profile.png")
 
             add_menu_entry(menu=menu,
                            text="Flip",
                            function_ptr=self.flip_connections,
-                           icon_path=":/Icons/icons/redo.svg")
+                           icon_path=":/Icons/icons/redo.png")
 
             add_menu_entry(menu=menu,
                            text="Change bus",
                            function_ptr=self.change_bus,
-                           icon_path=":/Icons/icons/move_bus.svg")
+                           icon_path=":/Icons/icons/move_bus.png")
 
             menu.exec_(event.screenPos())
 

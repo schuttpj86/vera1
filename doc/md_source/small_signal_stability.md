@@ -2,7 +2,7 @@
 
 Stability assessment is crucial for any system and of course, VeraGrid has it.
 
-⚠️ Before performing small-signal stability analysis, a power flow calculation must be completed! 
+⚠️Before performing small-signal stability analysis, a power flow calculation must be completed! 
 ### Settings
 This is the Small-Signal settings page:
 
@@ -31,9 +31,11 @@ increase accuracy but require more computation. Only needed if the Rms dynamic s
 ### Results
 The available results are the following:
 
-- **Modes**
+- **Modes**: Table with the modes and damping ratios and oscillation frequencies of the complex conjugate modes.
 - **Participation factors**: The participation factor of variable *k* in mode *i* is found in row *k*, column *i*. 
-- **S-Domain stability plot**
+- **S-Domain stability plot**: available with different imaginary axis units: "rad/s" or "Hz".
+ 
+
 
 ![](figures/SDomain_plot_VeraGrid.png)
 
@@ -47,22 +49,22 @@ from VeraGridEngine.Utils.Symbolic.block_solver import BlockSolver
 from VeraGridEngine.Simulations.Rms.initialization import initialize_rms
 from VeraGridEngine.Simulations.PowerFlow.power_flow_driver import PowerFlowResults, PowerFlowOptions
 from VeraGridEngine.Simulations.PowerFlow.power_flow_driver import PowerFlowDriver
+from VeraGridEngine.Simulations.SmallSignalStability.small_signal_driver import run_small_signal_stability
 import VeraGridEngine.api as gce
 
 folder = os.path.join('..', 'Grids_and_profiles', 'grids')
 fname = os.path.join(folder, 'IEEE39_1W.veragrid')
-main_circuit = gce.open_file(fname)
+grid = gce.open_file(fname)
 
 #power flow
-options = gce.PowerFlowOptions(gce.SolverType.NR, verbose=False)
-power_flow = gce.PowerFlowDriver(main_circuit, options)
+pf_options = gce.PowerFlowOptions(gce.SolverType.NR, verbose=False)
+power_flow = gce.PowerFlowDriver(grid, pf_options)
 power_flow.run()
 res = power_flow.results
 
 #initialization of variables
-ss, init_guess = initialize_rms(main_circuit, res)
-params0 = slv.build_init_params_vector(params_mapping)
-x0 = slv.build_init_vars_vector_from_uid(init_guess)
+ss, init_guess = initialize_rms(grid, res)
+params_mapping = {}
 ```
 The need of performing the power flow and initialization of variables before the Stability assessment is noted.
 
@@ -72,6 +74,10 @@ The need of performing the power flow and initialization of variables before the
 t_assess = 20.0
 h = 0.001
 slv = BlockSolver(ss, grid.time)
+
+params0 = slv.build_init_params_vector(params_mapping)
+x0 = slv.build_init_vars_vector_from_uid(init_guess)
+
 t, y = slv.simulate(
     t0=0,
     t_end=t_assess,
@@ -84,17 +90,31 @@ t, y = slv.simulate(
 And finally the Small-Signal Stability assessment:
 
 ```python
-stab, eigenvalues, pfactors = slv.run_small_signal_stability(x=x0, params=params0, plot=True)
-print("Stability assessment:", stab)
-print("Modes:", Eigenvalues)
-print("Participation factors:", PFactors.toarray())
+(stab,
+ Eigenvalues,
+ PFactors,
+ damping_ratios,
+ conjugate_frequencies) = run_small_signal_stability(slv=slv,
+                                                     x=x0,
+                                                     params=params0,
+                                                     plot=True,
+                                                     plot_units = "rad/s",
+                                                     verbose = 1)
 ```
 - If the Stability assessment time is not zero:
 
 ```python
 i = t_assess / h
-stab, eigenvalues, pfactors = slv.run_small_signal_stability(x=y[i], params=params0, plot=True)
-
+(stab,
+ Eigenvalues,
+ PFactors,
+ damping_ratios,
+ conjugate_frequencies) = run_small_signal_stability(slv=slv,
+                                                     x=y[i],
+                                                     params=params0,
+                                                     plot=True,
+                                                     plot_units = "rad/s",
+                                                     verbose = 1)
 print("Stability assessment:", stab)
 print("Modes:", Eigenvalues)
 print("Participation factors:", PFactors.toarray())
@@ -103,9 +123,10 @@ print("Participation factors:", PFactors.toarray())
 Output:
 
 ```text
-Stability assessment: Marginally stable
 Eigenvalues: [-2.+64.08943759j -2.-64.08943759j -0. +0.j         -2.+44.07988997j -2.-44.07988997j -2.+43.18166955j -2.-43.18166955j -2.+42.76559246j -2.-42.76559246j -2.+38.07928002j -2.-38.07928002j -2.+36.155124j   -2.-36.155124j   -2.+21.84445116j -2.-21.84445116j -2.+24.66622044j -2.-24.66622044j -2.+30.09976294j
  -2.-30.09976294j -2.+26.68017287j -2.-26.68017287j -4. +0.j        ]
+Daming ratios: ['0.031191206336476197', '-', '-', '0.04532553372859127', '-', '0.04626635094680637', '-', '0.04671551016349282', '-', '0.05244970840548839', '-', '0.05523275243053552', '-', '0.09117508790940405', '-', '0.08081732123290178', '-', '0.06629951000786061', '-', '0.07475229922283681', '-', '-']
+Oscillation frequencies[Hz]: ['10.200150792654048', '-', '-', '7.0155323802875404', '-', '6.872576160385048', '-', '6.806355434076857', '-', '6.06050564510895', '-', '5.7542667023807', '-', '3.4766523816869435', '-', '3.9257509100087766', '-', '4.790526057009294', '-', '4.246281394817547', '-', '-']
 Participation factors: [[0.00357204 0.00357204 0.0926209  0.00074082 0.00074082 0.25126465 0.25126465 0.07900952 0.07900952 0.00004668 0.00004668 0.00316457 0.00316457 0.02426172 0.02426172 0.00344389 0.00344389 0.0877041  0.0877041  0.00048156 0.00048156 0.        ]
  [0.00357204 0.00357204 0.         0.00074082 0.00074082 0.25126465 0.25126465 0.07900952 0.07900952 0.00004668 0.00004668 0.00316457 0.00316457 0.02426172 0.02426172 0.00344389 0.00344389 0.0877041  0.0877041  0.00048156 0.00048156 0.0926209 ]
  [0.01426164 0.01426164 0.09238855 0.00000793 0.00000793 0.00021923 0.00021923 0.00000009 0.00000009 0.26700701 0.26700701 0.00212486 0.00212486 0.03034834 0.03034834 0.08097717 0.08097717 0.05779924 0.05779924 0.00106021 0.00106021 0.        ]
@@ -131,7 +152,8 @@ Participation factors: [[0.00357204 0.00357204 0.0926209  0.00074082 0.00074082 
 
 ```
 
-Note that the S-Domain stability plot will be given as a result when ```plot = True```.
+Note that the S-Domain stability plot will be given as a result when ```plot = True``` with the frequency units specified at
+```plot_units``` with "rad/s" and "Hz" as main possibilities.
 
 
 ## Benchmark
@@ -139,7 +161,7 @@ Note that the S-Domain stability plot will be given as a result when ```plot = T
 
 ### Running ANDES
 Thanks to its symbolic precision and reliable numerical performance, ANDES provides a great baseline 
-for stability analysis in contemporary power system studies. That’s why VeraGrid uses ANDES 
+for stability analysis in contemporary power system studies. That's why VeraGrid uses ANDES 
 as its benchmark for small-signal analysis. Of course, VeraGrid successfully reproduces all eigenvalue 
 placements from ANDES.
 
@@ -177,7 +199,7 @@ def stability_andes():
    dae = ss.dae
 
    # Run PF
-   ss.PFlow.config.tol = 1e-13
+   ss.PFlow.config.tol = 1e-8
    ss.PFlow.run()
 
    #Run Small-Signal Stability analysis
@@ -194,25 +216,36 @@ def stability_andes():
 ```
 Comparing the case of Kundur two-area system VeraGrid gets exactly the same results.
 
-![](figures/andes_vs_veragrid_stability.png)
+![](figures/andes_vs_veragrid_kundur.png)
 
 The following plot template is used to compare results.
 ```python
 import matplotlib.pyplot as plt
+import numpy as np
 
-VeraGrid_Eig_ord = VeraGrid_Eig[np.argsort(-np.abs(VeraGrid_Eig))]
-Andes_Eig_ord = Andes_Eig[np.argsort(-np.abs(Andes_Eig))]
-
-x1 = VeraGrid_Eig_ord.real
-y1 = VeraGrid_Eig_ord.imag
-x2= Andes_Eig_ord.real
-y2 = Andes_Eig_ord.imag
-
-plt.scatter(x2, y2, marker='o', color='orange', label='ANDES')
+x1 = VeraGrid_Eig.real
+y1 = VeraGrid_Eig.imag
+x2= Andes_Eig.real
+y2 = Andes_Eig.imag
+slope = 1 / 0.05
+x_z = np.linspace(-200, 0, 400)
+y_z = slope * x_z
+# Plot the two lines (positive and negative imaginary axis)
+plt.plot(x_z, y_z, '--', color='grey', label='$\lambda$ = 5%')
+plt.plot(x_z, -y_z, '--', color='grey')
+plt.scatter(x2, y2, marker='o', color='orange', label='Andes')
 plt.scatter(x1, y1, marker='x', color='blue', label='VeraGrid')
 plt.xlabel("Re [s -1]")
 plt.ylabel("Im [s -1]")
 plt.title("Stability plot")
+margin_x = (x1.max() - x1.min()) * 0.1
+margin_y = (y1.max() - y1.min()) * 0.1
+x_min = x1.min() - margin_x
+x_max = x1.max() + margin_x
+y_min = y1.min() - margin_y
+y_max = y1.max() + margin_y
+plt.xlim([x_min, x_max])
+plt.ylim([y_min, y_max])
 plt.axhline(0, color='black', linewidth=1)  # eje horizontal (y = 0)
 plt.axvline(0, color='black', linewidth=1)
 plt.legend(loc='upper left', ncol=2)
@@ -226,7 +259,7 @@ stability assessments respectively.
 
 Small-signal analysis is a technique used to evaluate the dynamic behavior of nonlinear systems by linearizing 
 their equations around a specific operating point. This approach assumes that perturbations are sufficiently 
-small (typically within 1%) so that the system’s response can be approximated using linear models.
+small (typically within 1%) so that the system's response can be approximated using linear models.
 The resulting linear representation enables the use of standard control engineering tools to assess system 
 stability and dynamic performance.
 
@@ -235,8 +268,9 @@ it provides a robust framework for applying state-space models and a wide range 
 
 
 ### State-space representation
-Small-signal stability assessment methods are generally categorized into two main groups: state-space
-techniques and frequency-domain techniques. State-space techniques allow to represent the system using differential equations:
+Small-signal stability assessment methods are typically classified into two main groups: state-space
+techniques and frequency-domain techniques. State-space methods model the system dynamics using a set of first-order 
+differential equations
 
 $$
 \dot{x} = A x + Bu
@@ -253,24 +287,43 @@ Where:
 - *C* : output matrix
 - *D* : direct transmission matrix
 
-[//]: # (In Symbolic framework, it is advantageous to work with the discrete-time equivalent of the state-space model,)
+This representation allows the representation of non-linear systems, time-dependent systems, autonomous systems and a wide 
+range of possibilities. Moreover, each single system has infinite different state space models depending on how state variables 
+and outputs are interpreted.
 
-[//]: # (which avoids symbolic differentiation and enables algebraic manipulation using matrix powers and recurrence )
+This formalism enables the representation of a wide variety of systems, including nonlinear, time-varying, 
+and autonomous configurations. Importantly, a single physical system may admit infinitely 
+many equivalent state-space realizations, depending on the choice of state variables and output definitions. 
+This flexibility makes state-space modeling a powerful tool for both analysis and control design.
 
-[//]: # (relations. The discrete-time form is given by:)
 
-[//]: # ()
-[//]: # ($$)
+To perform a small-signal stability analysis, the system must first be linearized around a steady-state operating point. 
+This process involves approximating the nonlinear system dynamics with a linear model that captures the system's behavior 
+under small perturbations.
 
-[//]: # (x[k+1] = Ax[k] + Bu[k])
+In the context of state-space representation, linearization is achieved by expressing the system variables as deviations 
+from their nominal operating points:
 
-[//]: # ($$)
+$$
+\mathcal{X} \overset{\triangle}{=} x-x^*
+$$
+$$
+\mathcal{U} \overset{\triangle}{=} u-u^*
+$$
+$$
+\mathcal{Y} \overset{\triangle}{=} y-y^*
+$$
 
-[//]: # ($$)
+Substituting these into the original nonlinear model and applying a first-order Taylor expansion 
+yields the linearized state-space representation:
 
-[//]: # (y = Cx[k] + Du[k])
 
-[//]: # ($$)
+$$
+\dot{\mathcal{X}} = A \mathcal{X} + B\mathcal{U}
+$$
+$$
+\mathcal{Y} = C\mathcal{X} + D\mathcal{U}
+$$
 
 
 ### Stability assessment
@@ -278,12 +331,12 @@ Eigenvalue analysis and participation factors (PFs) are key tools for identifyin
 These methods are well established in conventional power systems and are increasingly being applied to power-electronics-based systems, 
 where dynamic behavior is often more complex and sensitive to operating conditions. 
 
-The **eigenvalues** of the state matrix A (commonly referred to as the system’s modes) characterize its
+The **eigenvalues** of the state matrix A (commonly referred to as the system's modes) characterize its
 small-signal stability according to the following criteria:
 
 
 - All $Re(\lambda)<0$: asymptotically stable 
-- All $Re(\lambda)≤ 0$: marginally stable
+- All $Re(\lambda) \leq 0$: marginally stable
 - At least one mode satisfies $Re(\lambda)<0$ : unstable
 
 When a linearized system has complex conjugate modes, they represent oscillatory modes in the dynamic response.
@@ -293,6 +346,23 @@ When a linearized system has complex conjugate modes, they represent oscillatory
   - $Re(\lambda) = 0$: oscillations persist indefinitely
   - $Re(\lambda)<0$: exponential growth
 - The **imaginary part** determines oscillation frequency: $f=\frac{Im(\lambda)}{2\pi}$
+
+In this line, **Damping ratios** are computed to assess oscillations on modes:
+
+$$
+\zeta = -  \frac{Re(\lambda)}{\sqrt{Re(\lambda)^2+Im(\lambda)^2}}
+$$
+
+And they are analyzed as:
+
+- $\zeta<0$: Unstable oscillations. The system exhibits exponentially growing modes due to eigenvalues with positive real part.
+- $\zeta=0$: Marginally stable oscillations. The system sustains undamped oscillations indefinitely. 
+Eigenvalues lie on the imaginary axis.
+- $0<\zeta<1$: Stable but oscillatory response. The system returns to equilibrium with decaying oscillations. 
+A commonly accepted threshold for adequate damping is around $\zeta = 0.05$.
+- $\zeta=1$: Critically damped response. The system returns to equilibrium without oscillations and in the shortest 
+- possible time without overshoot.
+
 
 **Participation factors** determine how much each state variable contributes to each mode and otherwise. In power systems 
 it is crucial to determine which devices are the origin of the oscillations and instabilities. They are often normalized 
@@ -323,10 +393,13 @@ $$
 $$
 
 Merging the DAE formulation into the linearized state-space representation, the state matrix can be computed:
+
 $$
 \Delta \dot{x} = T^{-1}(fx-fy \cdot gy^{-1} \cdot gx) \Delta x
 $$
+
  and therefore:
+
 $$
 A= T^{-1}(fx-fy \cdot gy^{-1} \cdot gx)
 $$
@@ -338,9 +411,9 @@ the DAE system respectively.
 
 
 ### Benchmark - Kundur system
-The Kundur two‑area system is a standard benchmark network widely used for small‑signal and transient stability studies.
+The Kundur two-area system is a standard benchmark network widely used for small-signal and transient stability studies.
 It was introduced in the P. Kundur power system stability literature as a compact, yet representative, 
-test case that exposes inter‑area oscillatory modes and control interactions without excessive model complexity.
+test case that exposes inter-area oscillatory modes and control interactions without excessive model complexity.
 
 ![](figures/Kundur_system_no_shunt.png)
 
@@ -352,13 +425,14 @@ swing against each other and produce inter-area oscillations.
 - The base power is 100 MW and the voltage levels are 20kV for the generators and 230kV for the network.
 
 The following code can be used to model the Kundur two area system without shunt in VeraGrid and to perform the small-signal
-Stability analysis. As seen in the code, an event is created at time instant 2.5s where the active power of load A is increased to 900MW
+Stability analysis.
 
 ```python
 import numpy as np
 import pandas as pd
 
 import sys
+import time
 import os
 
 from VeraGridEngine.Devices.multi_circuit import MultiCircuit
@@ -367,16 +441,17 @@ from VeraGridEngine.Devices.Injections.generator import Generator
 from VeraGridEngine.Devices.Injections.load import Load
 from VeraGridEngine.Devices.Branches.line import Line
 
-from VeraGridEngine.Devices.Aggregation.rms_event import RmsEvent
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 from VeraGridEngine.Utils.Symbolic.symbolic import Const, Var
 from VeraGridEngine.Utils.Symbolic.block_solver import BlockSolver
 from VeraGridEngine.Simulations.Rms.initialization import initialize_rms
-
-from VeraGridEngine.Simulations.PowerFlow.power_flow_driver import PowerFlowOptions
+from VeraGridEngine.Simulations.SmallSignalStability.small_signal_driver import run_small_signal_stability
+from VeraGridEngine.Simulations.PowerFlow.power_flow_driver import PowerFlowResults, PowerFlowOptions
 from VeraGridEngine.Simulations.PowerFlow.power_flow_driver import PowerFlowDriver
 import VeraGridEngine.api as gce
 
-t = Var("t")
+import cProfile as profile
+import pstats
 
 grid = MultiCircuit()
 
@@ -481,11 +556,9 @@ trafo_G4 = grid.add_line(
 
 # load
 load1 = Load(name="load1", P=967.0, Q=100.0, Pl0=-9.670000000007317, Ql0=-0.9999999999967969)
-
 load1_grid = grid.add_load(bus=bus7, api_obj=load1)
 
 load2 = Load(name="load2", P=1767.0, Q=100.0, Pl0=-17.6699999999199, Ql0=-0.999999999989467)
-
 load2_grid = grid.add_load(bus=bus9, api_obj=load2)
 
 # Generators
@@ -571,22 +644,13 @@ grid.add_generator(bus=bus2, api_obj=gen2)
 grid.add_generator(bus=bus3, api_obj=gen3)
 grid.add_generator(bus=bus4, api_obj=gen4)
 
-# ---------------------------------------------------------------------------------------
-# Events
-# ---------------------------------------------------------------------------------------
-
-event1 = RmsEvent(load1, "Pl0", np.array([2.5]), np.array([-9.0]))
-
-grid.add_rms_event(event1)
-
-# Run power flow
-
+# # Run power flow
 pf_options = PowerFlowOptions(
     solver_type=gce.SolverType.NR,
     retry_with_other_methods=False,
     verbose=0,
     initialize_with_existing_solution=True,
-    tolerance=1e-6,
+    tolerance=1e-8,
     max_iter=25,
     control_q=False,
     control_taps_modules=True,
@@ -613,15 +677,29 @@ print(res.get_bus_df())
 print(res.get_branch_df())
 print(f"Converged: {res.converged}")
 
-# TDS initialization
+# initialization
 ss, init_guess = initialize_rms(grid, res)
+print("init_guess")
+print(init_guess)
 
 params_mapping = {}
-# # Solver
-slv = BlockSolver(ss, grid.time)
+
+# Solver
+slv = BlockSolver(ss, grid.time, use_jit=False)
+
 params0 = slv.build_init_params_vector(params_mapping)
 x0 = slv.build_init_vars_vector_from_uid(init_guess)
 
-stab, Eigenvalues, PFactors = slv.run_small_signal_stability(x=x0, params=params0, plot=True)
 
+# stability assessment
+(stab,
+ Eigenvalues,
+ PFactors,
+ damping_ratios,
+ conjugate_frequencies) = run_small_signal_stability(slv=slv,
+                                                     x=x0,
+                                                     params=params0,
+                                                     plot=True,
+                                                     plot_units = "rad/s",
+                                                     verbose = 1)
 ```

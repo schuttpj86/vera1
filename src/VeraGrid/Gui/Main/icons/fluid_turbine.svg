@@ -5,8 +5,7 @@
    viewBox="0 0 48 48"
    version="1.1"
    id="svg4"
-   sodipodi:docname="fluid_turbine.svg"
-   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="fluid_turbine.png"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -14,6 +13,15 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:cc="http://creativecommons.org/ns#"
    xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <sodipodi:namedview
+     id="namedview6"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1" />
   <metadata
      id="metadata10">
     <rdf:RDF>
@@ -27,32 +35,8 @@
   </metadata>
   <defs
      id="defs8" />
-  <sodipodi:namedview
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1"
-     objecttolerance="10"
-     gridtolerance="10"
-     guidetolerance="10"
-     inkscape:pageopacity="0"
-     inkscape:pageshadow="2"
-     inkscape:window-width="2509"
-     inkscape:window-height="1011"
-     id="namedview6"
-     showgrid="false"
-     inkscape:zoom="2.1380209"
-     inkscape:cx="-162.76736"
-     inkscape:cy="10.991474"
-     inkscape:window-x="51"
-     inkscape:window-y="32"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="svg4"
-     inkscape:pagecheckerboard="0"
-     inkscape:showpageshadow="2"
-     inkscape:deskcolor="#d1d1d1" />
   <path
      style="fill:#999999;fill-opacity:1;stroke:#999999;stroke-width:1px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
      d="m 11.610629,18.730573 -0.0298,16.645135 27.014951,6.730256 0.05774,-29.776023 z"
-     id="path32405"
-     sodipodi:nodetypes="ccccc" />
+     id="path32405" />
 </svg>

@@ -499,7 +499,7 @@ class RosetaExplorerGUI(QMainWindow):
 
         add_menu_entry(menu=context_menu,
                        text="Copy",
-                       icon_path=":/Icons/icons/copy.svg",
+                       icon_path=":/Icons/icons/copy.png",
                        function_ptr=self.copy_table_to_clipboard)
 
     def copy_table_to_clipboard(self) -> None:

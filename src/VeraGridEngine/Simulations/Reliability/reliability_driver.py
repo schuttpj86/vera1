@@ -145,6 +145,9 @@ class ReliabilityStudyDriver(DriverTemplate):
         nc2 = nc.copy()
 
         ENS_arr = np.zeros(self.n_sim)
+        LOLE_arr = np.zeros(self.n_sim)
+        LOLF_arr = np.zeros(self.n_sim)
+
 
         for sim_idx in range(self.n_sim):
 
@@ -177,14 +180,17 @@ class ReliabilityStudyDriver(DriverTemplate):
                 for idx_list in blocks:
 
                     batt_e_nom = nc.battery_data.enom.copy()
-                    total_failure_time = 0.0
+                    total_failure_time = 0
                     total_affected_customers = 0
+                    block_fail_to_meet_demand = False
 
                     for t in idx_list:  # time_steps
 
                         # get the time increment
                         dt = self.greedy_dispatch_inputs.dt[t]
                         total_failure_time += dt
+
+                        fail_to_meet_demand = False
 
                         # modify active states
                         nc2.passive_branch_data.active = simulated_branch_actives[t, :]
@@ -201,6 +207,7 @@ class ReliabilityStudyDriver(DriverTemplate):
                             if island.generator_data.active.sum() == 0:
                                 if island.battery_data.active.sum() == 0:
                                     E_not_supplied += island.load_data.S.sum() * dt
+                                    fail_to_meet_demand = True
                                 else:
                                     # check the battery life
                                     island_energy_demand = island.load_data.S.sum().real * dt
@@ -211,12 +218,17 @@ class ReliabilityStudyDriver(DriverTemplate):
                                             # we deplete the battery
                                             unsatisfied_demand -= batt_e_nom[i]
                                             batt_e_nom[i] = 0
+                                            fail_to_meet_demand = True
                                         else:
                                             # there is less demand that battery capacity
                                             batt_e_nom[i] -= unsatisfied_demand
                                             unsatisfied_demand = 0
 
                                     E_not_supplied += unsatisfied_demand
+
+                        if fail_to_meet_demand:
+                            LOLE_arr[sim_idx] += 1 * dt
+                            block_fail_to_meet_demand = True
 
                         # revert active states
                         nc2.passive_branch_data.active = nc.passive_branch_data.active
@@ -226,9 +238,14 @@ class ReliabilityStudyDriver(DriverTemplate):
                         # Energy not supplied (MWh)
                         ENS_arr[sim_idx] += E_not_supplied.real
 
+                    if block_fail_to_meet_demand:
+                        LOLF_arr[sim_idx] += 1
+
             self.report_progress2(current=sim_idx, total=self.n_sim)
 
-        self.results.lole_evolution = np.cumsum(ENS_arr) / (np.arange(len(ENS_arr)) + 1)
+        self.results.LOLE_evolution = np.cumsum(LOLE_arr) / (np.arange(len(LOLE_arr)) + 1)
+        self.results.ENS_evolution = np.cumsum(ENS_arr) / (np.arange(len(ENS_arr)) + 1)
+        self.results.LOLF_evolution = np.cumsum(LOLF_arr) / (np.arange(len(LOLF_arr)) + 1)
 
     def cancel(self):
         self.__cancel__ = True

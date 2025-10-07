@@ -1,5 +1,5 @@
 <RCC>
   <qresource prefix="Icons">
-    <file>icons/wind_power.svg</file>
+    <file>icons/wind_power.png</file>
   </qresource>
 </RCC>

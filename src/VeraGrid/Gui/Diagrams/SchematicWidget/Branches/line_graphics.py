@@ -122,88 +122,88 @@ class LineGraphicItem(LineGraphicTemplateItem):
             add_menu_entry(menu=menu,
                            text="Editor",
                            function_ptr=self.edit,
-                           icon_path=":/Icons/icons/edit.svg")
+                           icon_path=":/Icons/icons/edit.png")
 
             add_menu_entry(menu=menu,
                            text="Rms Editor",
                            function_ptr=self.edit_rms,
-                           icon_path=":/Icons/icons/edit.svg")
+                           icon_path=":/Icons/icons/edit.png")
 
             add_menu_entry(menu=menu,
                            text="Change bus",
                            function_ptr=self.change_bus,
-                           icon_path=":/Icons/icons/move_bus.svg")
+                           icon_path=":/Icons/icons/move_bus.png")
 
             menu.addSeparator()
 
             add_menu_entry(menu=menu,
                            text="Plot profiles",
                            function_ptr=self.plot_profiles,
-                           icon_path=":/Icons/icons/plot.svg")
+                           icon_path=":/Icons/icons/plot.png")
 
             add_menu_entry(menu=menu,
                            text="Assign rate to profile",
                            function_ptr=self.assign_rate_to_profile,
-                           icon_path=":/Icons/icons/assign_to_profile.svg")
+                           icon_path=":/Icons/icons/assign_to_profile.png")
 
             add_menu_entry(menu=menu,
                            text="Assign active state to profile",
                            function_ptr=self.assign_status_to_profile,
-                           icon_path=":/Icons/icons/assign_to_profile.svg")
+                           icon_path=":/Icons/icons/assign_to_profile.png")
 
             add_menu_entry(menu=menu,
                            text="Add to catalogue",
                            function_ptr=self.add_to_catalogue,
-                           icon_path=":/Icons/icons/Catalogue.svg")
+                           icon_path=":/Icons/icons/Catalogue.png")
 
             add_menu_entry(menu=menu,
                            text="Split line",
                            function_ptr=self.split_line,
-                           icon_path=":/Icons/icons/divide.svg")
+                           icon_path=":/Icons/icons/divide.png")
 
             add_menu_entry(menu=menu,
                            text="Split line with in/out",
                            function_ptr=self.split_line_in_out,
-                           icon_path=":/Icons/icons/divide.svg")
+                           icon_path=":/Icons/icons/divide.png")
 
             menu.addSeparator()
 
             add_menu_entry(menu=menu,
                            text="Delete",
                            function_ptr=self.delete,
-                           icon_path=":/Icons/icons/delete_schematic.svg")
+                           icon_path=":/Icons/icons/delete_schematic.png")
 
             menu.addSection('Convert to')
 
             add_menu_entry(menu=menu,
                            text="Transformer",
                            function_ptr=self.to_transformer,
-                           icon_path=":/Icons/icons/to_transformer.svg")
+                           icon_path=":/Icons/icons/to_transformer.png")
 
             add_menu_entry(menu=menu,
                            text="HVDC",
                            function_ptr=self.to_hvdc,
-                           icon_path=":/Icons/icons/to_hvdc.svg")
+                           icon_path=":/Icons/icons/to_hvdc.png")
 
             add_menu_entry(menu=menu,
                            text="VSC",
                            function_ptr=self.to_vsc,
-                           icon_path=":/Icons/icons/to_vsc.svg")
+                           icon_path=":/Icons/icons/to_vsc.png")
 
             add_menu_entry(menu=menu,
                            text="UPFC",
                            function_ptr=self.to_upfc,
-                           icon_path=":/Icons/icons/to_upfc.svg")
+                           icon_path=":/Icons/icons/to_upfc.png")
 
             add_menu_entry(menu=menu,
                            text="Series reactance",
                            function_ptr=self.to_series_reactance,
-                           icon_path=":/Icons/icons/to_series_reactance.svg")
+                           icon_path=":/Icons/icons/to_series_reactance.png")
 
             add_menu_entry(menu=menu,
                            text="Switch",
                            function_ptr=self.to_switch,
-                           icon_path=":/Icons/icons/switch.svg")
+                           icon_path=":/Icons/icons/switch.png")
 
             menu.exec(event.screenPos())
         else:
@@ -241,7 +241,6 @@ class LineGraphicItem(LineGraphicTemplateItem):
             pass
 
     def edit_rms(self):
-        # Collect templates (example: sequence line types)
         templates = [t.name for t in self.editor.circuit.sequence_line_types] # TODO: find where to build and save the templates
 
         choice_dialog = RmsChoiceDialog(templates, parent=self.editor)

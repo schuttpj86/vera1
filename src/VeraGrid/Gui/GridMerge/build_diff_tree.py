@@ -11,7 +11,7 @@ from typing import List, Dict, Any
 
 from VeraGridEngine.basic_structures import Logger
 from VeraGridEngine.Devices.multi_circuit import MultiCircuit
-from VeraGridEngine.enumerations import DeviceType, SubstationTypes, ActionType
+from VeraGridEngine.enumerations import DeviceType, VoltageLevelTypes, ActionType
 from VeraGridEngine.Devices.types import ALL_DEV_TYPES
 
 

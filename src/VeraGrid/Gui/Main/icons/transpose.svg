@@ -7,8 +7,7 @@
    width="192"
    height="192"
    viewBox="0 0 192 192"
-   sodipodi:docname="transpose.svg"
-   inkscape:version="1.2.1 (9c6d41e, 2022-07-14)"
+   sodipodi:docname="transpose.png"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -16,6 +15,15 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:cc="http://creativecommons.org/ns#"
    xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <sodipodi:namedview
+     id="namedview26"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1" />
   <metadata
      id="metadata8">
     <rdf:RDF>
@@ -30,29 +38,6 @@
   </metadata>
   <defs
      id="defs6" />
-  <sodipodi:namedview
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1"
-     objecttolerance="10"
-     gridtolerance="10"
-     guidetolerance="10"
-     inkscape:pageopacity="0"
-     inkscape:pageshadow="2"
-     inkscape:window-width="1389"
-     inkscape:window-height="847"
-     id="namedview4"
-     showgrid="false"
-     inkscape:zoom="3.2578125"
-     inkscape:cx="45.275779"
-     inkscape:cy="108.96882"
-     inkscape:window-x="51"
-     inkscape:window-y="25"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="g833"
-     inkscape:pagecheckerboard="0"
-     inkscape:showpageshadow="2"
-     inkscape:deskcolor="#d1d1d1" />
   <g
      id="g893"
      transform="matrix(0.34525501,0,0,0.34525501,12.167256,11.139857)">

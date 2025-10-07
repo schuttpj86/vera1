@@ -257,13 +257,13 @@ class LineLocationGraphicItem(QtWidgets.QGraphicsEllipseItem, NodeTemplate):
 
         add_menu_entry(menu=menu,
                        text="Delete",
-                       icon_path=":/Icons/icons/delete_schematic.svg",
+                       icon_path=":/Icons/icons/delete_schematic.png",
                        function_ptr=self.remove)
 
         add_menu_entry(menu=menu,
                        text="Transform waypoint into substation",
                        function_ptr=self.editor.transform_waypoint_to_substation,
-                       icon_path=":/Icons/icons/divide.svg")
+                       icon_path=":/Icons/icons/divide.png")
 
         menu.addSeparator()
 
@@ -280,7 +280,7 @@ class LineLocationGraphicItem(QtWidgets.QGraphicsEllipseItem, NodeTemplate):
             add_menu_entry(menu=menu,
                            text="Connect line to selected substation (T-joint) at this waypoint",
                            function_ptr=self.editor.create_t_joint_to_substation,
-                           icon_path=":/Icons/icons/divide.svg")
+                           icon_path=":/Icons/icons/divide.png")
 
         menu.exec_(event.screenPos())
 

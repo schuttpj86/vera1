@@ -70,7 +70,7 @@
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/Icons/icons/import_profiles.svg</normaloff>:/Icons/icons/import_profiles.svg</iconset>
+              <normaloff>:/Icons/icons/import_profiles.png</normaloff>:/Icons/icons/import_profiles.png</iconset>
             </property>
            </widget>
           </item>
@@ -84,7 +84,7 @@
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/Icons/icons/plot.svg</normaloff>:/Icons/icons/plot.svg</iconset>
+              <normaloff>:/Icons/icons/plot.png</normaloff>:/Icons/icons/plot.png</iconset>
             </property>
            </widget>
           </item>
@@ -146,7 +146,7 @@
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/Icons/icons/transform.svg</normaloff>:/Icons/icons/transform.svg</iconset>
+              <normaloff>:/Icons/icons/transform.png</normaloff>:/Icons/icons/transform.png</iconset>
             </property>
            </widget>
           </item>
@@ -222,7 +222,7 @@
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/Icons/icons/auto-link.svg</normaloff>:/Icons/icons/auto-link.svg</iconset>
+              <normaloff>:/Icons/icons/auto-link.png</normaloff>:/Icons/icons/auto-link.png</iconset>
             </property>
            </widget>
           </item>
@@ -255,7 +255,7 @@
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/Icons/icons/auto-link-rnd.svg</normaloff>:/Icons/icons/auto-link-rnd.svg</iconset>
+              <normaloff>:/Icons/icons/auto-link-rnd.png</normaloff>:/Icons/icons/auto-link-rnd.png</iconset>
             </property>
            </widget>
           </item>
@@ -269,7 +269,7 @@
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/Icons/icons/link-to-all.svg</normaloff>:/Icons/icons/link-to-all.svg</iconset>
+              <normaloff>:/Icons/icons/link-to-all.png</normaloff>:/Icons/icons/link-to-all.png</iconset>
             </property>
            </widget>
           </item>
@@ -283,7 +283,7 @@
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/Icons/icons/link-to-selection.svg</normaloff>:/Icons/icons/link-to-selection.svg</iconset>
+              <normaloff>:/Icons/icons/link-to-selection.png</normaloff>:/Icons/icons/link-to-selection.png</iconset>
             </property>
            </widget>
           </item>
@@ -334,7 +334,7 @@
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/Icons/icons/multiply.svg</normaloff>:/Icons/icons/multiply.svg</iconset>
+              <normaloff>:/Icons/icons/multiply.png</normaloff>:/Icons/icons/multiply.png</iconset>
             </property>
            </widget>
           </item>
@@ -397,7 +397,7 @@
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/Icons/icons/gear.svg</normaloff>:/Icons/icons/gear.svg</iconset>
+              <normaloff>:/Icons/icons/gear.png</normaloff>:/Icons/icons/gear.png</iconset>
             </property>
            </widget>
           </item>
@@ -411,7 +411,7 @@
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/Icons/icons/clear_runs.svg</normaloff>:/Icons/icons/clear_runs.svg</iconset>
+              <normaloff>:/Icons/icons/clear_runs.png</normaloff>:/Icons/icons/clear_runs.png</iconset>
             </property>
            </widget>
           </item>

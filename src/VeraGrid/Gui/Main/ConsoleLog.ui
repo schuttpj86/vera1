@@ -21,7 +21,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="icons.qrc">
-    <normaloff>:/Program icon/VeraGrid_icon.svg</normaloff>:/Program icon/VeraGrid_icon.svg</iconset>
+    <normaloff>:/Program icon/VeraGrid_icon.png</normaloff>:/Program icon/VeraGrid_icon.png</iconset>
   </property>
   <property name="iconSize">
    <size>
@@ -189,7 +189,7 @@
   <action name="actionSave">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/Icons/icons/savec.svg</normaloff>:/Icons/icons/savec.svg</iconset>
+     <normaloff>:/Icons/icons/savec.png</normaloff>:/Icons/icons/savec.png</iconset>
    </property>
    <property name="text">
     <string>Save</string>

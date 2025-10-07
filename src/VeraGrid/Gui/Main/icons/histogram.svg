@@ -5,8 +5,7 @@
    viewBox="0 0 48 48"
    id="svg2"
    version="1.1"
-   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
-   sodipodi:docname="histogram.svg"
+   sodipodi:docname="histogram.png"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -14,6 +13,15 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:cc="http://creativecommons.org/ns#"
    xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <sodipodi:namedview
+     id="namedview16"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1" />
   <metadata
      id="metadata12">
     <rdf:RDF>
@@ -27,27 +35,6 @@
   </metadata>
   <defs
      id="defs10" />
-  <sodipodi:namedview
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1"
-     objecttolerance="10"
-     gridtolerance="10"
-     guidetolerance="10"
-     inkscape:pageopacity="0"
-     inkscape:pageshadow="2"
-     inkscape:window-width="2491"
-     inkscape:window-height="1016"
-     id="namedview8"
-     showgrid="false"
-     inkscape:zoom="5.9956763"
-     inkscape:cx="-67.715464"
-     inkscape:cy="6.7548677"
-     inkscape:window-x="69"
-     inkscape:window-y="27"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="g4150"
-     inkscape:pagecheckerboard="0" />
   <path
      d="M0 0h48v48h-48z"
      fill="none"
@@ -67,15 +54,11 @@
       <path
          style="fill:none;fill-rule:evenodd;stroke:#216778;stroke-width:0.574108;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          d="m 15.206583,16.082449 -0.0045,28.851617"
-         id="path4148"
-         inkscape:connector-curvature="0"
-         sodipodi:nodetypes="cc" />
+         id="path4148" />
       <path
          style="fill:none;fill-rule:evenodd;stroke:#216778;stroke-width:0.514722;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          d="m 15.200201,44.988746 33.769032,0.0051"
-         id="path4148-5"
-         inkscape:connector-curvature="0"
-         sodipodi:nodetypes="cc" />
+         id="path4148-5" />
     </g>
     <rect
        style="fill:#164450;stroke:none;stroke-width:0.888814;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;paint-order:markers stroke fill"

@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'gui.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.7.2
+## Created by: Qt User Interface Compiler version 6.9.2
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -27,7 +27,7 @@ class Ui_AboutDialog(object):
             AboutDialog.setObjectName(u"AboutDialog")
         AboutDialog.resize(473, 236)
         icon = QIcon()
-        icon.addFile(u":/Icons/icons/VeraGrid_icon.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon.addFile(u":/Icons/icons/VeraGrid_icon.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         AboutDialog.setWindowIcon(icon)
         self.verticalLayout_2 = QVBoxLayout(AboutDialog)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
@@ -58,7 +58,7 @@ class Ui_AboutDialog(object):
         self.label.setObjectName(u"label")
         self.label.setMinimumSize(QSize(48, 48))
         self.label.setMaximumSize(QSize(48, 48))
-        self.label.setPixmap(QPixmap(u":/Icons/icons/VeraGrid_icon.svg"))
+        self.label.setPixmap(QPixmap(u":/Icons/icons/VeraGrid_icon.png"))
         self.label.setScaledContents(True)
 
         self.gridLayout.addWidget(self.label, 0, 0, 1, 1)

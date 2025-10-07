@@ -57,7 +57,9 @@ class Generator(GeneratorParent):
         'Kp',
         'Ki',
         'Kw',
-        'init_params'
+        'init_params',
+        'P_g',
+        'Q_g'
     )
 
     def __init__(self,
@@ -243,6 +245,8 @@ class Generator(GeneratorParent):
         self.Kp = Kp
         self.Ki = Ki
         self.init_params = init_params
+        self.P_g = Var("P_g")
+        self.Q_g = Var("Q_g")
 
         self.register(key='is_controlled', units='', tpe=bool, definition='Is this generator voltage-controlled?')
 

@@ -76,7 +76,7 @@
         </property>
         <property name="icon">
          <iconset resource="icons.qrc">
-          <normaloff>:/Icons/icons/accept.svg</normaloff>:/Icons/icons/accept.svg</iconset>
+          <normaloff>:/Icons/icons/accept.png</normaloff>:/Icons/icons/accept.png</iconset>
         </property>
        </widget>
       </item>
@@ -90,7 +90,7 @@
         </property>
         <property name="icon">
          <iconset resource="icons.qrc">
-          <normaloff>:/Icons/icons/delete.svg</normaloff>:/Icons/icons/delete.svg</iconset>
+          <normaloff>:/Icons/icons/delete.png</normaloff>:/Icons/icons/delete.png</iconset>
         </property>
        </widget>
       </item>
@@ -117,7 +117,7 @@
         </property>
         <property name="icon">
          <iconset resource="icons.qrc">
-          <normaloff>:/Icons/icons/accept2.svg</normaloff>:/Icons/icons/accept2.svg</iconset>
+          <normaloff>:/Icons/icons/accept2.png</normaloff>:/Icons/icons/accept2.png</iconset>
         </property>
        </widget>
       </item>

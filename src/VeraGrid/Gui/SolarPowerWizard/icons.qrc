@@ -1,6 +1,6 @@
 <RCC>
   <qresource prefix="Icons">
-    <file>icons/plot.svg</file>
-    <file>icons/solar_power.svg</file>
+    <file>icons/plot.png</file>
+    <file>icons/solar_power.png</file>
   </qresource>
 </RCC>
