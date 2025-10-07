@@ -19,8 +19,6 @@ from typing import Any, Callable, ClassVar, Dict, Mapping, Union, List, Sequence
 NUMBER = Union[int, float, complex]
 
 
-
-
 # -----------------------------------------------------------------------------
 # UUID helper
 # -----------------------------------------------------------------------------
@@ -54,7 +52,7 @@ def _var_uid(sym: Var | str) -> str:
 # Function helpers
 # ----------------------------------------------------------------------------
 
-@nb.njit                                        # TODO: is it the best option to compile here _heaviside?
+@nb.njit  # TODO: is it the best option to compile here _heaviside?
 def _heaviside(x):
     return 0.0 if x <= 0 else 1.0
 
@@ -306,6 +304,7 @@ class Var(Expr):
     def __eq__(self, other: "Expr" | NUMBER) -> Comparison:  # type: ignore[override]
         return Comparison(self, CmpOp.EQ, other)
 
+
 class UndefinedConst(Expr):
     name: str = 'name'
     frozen: bool = False
@@ -322,12 +321,12 @@ class UndefinedConst(Expr):
 
     def eval(self, **bindings: NUMBER) -> NUMBER:
         if not hasattr(self, 'value'):
-            raise('value has not been assigned yet')
+            raise ('value has not been assigned yet')
         return self.value
 
     def eval_uid(self, uid_bindings: Dict[str, NUMBER]) -> NUMBER:
         if not hasattr(self, 'value'):
-            raise('value has not been assigned yet')
+            raise ('value has not been assigned yet')
         return self.value
 
     def _diff1(self, var: Var | str) -> "Expr":
@@ -627,8 +626,6 @@ abs = _make_unary("abs")
 heaviside = _make_unary("heaviside")
 
 
-
-
 def _expr_to_dict(expr: Expr) -> Dict[str, Any]:
     """
     Serialise any `Expr` tree into a plain Python dictionary that’s
@@ -768,47 +765,60 @@ def _emit(expr: Expr, uid_map_vars: Dict[int, str], uid_map_params: Dict[int, st
     """
     Emit a pure-Python (Numba-friendly) expression string
     :param expr: Expr (expression)
-    :param uid_map:
+    :param uid_map_vars:
+    :param uid_map_params:
     :return:
     """
 
     if isinstance(expr, Const) or isinstance(expr, UndefinedConst):
         return repr(expr.value)
+
     if isinstance(expr, Var):
         if expr.uid in uid_map_vars.keys():
             return uid_map_vars[expr.uid]  # positional variable
         else:
-            # pdb.set_trace()
             return uid_map_params[expr.uid]
+
     if isinstance(expr, UnOp):
         return f"-({_emit(expr.operand, uid_map_vars, uid_map_params)})"
+
     if isinstance(expr, BinOp):
-        return f"({_emit(expr.left, uid_map_vars, uid_map_params)} {expr.op} {_emit(expr.right, uid_map_vars, uid_map_params)})"
+        return (f"({_emit(expr.left, uid_map_vars, uid_map_params)} "
+                f"{expr.op} "
+                f"{_emit(expr.right, uid_map_vars, uid_map_params)})")
+
     if isinstance(expr, Func):
-        if expr.name in ("real", "imag", "conj", "angle"):
+        if expr.name in ("real", "imag", "conj", "angle", "sin", "cos", "tan",
+                         "exp", "log", "sqrt", "asin", "acos", "atan",
+                         "sinh", "cosh", "abs"):
             return f"np.{expr.name}({_emit(expr.arg, uid_map_vars, uid_map_params)})"
         else:
             return f"np.{expr.name}({_emit(expr.arg, uid_map_vars, uid_map_params)})"
 
     raise TypeError(type(expr))
 
-def _emit_params_eq(expr: Expr, uid_map_t: Dict[int, str] = None ) -> str:
+
+def _emit_params_eq(expr: Expr, uid_map_t: Dict[int, str] = None) -> str:
     """
     Emit a pure-Python (Numba-friendly) expression string
     :param expr: Expr (expression)
-    :param uid_map:
+    :param uid_map_t:
     :return:
     """
 
     if isinstance(expr, Const):
         return repr(expr.value)
+
     if isinstance(expr, Var):
         if expr.uid in uid_map_t.keys():
             return uid_map_t[expr.uid]
+
     if isinstance(expr, UnOp):
         return f"-({_emit_params_eq(expr.operand, uid_map_t)})"
+
     if isinstance(expr, BinOp):
         return f"({_emit_params_eq(expr.left, uid_map_t)} {expr.op} {_emit_params_eq(expr.right, uid_map_t)})"
+
     if isinstance(expr, Func):
         # Use numpy functions for standard numeric functions
         if expr.name in ("real", "imag", "conj", "angle", "sin", "cos", "tan",
@@ -819,7 +829,7 @@ def _emit_params_eq(expr: Expr, uid_map_t: Dict[int, str] = None ) -> str:
             return f"_heaviside({_emit_params_eq(expr.arg, uid_map_t)})"
 
     else:
-            raise ValueError(f"Unknown function '{expr.name}' in _emit_params_eq")
+        raise ValueError(f"Unknown function '{expr.name}' in _emit_params_eq")
 
     raise TypeError(type(expr))
 
@@ -828,7 +838,7 @@ def _emit_one(expr: Expr, uid_map_vars: Dict[int, str]) -> str:
     """
     Emit a pure-Python (Numba-friendly) expression string
     :param expr: Expr (expression)
-    :param uid_map:
+    :param uid_map_vars:
     :return:
     """
     if isinstance(expr, Const):
@@ -916,6 +926,7 @@ def _compile(expressions: Sequence[Expr],
         )
     return fn
 
+
 # mapping of Python operator nodes → our BinOp symbols
 _BINOP_MAP = {
     ast.Add: "+",
@@ -946,9 +957,10 @@ _FUNC_MAP = {
     "imag": imag,
     "conj": conj,
     "angle": angle,
-    "abs": abs,           # ⚠️ rename if you avoid shadowing built-in
+    "abs": abs,  # ⚠️ rename if you avoid shadowing built-in
     "heaviside": heaviside,
 }
+
 
 def make_symbolic(expr_str: str, variables: Dict[str, Var] | None = None) -> Expr:
     """
@@ -991,6 +1003,7 @@ def make_symbolic(expr_str: str, variables: Dict[str, Var] | None = None) -> Exp
 
     return _convert(tree)
 
+
 def symbolic_to_string(expr: Expr) -> str:
     """
     Convert a symbolic expression into a string (parsable by parse_expr).
@@ -1015,7 +1028,6 @@ def symbolic_to_string(expr: Expr) -> str:
         return f"({left} {expr.op} {right})"
     else:
         raise TypeError(f"Unsupported expression type: {type(expr)}")
-
 
 
 # -----------------------------------------------------------------------------
@@ -1048,4 +1060,3 @@ __all__ = [
 # # You can also create new Vars on the fly:
 # expr2 = make_symbolic("exp(z) + 3")
 # print(expr2)  # exp(z) + 3
-

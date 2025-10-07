@@ -1,461 +1,130 @@
 # Resource object code (Python 3)
 # Created by: object code
-# Created by: The Resource Compiler for Qt version 6.7.2
+# Created by: The Resource Compiler for Qt version 6.9.2
 # WARNING! All changes made in this file will be lost!
 
 from PySide6 import QtCore
 
 qt_resource_data = b"\
-\x00\x00\x1b\xfb\
-<\
-?xml version=\x221.\
-0\x22 encoding=\x22UTF\
--8\x22 standalone=\x22\
-no\x22?>\x0a<svg\x0a   wi\
-dth=\x2248\x22\x0a   heig\
-ht=\x2248\x22\x0a   viewB\
-ox=\x220 0 48 48\x22\x0a \
-  version=\x221.1\x22\x0a\
-   id=\x22svg6\x22\x0a   \
-sodipodi:docname\
-=\x22wind_power.svg\
-\x22\x0a   inkscape:ve\
-rsion=\x221.1.2 (0a\
-00cf5339, 2022-0\
-2-04)\x22\x0a   xmlns:\
-inkscape=\x22http:/\
-/www.inkscape.or\
-g/namespaces/ink\
-scape\x22\x0a   xmlns:\
-sodipodi=\x22http:/\
-/sodipodi.source\
-forge.net/DTD/so\
-dipodi-0.dtd\x22\x0a  \
- xmlns=\x22http://w\
-ww.w3.org/2000/s\
-vg\x22\x0a   xmlns:svg\
-=\x22http://www.w3.\
-org/2000/svg\x22\x0a  \
- xmlns:rdf=\x22http\
-://www.w3.org/19\
-99/02/22-rdf-syn\
-tax-ns#\x22\x0a   xmln\
-s:cc=\x22http://cre\
-ativecommons.org\
-/ns#\x22\x0a   xmlns:d\
-c=\x22http://purl.o\
-rg/dc/elements/1\
-.1/\x22>\x0a  <metadat\
-a\x0a     id=\x22metad\
-ata12\x22>\x0a    <rdf\
-:RDF>\x0a      <cc:\
-Work\x0a         rd\
-f:about=\x22\x22>\x0a    \
-    <dc:format>i\
-mage/svg+xml</dc\
-:format>\x0a       \
- <dc:type\x0a      \
-     rdf:resourc\
-e=\x22http://purl.o\
-rg/dc/dcmitype/S\
-tillImage\x22 />\x0a  \
-    </cc:Work>\x0a \
-   </rdf:RDF>\x0a  \
-</metadata>\x0a  <d\
-efs\x0a     id=\x22def\
-s10\x22>\x0a    <marke\
-r\x0a       inkscap\
-e:stockid=\x22Arrow\
-1Lstart\x22\x0a       \
-orient=\x22auto\x22\x0a  \
-     refY=\x220.0\x22\x0a\
-       refX=\x220.0\
-\x22\x0a       id=\x22Arr\
-ow1Lstart\x22\x0a     \
-  style=\x22overflo\
-w:visible\x22\x0a     \
-  inkscape:issto\
-ck=\x22true\x22>\x0a     \
- <path\x0a         \
-id=\x22path4598\x22\x0a  \
-       d=\x22M 0.0,\
-0.0 L 5.0,-5.0 L\
- -12.5,0.0 L 5.0\
-,5.0 L 0.0,0.0 z\
- \x22\x0a         styl\
-e=\x22fill-rule:eve\
-nodd;stroke:#000\
-000;stroke-width\
-:1.0pt\x22\x0a        \
- transform=\x22scal\
-e(0.8) translate\
-(12.5,0)\x22 />\x0a   \
- </marker>\x0a  </d\
-efs>\x0a  <sodipodi\
-:namedview\x0a     \
-pagecolor=\x22#ffff\
-ff\x22\x0a     borderc\
-olor=\x22#666666\x22\x0a \
-    borderopacit\
-y=\x221\x22\x0a     objec\
-ttolerance=\x2210\x22\x0a\
-     gridtoleran\
-ce=\x2210\x22\x0a     gui\
-detolerance=\x2210\x22\
-\x0a     inkscape:p\
-ageopacity=\x220\x22\x0a \
-    inkscape:pag\
-eshadow=\x222\x22\x0a    \
- inkscape:window\
--width=\x222495\x22\x0a  \
-   inkscape:wind\
-ow-height=\x221016\x22\
-\x0a     id=\x22namedv\
-iew8\x22\x0a     showg\
-rid=\x22false\x22\x0a    \
- inkscape:zoom=\x22\
-3.0052038\x22\x0a     \
-inkscape:cx=\x2266.\
-21847\x22\x0a     inks\
-cape:cy=\x22-22.793\
-795\x22\x0a     inksca\
-pe:window-x=\x2265\x22\
-\x0a     inkscape:w\
-indow-y=\x2227\x22\x0a   \
-  inkscape:windo\
-w-maximized=\x221\x22\x0a\
-     inkscape:cu\
-rrent-layer=\x22svg\
-6\x22\x0a     inkscape\
-:pagecheckerboar\
-d=\x220\x22 />\x0a  <path\
-\x0a     style=\x22fil\
-l:#37c8ab;fill-o\
-pacity:1;stroke-\
-width:0.066147\x22\x0a\
-     d=\x22M 4.8016\
-926,44.487649 C \
-2.4893281,44.458\
-362 2.1648285,44\
-.441422 1.979776\
-2,44.340138 1.64\
-58014,44.157407 \
-1.4942949,43.916\
-69 1.4945821,43.\
-569206 c 0,-0.40\
-9206 0.1916083,-\
-0.710501 0.55242\
-93,-0.870095 0.2\
-665959,-0.117937\
- 0.5131888,-0.12\
-7024 3.9174436,-\
-0.144328 l 3.632\
-9018,-0.01847 v \
--5.409122 -5.409\
-122 l -0.1984511\
-,0.04072 c -0.93\
-13392,0.191078 -\
-3.381189,0.80561\
-7 -3.9674033,0.9\
-95225 -0.7743774\
-,0.250464 -1.066\
-6233,0.262002 -1\
-.299482,0.05129 \
--0.2374048,-0.21\
-4856 -0.1029823,\
--0.984423 0.2002\
-7,-1.146735 0.07\
-5418,-0.04034 0.\
-3383773,-0.13548\
-1 0.5843959,-0.2\
-11373 0.2459708,\
--0.0759 0.566307\
-2,-0.192575 0.71\
-18319,-0.259283 \
-1.0177639,-0.466\
-56 2.4351586,-1.\
-045491 2.7120432\
-,-1.107716 0.181\
-8939,-0.04087 0.\
-4946214,-0.09272\
- 0.6949392,-0.11\
-5195 l 0.3641707\
-,-0.04087 0.0988\
-19,-0.308593 c 0\
-.072499,-0.22625\
- 0.1525115,-0.33\
-5415 0.2998545,-\
-0.409101 0.19897\
-8,-0.0995 0.2001\
-74,-0.10327 0.12\
-0162,-0.379546 -\
-0.188258,-0.6502\
-63 -0.293394,-1.\
-935168 -0.294686\
-,-3.601539 0,-2.\
-24132 0.05915,-2\
-.507547 0.594254\
-2,-2.597949 0.30\
-9282,-0.05226 0.\
-588702,0.05141 0\
-.661919,0.245569\
- 0.117195,0.3107\
-18 0.579276,4.17\
-9943 0.645746,5.\
-406892 0.03876,0\
-.717823 0.06211,\
-0.839162 0.17892\
-7,0.933756 0.103\
-46,0.08378 0.140\
-595,0.208017 0.1\
-61843,0.541528 0\
-.02728,0.430588 \
-0.02871,0.433014\
- 0.247358,0.4740\
-34 0.266979,0.05\
-009 4.237397,2.0\
-4832 4.442022,2.\
-235573 0.338712,\
-0.310029 0.21816\
-7,0.900694 -0.21\
-2856,1.04295 -0.\
-135092,0.0446 -0\
-.353786,0.06625 \
--0.48596,0.04813\
- -0.39006,-0.053\
-45 -2.817179,-1.\
-046697 -3.936298\
-,-1.610826 -0.40\
-9967,-0.206659 -\
-0.574538,-0.2634\
-38 -0.545682,-0.\
-188249 0.02249,0\
-.05921 0.04115,2\
-.508844 0.04115,\
-5.443615 l 4.8e-\
-5,5.335958 2.563\
-168,0.01857 c 1.\
-409738,0.01024 3\
-.433829,-4.79e-4\
- 4.497964,-0.024\
-12 l 1.934794,-0\
-.04269 v -8.1895\
-11 -8.189515 l -\
-0.227164,-0.0749\
-6 c -0.203859,-0\
-.06729 -0.58698,\
--0.417557 -0.740\
-161,-0.67673 -0.\
-03206,-0.05394 -\
-0.251426,-0.1652\
-03 -0.487922,-0.\
-247244 -3.345537\
-,-1.160662 -5.93\
-5122,-2.115981 -\
-6.191907,-2.2842\
-12 -0.238219,-0.\
-156091 -0.446241\
-,-0.649339 -0.39\
-3171,-0.932263 0\
-.06513,-0.347091\
- 0.318996,-0.598\
-786 0.694844,-0.\
-688957 0.38001,-\
-0.09116 0.30842,\
--0.108376 2.6159\
-99,0.629125 2.41\
-104,0.978701 3.2\
-87204,1.308684 4\
-.413166,1.668538\
- l 0.340052,0.04\
-159 c 0.286503,0\
-.03503 0.355701,\
-0.02168 0.439302\
-,-0.08475 0.6227\
-27,-0.792725 0.7\
-63514,-0.970092 \
-0.792753,-0.9984\
-45 0.08197,-0.07\
-957 1.403709,-1.\
-538988 1.85708,-\
-2.050554 0.69532\
-2,-0.78459 1.745\
-339,-2.038198 2.\
-691035,-3.212771\
- 0.889658,-1.104\
-978 1.116774,-1.\
-275665 1.581534,\
--1.188474 0.3663\
-72,0.06873 0.602\
-964,0.210812 0.7\
-16426,0.430267 0\
-.131647,0.254584\
- 0.127627,0.6834\
-73 -0.0091,0.948\
-04 -0.155096,0.3\
-00616 -0.830558,\
-1.196141 -2.1169\
-28,2.806684 -0.6\
-12821,0.767252 -\
-1.530953,1.92331\
-5 -2.040313,2.56\
-9017 -0.509313,0\
-.645707 -0.99053\
-5,1.237376 -1.06\
-9351,1.314824 -0\
-.126096,0.12388 \
--0.137772,0.1842\
-72 -0.09724,0.50\
-2144 0.06207,0.4\
-87103 -0.01962,0\
-.974398 -0.19467\
-1,1.160714 l -0.\
-14251,0.151674 0\
-.121311,0.534761\
- c 0.07197,0.317\
-461 0.02536,0.12\
-2096 1.674659,4.\
-618135 0.633542,\
-1.727045 1.33652\
-1,3.388401 1.400\
-741,3.512664 0.3\
-6063,0.697939 -0\
-.357375,1.370703\
- -0.824816,0.737\
-544 -0.425184,-0\
-.575931 -1.38739\
-,-2.765683 -3.41\
-4974,-6.4171 -0.\
-828644,-1.49222 \
-0.110161,-2.3902\
-38 0.107529,-2.2\
-95817 -0.0048,0.\
-115123 0.69336,3\
-.902628 0.690345\
-,9.181342 l -0.0\
-048,6.787626 5.4\
-07528,0.01259 c \
-2.974141,0.0069 \
-6.070119,-0.0083\
- 6.879956,-0.033\
-83 l 1.47238,-0.\
-04642 v -5.47085\
-9 c 0,-3.008969 \
--0.02106,-5.4899\
-57 -0.0445,-5.51\
-3301 -0.02345,-0\
-.02335 -0.09585,\
-0.04546 -0.16122\
-1,0.152856 -0.19\
-0652,0.313513 -0\
-.854486,0.574031\
- -2.87695,1.1290\
-54 -1.400024,0.3\
-84207 -1.674324,\
-0.406842 -1.8727\
-76,0.154555 -0.2\
-22474,-0.282862 \
--0.162417,-0.776\
-033 0.121789,-0.\
-999756 0.117483,\
--0.09249 1.05159\
-7,-0.553238 2.79\
-9043,-1.380581 1\
-.135437,-0.53758\
- 1.738306,-0.752\
-723 2.109272,-0.\
-752723 0.146625,\
-0 0.172084,-0.02\
-388 0.143227,-0.\
-134269 -0.05063,\
--0.193595 0.1508\
-85,-0.673209 0.3\
-7178,-0.884844 0\
-.176821,-0.16940\
-9 0.183569,-0.19\
-3977 0.0992,-0.3\
-63046 -0.265113,\
--0.531498 -0.519\
-841,-3.04688 -0.\
-475911,-4.69977 \
-0.04068,-1.52104\
-7 0.138873,-1.72\
-3408 0.838024,-1\
-.723408 0.470263\
-,0 0.484237,0.03\
-891 0.726427,2.0\
-23493 0.119444,0\
-.978978 0.289518\
-,2.317111 0.3778\
-57,2.973628 0.08\
-839,0.656522 0.1\
-60695,1.274172 0\
-.160695,1.372551\
- 0,0.11987 0.034\
-93,0.178874 0.10\
-5805,0.178874 0.\
-169309,0 0.55563\
-6,0.428693 0.555\
-636,0.616525 0,0\
-.178329 0.03111,\
-0.191068 0.67842\
-9,0.27632 0.5091\
-22,0.06706 4.918\
-22,1.715431 5.15\
-0313,1.925458 0.\
-189742,0.171701 \
-0.224149,0.50882\
- 0.08169,0.79984\
-1 -0.174142,0.35\
-5806 -0.35594,0.\
-430626 -0.94938,\
-0.390739 -0.3960\
-9,-0.02661 -0.86\
-9512,-0.159129 -\
-2.348256,-0.6572\
-34 -2.063474,-0.\
-695093 -2.806555\
-,-0.962397 -2.92\
-2362,-1.051286 -\
-0.05187,-0.03982\
- -0.102169,-0.01\
-488 -0.149927,0.\
-07432 -0.03924,0\
-.07382 -0.218934\
-,0.186479 -0.398\
-77,0.250345 l -0\
-.32694,0.116114 \
-0.01388,5.624466\
- 0.01388,5.62447\
-1 3.505753,0.002\
-4 c 3.870259,0.0\
-024 3.8727,0.002\
-4 4.181168,0.407\
-057 0.13983,0.18\
-3325 0.178544,0.\
-308263 0.181176,\
-0.584923 0.0048,\
-0.417566 -0.1453\
-33,0.663805 -0.5\
-13571,0.846886 -\
-0.234486,0.11659\
-2 -0.965794,0.12\
-1636 -19.178304,\
-0.132293 -10.414\
-039,0.0061 -20.1\
-103125,-0.0038 -\
-21.5473753,-0.02\
-201 z\x22\x0a     id=\x22\
-path870\x22\x0a     so\
-dipodi:nodetypes\
-=\x22sscsscccssssss\
-sscsssssssssssss\
-ssscsccccssssssc\
-cssssssssssssscs\
-sssssscsscssssss\
-ssssssssssssssss\
-sssscccsscssss\x22 \
-/>\x0a</svg>\x0a\
+\x00\x00\x07K\
+\x89\
+PNG\x0d\x0a\x1a\x0a\x00\x00\x00\x0dIHDR\x00\
+\x00\x00@\x00\x00\x00@\x08\x06\x00\x00\x00\xaaiq\xde\
+\x00\x00\x00\x09pHYs\x00\x00\x13\xaf\x00\x00\x13\xaf\
+\x01c\xe6\x8e\xc3\x00\x00\x00\x19tEXtSof\
+tware\x00www.inksca\
+pe.org\x9b\xee<\x1a\x00\x00\x06\xd8ID\
+ATx\x9c\xed\x9bol\x14\xc7\x19\xc6\x7f\xef\xec\xd9\
+\xc6\x18\x10Q\xa4B\x12\xd5\x94\x16\x08\xa5$T\x10\xbc\
+wG\xab\x8aV\xaa*\x14\x85\x14\xdf\xb9\xf1\x1fDU\
+Q\xaa\xaa\x95R\xa5\xfd@\xa9T\x14%\x15Aj\xaa\
+Tj\xfa!J\x1aR\xb5$\xcd\xda\xd0\xb8\x89\x95\xa6\
+_\xac6\xf8\xf6\x1c\xd2\xb4U@\x91\xa2D\xc4\xa8\x8a\
+BC\x12,\x1b\x83};o?\xdc\x9d}1g\x9b\
+\xdb#^\x04\xf7|\x9a\x9b\x9dg\xe6\x99g\xdf\x99\x9d\
+?\xb6\xa8*\xd73L\xd4\x02\xa2F\xcd\x80\xa8\x05D\
+\x8d\x9a\x01Q\x0b\x88\x1a5\x03\xa2\x16\x105j\x06D\
+- j\xd4\x0c\x88Z@\xd4\xa8\x19\x10\xb5\x80\xa8Q\
+3 j\x01Q\xa3f@\xd4\x02\xa2F\xcd\x80\xa8\x05\
+D\x8d\xeb\xde\x80X\xd4\x02J\xb1\xfe\xa4W\xdf4b\
+\x0e\x18\xabg2\xf1\xd4\xc1\xf9h\xf3\xaa\x89\x00\xe1~\
+\xb3x\xd8<)\xaa\xf7\xa9\xf0P\xcb+\xde\xf2\xf9h\
+\xf7\xaa1\xc0\xcd~\xe1A\x15\xed\xc8\xff\xd2\xbf\xbf\xb2\
+9\xfd\xde|\xb4{U\x18\x90\xf0{\xda\x80\xbd\x85\x9f\
+g\x8c\xa5Ca^.,\x227 \x99\xe9NZ\xa3\
+\xbf\x07\x04\xb0\xc0\xce\x81D\xfa\xbf\xf3\xd5~\xa4\x06l\
+\x198\xb2\xc2\x1a\x8e\x8a\xd2\x90\xcf\x91\x07}7\xf5\xd2\
+|j\x88\xcc\x80/\xbf|\xf8\x06k\x82\xe7\x81O\x01\
+\xa8\xf0b\xd6}\xfd\xfe\xf9\xd6Q\xf5g\xd0\x1d\xf4V\
+\x1a+\x0f\x03\xc3@\xef\xf9\x85c\x7f\xfd\xf7\xed;G\
+g\xe3$3^\xa3\xad\xab\x7f\x0eX_\xc8z\xdb\x09\
+\xb4S\xd9o\xab\xd5S)\xa4\xda\xcb\xd1x\xd6\xbb\x17\
+\xe4\x91\x92\xac\x0b*\xf4\x1a\xcb\xa1O\x9f\xd6\x97\x9eM\
+\xa7\x83\xd2\xf2m\x9e\xe7\x0c5K\x0f\xb0\xbd\x905\x0a\
+\x92\xf4\xdd\xd6\xff\x84i\xbfP\xdf\xafA\x9f\xf3\xdd\xf4\
+\xdf*\xe5W<\x04\xda<\xcf\x89g\xbd\x17\x12\xbe\xf7\
+m\x80\x8b\x0duO\x89\xca\x13\xe4#\x00`\x81(m\
+*\xf4\x0d5\xcbP<\xdbs`\xf3q\xef\xd6\x22\x7f\
+\xa8Y\x0e2\xd5y\x05v\x87\xed<\xc0\xa9\xcf\x98\xb5\
+\xc0\x0f@Z\xc3\xf0+6\xe0\x9d\x15\xb1\xa5 \xdbT\
+\xe4\xeb\x00\xaf}\xf1\xee\x8f2\xf1\xd6\xdd\xc6\xear\x15\
+\xe9P\xe1E\xa0\xf8\xd6o\x06\xdd\xeb\x04\xf2F<\xeb\
+e\xe2\xd9\xee\xc3\xc0\x8f\xa7j\x93\x83\xbe\x9bz&\x8c\
+\xf0\x22\x9c@\x96\xe6S\xfa\xf90\xfc\x8a\xe7\x80\xc0\xc9\
+5\xc5r\x02\xb0\xba4\x7f \x91\x1e\x03\x9e\x06\x9e\xbe\
+\xe3\xd5#7\xc5r\xb6STw\xa9Ha\x9cK\x1c\
+\x88\x97P\xcef\xdd\xd7\x7f\x06\xa1^\x5c\x89\x1e\xc6\x8d\
+\x05\x90\xd5s\x95-\x87\x8a#\xa0~\xdc,,$W\
+\xcdT\xe6\xf8\xa6\x1d\xef\xfan\xea\x97\x99x\xfa6c\
+e#\xc8c\x5c\xba\xb0\x19\xb9\x12\x93\x9e\xb1Aq\xc2\
+]\xbe\xb5\xff\xd0\x82\x8a\xf9\x95\x12Ds\x13\x85\xe4\xd2\
+\xad\xfd\xde\xa2\xb9\xca\x0f$Z_\xf3\xdd\xd6\xef\x89\xb2\
+\x07\x18)y\xf4B\xa5m\x97\x83\x138E\x03dd\
+Q\xd3\x8aJ\xf9!\x0c\xd0\xb1bz\xac\xd1\xdct\xb9\
+\xbcL<\xf58pb*G?Wi\xdb\xe5p\xb1\
+!\xf8\xa8\x98\xae\x9b`e\xa5\xfc\x8a\x0d\xc8\xc5\x82\xc9\
+\xb7h\xac\xbd\xb9R\xfe\x14\xe4kWb\xc7w|S\
+\xfa\x1cp\x16 p\xe4\x93\x8f\x00\xdf\xed\x1cV\xe1\x7f\
+\x00\xd6\xc8eG@\x19\xc4DM{\x15\xfcR\x0c\x02\
+\x88\xf2\xc9\x1bPhh\x08@\x85\xe60\xfc\xa9zl\
+W5|\x80\xad\xfd\xfd1\xd0e\x85\x9f?L\xf8=\
+n%\xfc\x8a\x0c\x10\x10w\xd0\xeb\x006\x01\x88\x86\xfe\
+\x86\x15\xd6\x09\xb21\x9e\xf5\xd6\x85\xac\x83;^}~\
+\xe1\xf9\x85g;A6\x16\xb2\x16\xabh_<\xeb\x1d\
+M\xf8\xdd\x9d_:\xd6\xbbx\xae:.k)\x9c\xf0\
+\x8fl\xb1\xc6~_\x94\xed@\xe9\xcc?\x0e\xf2+\x18\
+\x7f\xc4w\xdb\xe7<\xc0\x88g\xbb}\xc0\x05\xfeU\xa8\
+g\x15\xc8C\xbe\xdb\xfa\xd39E\x94 \x99\xf1VY\
+#?\x02vM\xd33\x1d\x17\x80>\x15\x9e\x1cl9\
+\xd1W\xee\xb3;\xa3\x01\xee\xe0\xd1\x1b!\xd7.*{\
+\x80\xdb\xe6\xd04\x06\xfc\xce\x9a\xdc\xc1\xc1\xcd\xf7\x9c\x9e\
+\xa9\xd0\x94\x01rJ\x85}\xa2z\x18\xe4t\xf3\x90]\
+9}\xcfP\x0e\xc9L\xcfZk\xd8\x07\xda\x018\xd3\
+\x1e\x8f\xaa\xe8^\x90S\xa2\xd2\x05z\x17\xd0X\xd2\xd5\
+S\xa0\x8f\xc1\xc5G}\xb7sx2\xb7\x9c\x01\x09\xbf\
+\xe7\xbb*\xfa\x1b\xa0\xbe$\xfbM\xa0\x1f\xe4]\xd0\x9f\
+\x17\xf2\x1e\x06\xeebjUxAE~\x1b8\xe3\x07\
+\x8eoj\x7f\x7ff\x03\x18\xcd\xba'\x96\xb8\xd9u\xff\
+\x04\xd9\xa0\xa2wf[\xd23\xae\x0b\x92\x19\xaf\xd1\x1a\
+y\x02\xf8\x16S\xc3v\x02\xb4WE\x82\xfc\xdeC\xde\
+\xca\xb6\xb4N.\xce\xe2\xd9?.\x11\xad\xdf\xa1\x22m\
+*|\xb5\xe4\xcca\xa7\xef\xb6\xfe\xa1X\xae\xec\x1c\xa0\
+\xa2\xcb\x81\xb7Ux\x5c\x94\xaeX.w\x8b\xef\xa6\xd6\
+\xf8nj\x8f\x0a\x7f\x99$[}*\xeb\x9eX+\xaa\
+\xdb\xf3\xe6\xb0@T\xef\x8b\xe5\xea\xdeJf\xbc\xd9\xa2\
+\xa6\xa9P\xc3>\x80B\x94\xcd\x08k\x9c\x0d@;\xf0\
+\x1e\xc8\x9fD\xe9\xaa\x9b\x18_\xe6\xbb\xe9T>\x0fD\
+UJ9\xbe\xdb9\x9c\x89\xa7\x0f\xf9nj[\xe0\xe8\
+2\x15\xbdS\x85]#\x8b\xed\xb3\xa5\xe5\xca\xee\x05|\
+7\xf5\x00\xf0\xc0l\xa2\x00\x02'f\x94\xfd\x968\xbd\
+@o<\xdb\xb3\x1a\xe8\x02\xdd`\x8d\xf3\xe1l\xdcD\
+f]\xc3@\xa2\xb5/\x9e\xed\xfe\x07\xb0-\x99\xf1n\
+\x99\xe9(\xccww\xf8[\x06\x8e.;\x96\xfc\xe6\x99\
+\xe9\xcfD\xc5\x16V\xd9r)3\x8f\xc2Z\xa1l\x84\
+Uu \xe2\x04\xf6c\x11\xe4\xbb\xado\x02\xfb/\x87\
+;\xd6X\xd7\x00\x8c\x19\xab?\xb1F|k\xe4;\xcc\
+bz\xb9\xce\x03\x88\xaa\xd5\x19\xbb>7\xaa:\x12\xb3\
+\xc6\x86\xe6;\x81m\x04\x18H\xa4\x07E\xf9\xb3\x0a\xdf\
+\x08S\x8f\x0a\x85\x99]B\xd9PU\x04X\xe3\x846\
+\xa0nb\xbc\xa1\x98\x16\xd5\xdd`>\x1b\xae\xa6\xc9!\
+\x10\x0aU\x19\x10\xcb\x05\xa1\x83\xcf\x1ag\x92;\x90H\
+\x7f\x00|\x10\xa6\x1e\x15\xb5R\xc5\xa9^\x95C |\
+\x04h\x89\x01\xd5@\xb4\xd8\xfdp3AU\x06\xa8\x84\
+\x8f\x00\xb1\xc1\x15\xba\xf9\xc9/dDg\xfe\x0a\xcc\x86\
+\xc8o\x86\xa2Fd\x06\x98+\x16\x01y\xa8\x84\xfb\x0a\
+\x5cC\x11\x10\xc1\x1cp-\xe0Z2 T\x04L\xee\
+\x06\xd7\x9f\xf4\xea\x1b\xcf\xc7\xd68A\xae\x01\x9c%\xa2\
+\x97l7\x01P\xb1k\x80G\xf3d\xb9\x17\xe4\xe4l\
+\x0d\xa8\x04\xa2\x92\xbf\xbc\x10\xe5\x17\x14v\x8e\xa2t\x81\
+\xa9\xe2\x8f l\x9d5,\x12\xd5\x0e\x90\xbb\x81\xb3\xa2\
+\xe6\x9e\x19K\x9b\xc0\x8ar\xce\x09\x9c\xf7\x8f%w\xbc\
+S\xcc\x9f4 \x9e\xf52\x85\xcb\x8bk\x1d\x16\xf4+\
+\xbe\x9b~\x19>6\x04\xe4\xc6\xa8\x14\xcd3\xc4\xd8\xa9\
+\xe8\x9e\x5c\x0a_l\x88\xb5\xd4M\xd8\xdb\x9d\x80z\x15\
+\xadW\xd1\xa6h\xf4]y\x88rN\xd4X\x95\xe0C\
+c\xcd\xe8@\x22\xf5\xc6\xd4\xb3\xda\xff\x0e_\xdf\xa8\x19\
+\x10\xb5\x80\xa8\xf1\x7f\xab\xcew\xa5\x92\xe8`\xff\x00\x00\
+\x00\x00IEND\xaeB`\x82\
 "
 
 qt_resource_name = b"\
@@ -468,9 +137,9 @@ qt_resource_name = b"\
 \x00i\
 \x00c\x00o\x00n\x00s\
 \x00\x0e\
-\x0dQ\x8b\x87\
+\x0dQ\x86\x07\
 \x00w\
-\x00i\x00n\x00d\x00_\x00p\x00o\x00w\x00e\x00r\x00.\x00s\x00v\x00g\
+\x00i\x00n\x00d\x00_\x00p\x00o\x00w\x00e\x00r\x00.\x00p\x00n\x00g\
 "
 
 qt_resource_struct = b"\
@@ -481,7 +150,7 @@ qt_resource_struct = b"\
 \x00\x00\x00\x10\x00\x02\x00\x00\x00\x01\x00\x00\x00\x03\
 \x00\x00\x00\x00\x00\x00\x00\x00\
 \x00\x00\x00 \x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\
-\x00\x00\x01\x8b\xd7}+\x92\
+\x00\x00\x01\x99\xaf\x0f\xbf\x5c\
 "
 
 def qInitResources():

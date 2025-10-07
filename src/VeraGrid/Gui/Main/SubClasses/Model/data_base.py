@@ -2,6 +2,8 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 # SPDX-License-Identifier: MPL-2.0
+from __future__ import annotations
+
 import numpy as np
 from typing import Union, List, Set, Tuple, Dict
 from PySide6 import QtGui, QtCore, QtWidgets
@@ -12,7 +14,7 @@ from VeraGrid.Gui.associations_model import AssociationsModel
 from VeraGrid.Gui.table_view_header_wrap import HeaderViewWithWordWrap
 from VeraGridEngine.Compilers.circuit_to_data import compile_numerical_circuit_at
 from VeraGridEngine.DataStructures.numerical_circuit import NumericalCircuit
-from VeraGridEngine.Topology import substation_wizards as substation_wizards
+from VeraGridEngine.Topology.VoltageLevels import common_functions as substation_wizards
 import VeraGridEngine.basic_structures as bs
 import VeraGridEngine.Devices as dev
 import VeraGrid.Gui.gui_functions as gf
@@ -100,75 +102,75 @@ class DataBaseTableMain(DiagramsMain):
         Setup the database left tree object
         """
         icons = {
-            "Regions": ":/Icons/icons/map.svg",
-            DeviceType.CountryDevice.value: ":/Icons/icons/country.svg",
-            DeviceType.CommunityDevice.value: ":/Icons/icons/community.svg",
-            DeviceType.RegionDevice.value: ":/Icons/icons/region.svg",
-            DeviceType.MunicipalityDevice.value: ":/Icons/icons/municipality.svg",
-            DeviceType.AreaDevice.value: ":/Icons/icons/area.svg",
-            DeviceType.ZoneDevice.value: ":/Icons/icons/zone.svg",
+            "Regions": ":/Icons/icons/map.png",
+            DeviceType.CountryDevice.value: ":/Icons/icons/country.png",
+            DeviceType.CommunityDevice.value: ":/Icons/icons/community.png",
+            DeviceType.RegionDevice.value: ":/Icons/icons/region.png",
+            DeviceType.MunicipalityDevice.value: ":/Icons/icons/municipality.png",
+            DeviceType.AreaDevice.value: ":/Icons/icons/area.png",
+            DeviceType.ZoneDevice.value: ":/Icons/icons/zone.png",
 
-            "Substation": ":/Icons/icons/bus_icon.svg",
-            DeviceType.SubstationDevice.value: ":/Icons/icons/substation.svg",
-            DeviceType.VoltageLevelDevice.value: ":/Icons/icons/voltage_level.svg",
-            DeviceType.BusBarDevice.value: ":/Icons/icons/bus_bar_icon.svg",
-            DeviceType.BusDevice.value: ":/Icons/icons/bus_icon.svg",
-            DeviceType.SwitchDevice.value: ":/Icons/icons/switch.svg",
+            "Substation": ":/Icons/icons/bus_icon.png",
+            DeviceType.SubstationDevice.value: ":/Icons/icons/substation.png",
+            DeviceType.VoltageLevelDevice.value: ":/Icons/icons/voltage_level.png",
+            DeviceType.BusBarDevice.value: ":/Icons/icons/bus_bar_icon.png",
+            DeviceType.BusDevice.value: ":/Icons/icons/bus_icon.png",
+            DeviceType.SwitchDevice.value: ":/Icons/icons/switch.png",
 
-            "Injections": ":/Icons/icons/add_load.svg",
-            DeviceType.GeneratorDevice.value: ":/Icons/icons/gen.svg",
-            DeviceType.BatteryDevice.value: ":/Icons/icons/batt.svg",
-            DeviceType.LoadDevice.value: ":/Icons/icons/load_dev.svg",
-            DeviceType.StaticGeneratorDevice.value: ":/Icons/icons/sta_gen.svg",
-            DeviceType.ExternalGridDevice.value: ":/Icons/icons/external_grid.svg",
-            DeviceType.ShuntDevice.value: ":/Icons/icons/shunt.svg",
-            DeviceType.ControllableShuntDevice.value: ":/Icons/icons/controllable_shunt.svg",
-            DeviceType.CurrentInjectionDevice.value: ":/Icons/icons/load_dev.svg",
+            "Injections": ":/Icons/icons/add_load.png",
+            DeviceType.GeneratorDevice.value: ":/Icons/icons/gen.png",
+            DeviceType.BatteryDevice.value: ":/Icons/icons/batt.png",
+            DeviceType.LoadDevice.value: ":/Icons/icons/load_dev.png",
+            DeviceType.StaticGeneratorDevice.value: ":/Icons/icons/sta_gen.png",
+            DeviceType.ExternalGridDevice.value: ":/Icons/icons/external_grid.png",
+            DeviceType.ShuntDevice.value: ":/Icons/icons/shunt.png",
+            DeviceType.ControllableShuntDevice.value: ":/Icons/icons/controllable_shunt.png",
+            DeviceType.CurrentInjectionDevice.value: ":/Icons/icons/load_dev.png",
 
-            "Branches": ":/Icons/icons/reactance.svg",
-            DeviceType.LineDevice.value: ":/Icons/icons/ac_line.svg",
-            DeviceType.DCLineDevice.value: ":/Icons/icons/dc.svg",
-            DeviceType.Transformer2WDevice.value: ":/Icons/icons/to_transformer.svg",
-            DeviceType.WindingDevice.value: ":/Icons/icons/winding.svg",
-            DeviceType.Transformer3WDevice.value: ":/Icons/icons/transformer3w.svg",
-            DeviceType.SeriesReactanceDevice.value: ":/Icons/icons/reactance.svg",
-            DeviceType.HVDCLineDevice.value: ":/Icons/icons/to_hvdc.svg",
-            DeviceType.VscDevice.value: ":/Icons/icons/vsc.svg",
-            DeviceType.UpfcDevice.value: ":/Icons/icons/upfc.svg",
+            "Branches": ":/Icons/icons/reactance.png",
+            DeviceType.LineDevice.value: ":/Icons/icons/ac_line.png",
+            DeviceType.DCLineDevice.value: ":/Icons/icons/dc.png",
+            DeviceType.Transformer2WDevice.value: ":/Icons/icons/to_transformer.png",
+            DeviceType.WindingDevice.value: ":/Icons/icons/winding.png",
+            DeviceType.Transformer3WDevice.value: ":/Icons/icons/transformer3w.png",
+            DeviceType.SeriesReactanceDevice.value: ":/Icons/icons/reactance.png",
+            DeviceType.HVDCLineDevice.value: ":/Icons/icons/to_hvdc.png",
+            DeviceType.VscDevice.value: ":/Icons/icons/vsc.png",
+            DeviceType.UpfcDevice.value: ":/Icons/icons/upfc.png",
 
-            "Fluid": ":/Icons/icons/dam_gray.svg",
-            DeviceType.FluidNodeDevice.value: ":/Icons/icons/fluid_node.svg",
-            DeviceType.FluidPathDevice.value: ":/Icons/icons/fluid_path.svg",
-            DeviceType.FluidTurbineDevice.value: ":/Icons/icons/fluid_turbine.svg",
-            DeviceType.FluidPumpDevice.value: ":/Icons/icons/fluid_pump.svg",
-            DeviceType.FluidP2XDevice.value: ":/Icons/icons/fluid_p2x.svg",
+            "Fluid": ":/Icons/icons/dam_gray.png",
+            DeviceType.FluidNodeDevice.value: ":/Icons/icons/fluid_node.png",
+            DeviceType.FluidPathDevice.value: ":/Icons/icons/fluid_path.png",
+            DeviceType.FluidTurbineDevice.value: ":/Icons/icons/fluid_turbine.png",
+            DeviceType.FluidPumpDevice.value: ":/Icons/icons/fluid_pump.png",
+            DeviceType.FluidP2XDevice.value: ":/Icons/icons/fluid_p2x.png",
 
-            "Groups": ":/Icons/icons/groups.svg",
-            DeviceType.ContingencyGroupDevice.value: ":/Icons/icons/contingency_group.svg",
-            DeviceType.ContingencyDevice.value: ":/Icons/icons/contingency.svg",
-            DeviceType.RemedialActionGroupDevice.value: ":/Icons/icons/remedial_action_group.svg",
-            DeviceType.RemedialActionDevice.value: ":/Icons/icons/remedial_action.svg",
-            DeviceType.InvestmentsGroupDevice.value: ":/Icons/icons/investment_group.svg",
-            DeviceType.InvestmentDevice.value: ":/Icons/icons/investment_dev.svg",
-            DeviceType.BranchGroupDevice.value: ":/Icons/icons/branch_group.svg",
-            DeviceType.ModellingAuthority.value: ":/Icons/icons/modelling_authority.svg",
-            DeviceType.FacilityDevice.value: ":/Icons/icons/powerplant.svg",
-            DeviceType.RmsEventsGroupDevice.value: ":/Icons/icons/dyn_gray.svg",
-            DeviceType.RmsEventDevice.value: ":/Icons/icons/dyn_gray.svg",
+            "Groups": ":/Icons/icons/groups.png",
+            DeviceType.ContingencyGroupDevice.value: ":/Icons/icons/contingency_group.png",
+            DeviceType.ContingencyDevice.value: ":/Icons/icons/contingency.png",
+            DeviceType.RemedialActionGroupDevice.value: ":/Icons/icons/remedial_action_group.png",
+            DeviceType.RemedialActionDevice.value: ":/Icons/icons/remedial_action.png",
+            DeviceType.InvestmentsGroupDevice.value: ":/Icons/icons/investment_group.png",
+            DeviceType.InvestmentDevice.value: ":/Icons/icons/investment_dev.png",
+            DeviceType.BranchGroupDevice.value: ":/Icons/icons/branch_group.png",
+            DeviceType.ModellingAuthority.value: ":/Icons/icons/modelling_authority.png",
+            DeviceType.FacilityDevice.value: ":/Icons/icons/powerplant.png",
+            DeviceType.RmsEventsGroupDevice.value: ":/Icons/icons/dyn_gray.png",
+            DeviceType.RmsEventDevice.value: ":/Icons/icons/dyn_gray.png",
 
-            "Associations": ":/Icons/icons/associations.svg",
-            DeviceType.Technology.value: ":/Icons/icons/technology.svg",
-            DeviceType.FuelDevice.value: ":/Icons/icons/fuel.svg",
-            DeviceType.EmissionGasDevice.value: ":/Icons/icons/emission.svg",
+            "Associations": ":/Icons/icons/associations.png",
+            DeviceType.Technology.value: ":/Icons/icons/technology.png",
+            DeviceType.FuelDevice.value: ":/Icons/icons/fuel.png",
+            DeviceType.EmissionGasDevice.value: ":/Icons/icons/emission.png",
 
-            "Catalogue": ":/Icons/icons/Catalogue.svg",
-            DeviceType.WireDevice.value: ":/Icons/icons/ac_line.svg",
-            DeviceType.OverheadLineTypeDevice.value: ":/Icons/icons/tower.svg",
-            DeviceType.UnderGroundLineDevice.value: ":/Icons/icons/ac_line.svg",
-            DeviceType.SequenceLineDevice.value: ":/Icons/icons/ac_line.svg",
-            DeviceType.TransformerTypeDevice.value: ":/Icons/icons/to_transformer.svg",
-            DeviceType.RmsModelTemplateDevice.value: ":/Icons/icons/dyn_gray.svg",
-            DeviceType.DynamicModelHostDevice.value: ":/Icons/icons/dyn_gray.svg",
+            "Catalogue": ":/Icons/icons/Catalogue.png",
+            DeviceType.WireDevice.value: ":/Icons/icons/ac_line.png",
+            DeviceType.OverheadLineTypeDevice.value: ":/Icons/icons/tower.png",
+            DeviceType.UnderGroundLineDevice.value: ":/Icons/icons/ac_line.png",
+            DeviceType.SequenceLineDevice.value: ":/Icons/icons/ac_line.png",
+            DeviceType.TransformerTypeDevice.value: ":/Icons/icons/to_transformer.png",
+            DeviceType.RmsModelTemplateDevice.value: ":/Icons/icons/dyn_gray.png",
+            DeviceType.DynamicModelHostDevice.value: ":/Icons/icons/dyn_gray.png",
 
         }
 
@@ -519,7 +521,6 @@ class DataBaseTableMain(DiagramsMain):
             # copy to clipboard
             cb = QtWidgets.QApplication.clipboard()
             cb.clear()
-            lst = list()
             cb.setText("\n".join([obj.idtag for obj in selected_objects]))
 
             self.show_info_toast("Copied!")
@@ -673,7 +674,10 @@ class DataBaseTableMain(DiagramsMain):
             self.grid_reduction_dialogue.show()
 
     def grid_reduction_from_schematic_selection(self):
+        """
 
+        :return:
+        """
         selected_buses = self.get_selected_buses()
 
         if len(selected_buses):
@@ -1272,91 +1276,91 @@ class DataBaseTableMain(DiagramsMain):
 
         gf.add_menu_entry(menu=context_menu,
                           text="Edit",
-                          icon_path=":/Icons/icons/edit.svg",
+                          icon_path=":/Icons/icons/edit.png",
                           function_ptr=self.launch_object_editor)
 
         gf.add_menu_entry(menu=context_menu,
                           text="Add",
-                          icon_path=":/Icons/icons/plus.svg",
+                          icon_path=":/Icons/icons/plus.png",
                           function_ptr=self.add_objects)
 
         gf.add_menu_entry(menu=context_menu,
                           text="Delete",
-                          icon_path=":/Icons/icons/minus.svg",
+                          icon_path=":/Icons/icons/minus.png",
                           function_ptr=self.delete_selected_objects)
 
         gf.add_menu_entry(menu=context_menu,
                           text="Duplicate object",
-                          icon_path=":/Icons/icons/copy.svg",
+                          icon_path=":/Icons/icons/copy.png",
                           function_ptr=self.duplicate_selected_objects)
 
         gf.add_menu_entry(menu=context_menu,
                           text="Merge",
-                          icon_path=":/Icons/icons/fusion.svg",
+                          icon_path=":/Icons/icons/fusion.png",
                           function_ptr=self.fuse_selected)
 
         gf.add_menu_entry(menu=context_menu,
                           text="Copy idtag",
-                          icon_path=":/Icons/icons/copy.svg",
+                          icon_path=":/Icons/icons/copy.png",
                           function_ptr=self.copy_selected_idtag)
 
         gf.add_menu_entry(menu=context_menu,
                           text="Crop model to buses selection",
-                          icon_path=":/Icons/icons/schematic.svg",
+                          icon_path=":/Icons/icons/schematic.png",
                           function_ptr=self.crop_model_to_buses_selection)
 
         gf.add_menu_entry(menu=context_menu,
                           text="Grid reduction",
-                          icon_path=":/Icons/icons/schematic.svg",
+                          icon_path=":/Icons/icons/schematic.png",
                           function_ptr=self.grid_reduction_from_table_selection)
 
         gf.add_menu_entry(menu=context_menu,
                           text="Copy table",
-                          icon_path=":/Icons/icons/copy.svg",
+                          icon_path=":/Icons/icons/copy.png",
                           function_ptr=self.copy_objects_data)
 
         gf.add_menu_entry(menu=context_menu,
                           text="Set value to column",
-                          icon_path=":/Icons/icons/copy2down.svg",
+                          icon_path=":/Icons/icons/copy2down.png",
                           function_ptr=self.set_value_to_column)
 
         gf.add_menu_entry(menu=context_menu,
                           text="Assign to profile",
-                          icon_path=":/Icons/icons/assign_to_profile.svg",
+                          icon_path=":/Icons/icons/assign_to_profile.png",
                           function_ptr=self.assign_to_profile)
 
         context_menu.addSeparator()
 
         gf.add_menu_entry(menu=context_menu,
                           text="New vicinity diagram",
-                          icon_path=":/Icons/icons/grid_icon.svg",
+                          icon_path=":/Icons/icons/grid_icon.png",
                           function_ptr=self.add_bus_vicinity_diagram_from_model)
 
         gf.add_menu_entry(menu=context_menu,
                           text="New diagram from selection",
-                          icon_path=":/Icons/icons/schematicadd_to.svg",
+                          icon_path=":/Icons/icons/schematicadd_to.png",
                           function_ptr=self.add_new_bus_diagram_from_selection)
 
         gf.add_menu_entry(menu=context_menu,
                           text="Add to current diagram",
-                          icon_path=":/Icons/icons/schematicadd_to.svg",
+                          icon_path=":/Icons/icons/schematicadd_to.png",
                           function_ptr=self.add_objects_to_current_diagram)
 
         gf.add_menu_entry(menu=context_menu,
                           text="Highlight buses selection",
-                          icon_path=":/Icons/icons/highlight.svg",
+                          icon_path=":/Icons/icons/highlight.png",
                           function_ptr=self.highlight_selection_buses)
 
         gf.add_menu_entry(menu=context_menu,
                           text="Highlight based on property",
-                          icon_path=":/Icons/icons/highlight2.svg",
+                          icon_path=":/Icons/icons/highlight2.png",
                           function_ptr=self.highlight_based_on_property)
 
         context_menu.addSeparator()
 
         gf.add_menu_entry(menu=context_menu,
                           text="New map from selection",
-                          icon_path=":/Icons/icons/map.svg",
+                          icon_path=":/Icons/icons/map.png",
                           function_ptr=self.add_new_map_from_database_selection)
 
         # Convert global position to local position of the list widget

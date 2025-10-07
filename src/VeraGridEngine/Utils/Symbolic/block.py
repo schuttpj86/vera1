@@ -101,6 +101,7 @@ class Block:
     children: list["Block"] = field(default_factory=list)
     in_vars: List[Var] = field(default_factory=list)
     out_vars: List[Var] = field(default_factory=list)
+    active_in_vars: List[Var] = field(default_factory=list)
 
     def __post_init__(self) -> None:
         # if len(self.algebraic_vars) != len(self.algebraic_eqs):
@@ -257,7 +258,33 @@ def pi_controller(err: Var, kp: float, ki: float, name: str = "pi") -> Block:
                  children=[blk_kp, blk_int, blk_ki, blk_sum],
                  in_vars=[err],
                  out_vars=[u])
+#
+# def generic() -> Block:
+#     blk = Block()
+#     return blk
 
-def generic() -> Block:
+
+def generic(state_inputs: int, state_outputs: Sequence[str], algebraic_inputs: int, algebraic_outputs: Sequence[str]) -> Block:
     blk = Block()
+    blk.name = "generic"
+    input_vars = [Var(f"Vport{i}") for i in range(state_inputs + algebraic_inputs)]
+    blk.in_vars = input_vars
+
+    for v in state_outputs:
+        var = Var(v)
+        blk.state_vars.append(var)
+        blk.out_vars.append(var)
+
+    for v in algebraic_outputs:
+        var = Var(v)
+        blk.algebraic_vars.append(var)
+        blk.out_vars.append(var)
+
+
+
+
+
+
+
+
     return blk

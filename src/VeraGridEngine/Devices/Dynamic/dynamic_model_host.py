@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: MPL-2.0
 from __future__ import annotations
 
-from typing import List, Dict, Any, Union
+from typing import List, Dict, Any, Union, Sequence
 from dataclasses import dataclass
 from VeraGridEngine.Devices.Parents.editable_device import EditableDevice
 from VeraGridEngine.Utils.Symbolic.block import Block
@@ -19,6 +19,10 @@ class BlockDiagramNode:
     y: float
     tpe: str
     device_uid: int
+    state_ins: int
+    state_outs: Sequence[str]
+    algeb_ins: int
+    algeb_outs: Sequence[str]
     sub_diagram: "BlockDiagram" = None
 
     def get_node_dict(self) -> Dict[str, Any]:
@@ -27,6 +31,10 @@ class BlockDiagramNode:
             'y': self.y,
             'tpe': self.tpe,
             'device_uid': self.device_uid,
+            'state_ins': self.state_ins,
+            'state_uots': self.state_outs,
+            'algeb_ins': self.algeb_ins,
+            'algeb_outs': self.algeb_outs
         }
         if self.sub_diagram is not None:
             data['sub_diagram'] = {
@@ -73,7 +81,7 @@ class BlockDiagram:
         self.node_data: Dict[int, BlockDiagramNode] = dict()
         self.con_data: List[BlockDiagramConnection] = list()
 
-    def add_node(self, x: float, y: float, tpe: str,  device_uid: int, subdiagram: BlockDiagram = None):
+    def add_node(self, x: float, y: float, tpe: str,  device_uid: int, state_ins: int = 0, state_outs: Sequence[str] = [], algeb_ins: int = 0, algeb_outs: Sequence[str] = [], subdiagram: BlockDiagram = None):
         """
 
         :param x:
@@ -88,6 +96,10 @@ class BlockDiagram:
             y=y,
             tpe=tpe,
             device_uid=device_uid,
+            state_ins = state_ins,
+            state_outs = state_outs,
+            algeb_ins = algeb_ins,
+            algeb_outs = algeb_outs,
             sub_diagram=subdiagram
         )
 
@@ -136,6 +148,10 @@ class BlockDiagram:
                 y=node['y'],
                 tpe=node['tpe'],
                 device_uid=node['device_uid'],
+                state_ins=node['state_ins'],
+                state_outs=node['state_outs'],
+                algeb_ins=node['algeb_ins'],
+                algeb_outs=node['algeb_outs'],
                 sub_diagram=subdiagram
             )
 

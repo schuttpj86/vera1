@@ -1,9 +1,9 @@
 <RCC>
   <qresource prefix="icons">
-    <file>icons/fix.svg</file>
-    <file>icons/gear.svg</file>
-    <file>icons/inputs_analysis 2.svg</file>
-    <file>icons/save.svg</file>
-    <file>icons/savec.svg</file>
+    <file>icons/fix.png</file>
+    <file>icons/gear.png</file>
+    <file>icons/inputs_analysis 2.png</file>
+    <file>icons/save.png</file>
+    <file>icons/savec.png</file>
   </qresource>
 </RCC>

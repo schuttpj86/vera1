@@ -2,20 +2,20 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    version="1.1"
    id="svg2"
    width="192"
    height="192"
    viewBox="0 0 192 192"
-   sodipodi:docname="bars.svg"
-   inkscape:version="0.92.2 (5c3e80d, 2017-08-06)">
+   sodipodi:docname="bars.png"
+   inkscape:version="0.92.2 (5c3e80d, 2017-08-06)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <metadata
      id="metadata8">
     <rdf:RDF>
@@ -49,7 +49,10 @@
      inkscape:window-x="57"
      inkscape:window-y="27"
      inkscape:window-maximized="0"
-     inkscape:current-layer="svg2" />
+     inkscape:current-layer="svg2"
+     inkscape:showpageshadow="2"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1" />
   <path
      style="fill:#999999;stroke-width:1.33333337"
      d="m 34,167.5618 c -1.466667,-0.6178 -4.166667,-2.73724 -6,-4.70985 l -3.333333,-3.58656 V 96.731782 34.198175 L 29.025641,29.8392 33.384616,25.480226 H 96 158.61539 l 4.35897,4.358974 4.35897,4.358975 v 62.615384 62.615391 l -4.35798,4.35897 -4.358,4.35897 -60.975342,0.2691 C 64.105569,168.56399 35.466667,168.17961 34,167.5618 Z M 72,108.81356 V 80.813559 h -8 -8 v 28.000001 28 h 8 8 z m 32,-12.000001 v -40 h -8 -8 v 40 40.000001 h 8 8 z m 32,24.000001 v -16 h -8 -8 v 16 16 h 8 8 z"

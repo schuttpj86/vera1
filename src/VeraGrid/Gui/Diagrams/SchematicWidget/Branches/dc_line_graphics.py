@@ -281,13 +281,13 @@ class DcLineGraphicItem(LineGraphicTemplateItem):
 
             ra3 = menu.addAction('Editor')
             edit_icon = QIcon()
-            edit_icon.addPixmap(QPixmap(":/Icons/icons/edit.svg"))
+            edit_icon.addPixmap(QPixmap(":/Icons/icons/edit.png"))
             ra3.setIcon(edit_icon)
             ra3.triggered.connect(self.edit)
 
             rabf = menu.addAction('Change bus')
             move_bus_icon = QIcon()
-            move_bus_icon.addPixmap(QPixmap(":/Icons/icons/move_bus.svg"))
+            move_bus_icon.addPixmap(QPixmap(":/Icons/icons/move_bus.png"))
             rabf.setIcon(move_bus_icon)
             rabf.triggered.connect(self.change_bus)
 
@@ -295,19 +295,19 @@ class DcLineGraphicItem(LineGraphicTemplateItem):
 
             ra6 = menu.addAction('Plot profiles')
             plot_icon = QIcon()
-            plot_icon.addPixmap(QPixmap(":/Icons/icons/plot.svg"))
+            plot_icon.addPixmap(QPixmap(":/Icons/icons/plot.png"))
             ra6.setIcon(plot_icon)
             ra6.triggered.connect(self.plot_profiles)
 
             ra4 = menu.addAction('Assign rate to profile')
             ra4_icon = QIcon()
-            ra4_icon.addPixmap(QPixmap(":/Icons/icons/assign_to_profile.svg"))
+            ra4_icon.addPixmap(QPixmap(":/Icons/icons/assign_to_profile.png"))
             ra4.setIcon(ra4_icon)
             ra4.triggered.connect(self.assign_rate_to_profile)
 
             ra5 = menu.addAction('Assign active state to profile')
             ra5_icon = QIcon()
-            ra5_icon.addPixmap(QPixmap(":/Icons/icons/assign_to_profile.svg"))
+            ra5_icon.addPixmap(QPixmap(":/Icons/icons/assign_to_profile.png"))
             ra5.setIcon(ra5_icon)
             ra5.triggered.connect(self.assign_status_to_profile)
 
@@ -315,7 +315,7 @@ class DcLineGraphicItem(LineGraphicTemplateItem):
 
             ra2 = menu.addAction('Delete')
             del_icon = QIcon()
-            del_icon.addPixmap(QPixmap(":/Icons/icons/delete3.svg"))
+            del_icon.addPixmap(QPixmap(":/Icons/icons/delete3.png"))
             ra2.setIcon(del_icon)
             ra2.triggered.connect(self.delete)
 

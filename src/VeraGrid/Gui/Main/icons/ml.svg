@@ -7,7 +7,7 @@
    width="192"
    height="192"
    viewBox="0 0 192 192"
-   sodipodi:docname="ml.svg"
+   sodipodi:docname="ml.png"
    inkscape:version="1.1 (c68e22c387, 2021-05-23)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -50,7 +50,9 @@
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
      inkscape:current-layer="g833"
-     inkscape:pagecheckerboard="0" />
+     inkscape:pagecheckerboard="0"
+     inkscape:showpageshadow="2"
+     inkscape:deskcolor="#d1d1d1" />
   <g
      id="g893"
      transform="matrix(0.34525501,0,0,0.34525501,12.167256,11.139857)">

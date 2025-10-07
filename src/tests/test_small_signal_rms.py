@@ -1,23 +1,13 @@
 from __future__ import annotations
 
-import pytest
 import numpy as np
-import pandas as pd
-
-import sys
-import time
-import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
-
-from VeraGridEngine.Devices.Aggregation.rms_event import RmsEvent
 from VeraGridEngine.Utils.Symbolic.symbolic import Const, Var
 from VeraGridEngine.Utils.Symbolic.block_solver import BlockSolver
+from VeraGridEngine.Simulations.SmallSignalStability.small_signal_driver import run_small_signal_stability
 import VeraGridEngine.api as gce
 
 
-
 def stability_kundur_no_shunt():
-
     t = Var("t")
 
     grid = gce.MultiCircuit()
@@ -51,77 +41,77 @@ def stability_kundur_no_shunt():
 
     line0 = grid.add_line(
         gce.Line(name="line 5-6-1", bus_from=bus5, bus_to=bus6,
-                r=0.00500, x=0.05000, b=0.02187, rate=750.0))
+                 r=0.00500, x=0.05000, b=0.02187, rate=750.0))
 
     line1 = grid.add_line(
         gce.Line(name="line 5-6-2", bus_from=bus5, bus_to=bus6,
-                r=0.00500, x=0.05000, b=0.02187, rate=750.0))
+                 r=0.00500, x=0.05000, b=0.02187, rate=750.0))
 
     line2 = grid.add_line(
         gce.Line(name="line 6-7-1", bus_from=bus6, bus_to=bus7,
-                r=0.00300, x=0.03000, b=0.00583, rate=700.0))
+                 r=0.00300, x=0.03000, b=0.00583, rate=700.0))
 
     line3 = grid.add_line(
         gce.Line(name="line 6-7-2", bus_from=bus6, bus_to=bus7,
-                r=0.00300, x=0.03000, b=0.00583, rate=700.0))
+                 r=0.00300, x=0.03000, b=0.00583, rate=700.0))
 
     line4 = grid.add_line(
         gce.Line(name="line 6-7-3", bus_from=bus6, bus_to=bus7,
-                r=0.00300, x=0.03000, b=0.00583, rate=700.0))
+                 r=0.00300, x=0.03000, b=0.00583, rate=700.0))
 
     line5 = grid.add_line(
         gce.Line(name="line 7-8-1", bus_from=bus7, bus_to=bus8,
-                r=0.01100, x=0.11000, b=0.19250, rate=400.0))
+                 r=0.01100, x=0.11000, b=0.19250, rate=400.0))
 
     line6 = grid.add_line(
         gce.Line(name="line 7-8-2", bus_from=bus7, bus_to=bus8,
-                r=0.01100, x=0.11000, b=0.19250, rate=400.0))
+                 r=0.01100, x=0.11000, b=0.19250, rate=400.0))
 
     line7 = grid.add_line(
         gce.Line(name="line 8-9-1", bus_from=bus8, bus_to=bus9,
-                r=0.01100, x=0.11000, b=0.19250, rate=400.0))
+                 r=0.01100, x=0.11000, b=0.19250, rate=400.0))
 
     line8 = grid.add_line(
         gce.Line(name="line 8-9-2", bus_from=bus8, bus_to=bus9,
-                r=0.01100, x=0.11000, b=0.19250, rate=400.0))
+                 r=0.01100, x=0.11000, b=0.19250, rate=400.0))
 
     line9 = grid.add_line(
         gce.Line(name="line 9-10-1", bus_from=bus9, bus_to=bus10,
-                r=0.00300, x=0.03000, b=0.00583, rate=700.0))
+                 r=0.00300, x=0.03000, b=0.00583, rate=700.0))
 
     line10 = grid.add_line(
         gce.Line(name="line 9-10-2", bus_from=bus9, bus_to=bus10,
-                r=0.00300, x=0.03000, b=0.00583, rate=700.0))
+                 r=0.00300, x=0.03000, b=0.00583, rate=700.0))
 
     line11 = grid.add_line(
         gce.Line(name="line 9-10-3", bus_from=bus9, bus_to=bus10,
-                r=0.00300, x=0.03000, b=0.00583, rate=700.0))
+                 r=0.00300, x=0.03000, b=0.00583, rate=700.0))
 
     line12 = grid.add_line(
         gce.Line(name="line 10-11-1", bus_from=bus10, bus_to=bus11,
-                r=0.00500, x=0.05000, b=0.02187, rate=750.0))
+                 r=0.00500, x=0.05000, b=0.02187, rate=750.0))
 
     line13 = grid.add_line(
         gce.Line(name="line 10-11-2", bus_from=bus10, bus_to=bus11,
-                r=0.00500, x=0.05000, b=0.02187, rate=750.0))
+                 r=0.00500, x=0.05000, b=0.02187, rate=750.0))
 
     # Transformers
     xt1 = 0.15 * (100.0 / 900.0)
     trafo_G1 = grid.add_line(
         gce.Line(name="trafo 5-1", bus_from=bus5, bus_to=bus1,
-                r=0.00000, x=xt1, b=0.0, rate=900.0))
+                 r=0.00000, x=xt1, b=0.0, rate=900.0))
 
     trafo_G2 = grid.add_line(
         gce.Line(name="trafo 6-2", bus_from=bus6, bus_to=bus2,
-                r=0.00000, x=0.15 * (100.0 / 900.0), b=0.0, rate=900.0))
+                 r=0.00000, x=0.15 * (100.0 / 900.0), b=0.0, rate=900.0))
 
     trafo_G3 = grid.add_line(
         gce.Line(name="trafo 11-3", bus_from=bus11, bus_to=bus3,
-                r=0.00000, x=0.15 * (100.0 / 900.0), b=0.0, rate=900.0))
+                 r=0.00000, x=0.15 * (100.0 / 900.0), b=0.0, rate=900.0))
 
     trafo_G4 = grid.add_line(
         gce.Line(name="trafo 10-4", bus_from=bus10, bus_to=bus4,
-                r=0.00000, x=0.15 * (100.0 / 900.0), b=0.0, rate=900.0))
+                 r=0.00000, x=0.15 * (100.0 / 900.0), b=0.0, rate=900.0))
 
     # load
     load1 = gce.Load(name="load1", P=967.0, Q=100.0, Pl0=-9.670000000007317, Ql0=-0.9999999999967969)
@@ -216,7 +206,6 @@ def stability_kundur_no_shunt():
     grid.add_generator(bus=bus3, api_obj=gen3)
     grid.add_generator(bus=bus4, api_obj=gen4)
 
-
     options = gce.PowerFlowOptions(
         solver_type=gce.SolverType.NR,
         retry_with_other_methods=False,
@@ -248,18 +237,21 @@ def stability_kundur_no_shunt():
     params0 = slv.build_init_params_vector(params_mapping)
     x0 = slv.build_init_vars_vector_from_uid(init_guess)
 
-    stab, Eigenvalues, PFactors = slv.run_small_signal_stability(x=x0, params=params0, plot=False)
+    # stab, Eigenvalues, PFactors = run_small_signal_stability(slv=slv, x=x0, params=params0, plot=False)
 
-    return Eigenvalues, PFactors
+    (stability, eigenvalues, participation_factors,
+     damping_ratios, conjugate_frequencies) = run_small_signal_stability(slv=slv, x=x0, params=params0, plot=False)
+
+    return eigenvalues, participation_factors
 
 
 def test_eigenvalues():
-    eig_Andes = np.array([-0.3937577370228531+7.237668249952536j, -0.3937577370228531-7.237668249952536j,
-                 -0.39578162845152476+7.10610769053952j,-0.39578162845152476-7.10610769053952j,
-                 -0.393088827518491+2.7838009459248343j,-0.393088827518491-2.7838009459248343j,
-                 -0.7926383508563992+0j,2.8393441106828003e-14+0j])
+    eig_Andes = np.array([-0.3937577370228531 + 7.237668249952536j, -0.3937577370228531 - 7.237668249952536j,
+                          -0.39578162845152476 + 7.10610769053952j, -0.39578162845152476 - 7.10610769053952j,
+                          -0.393088827518491 + 2.7838009459248343j, -0.393088827518491 - 2.7838009459248343j,
+                          -0.7926383508563992 + 0j, 2.8393441106828003e-14 + 0j])
 
-    eig_VeraGrid , pfactors_VeraGrid = stability_kundur_no_shunt()
+    eig_VeraGrid, pfactors_VeraGrid = stability_kundur_no_shunt()
     eig_VeraGrid_ord = eig_VeraGrid[np.argsort(-np.abs(eig_VeraGrid))]
 
     equal = False
@@ -270,24 +262,33 @@ def test_eigenvalues():
 
 
 def test_participation_factors():
-    pfactors_Andes = np.array([[0.1228500000,0.1228500000,0.1021600000,0.1021600000,0.1731400000,0.1731400000, 0.1942900000,0.0058800000],
-                               [0.1513000000,0.1513000000,0.1220100000,0.1220100000,0.1164300000,0.1164300000,0.2107700000,0.0063900000],
-                               [0.1027000000,0.1027000000, 0.1565200000,0.1565200000,0.1016100000,0.1016100000,0.2798000000,0.0059200000],
-                               [0.1231400000,0.1231400000,0.1193200000,0.1193200000,0.1072800000,0.1072800000,0.3021900000,0.0064000000],
-                               [0.1232400000,0.1232400000,0.1024900000,0.1024900000,0.1738200000,0.1738200000,0.0000000000,0.1997800000],
-                               [0.1517800000,0.1517800000,0.1224000000,0.1224000000,0.1168900000,0.1168900000,0.0000000000,0.2169300000],
-                               [0.1040300000,0.1040300000,0.1585600000,0.1585600000,0.1028200000,0.1028200000,0.0000000000,0.2784500000],
-                               [0.1217000000,0.1217000000,0.1179300000,0.1179300000,0.1059200000,0.1059200000,0.0000000000,0.2934000000]])
-    eig_VeraGrid , pfactors_VeraGrid = stability_kundur_no_shunt()
+    pfactors_Andes = np.array([[0.1228500000, 0.1228500000, 0.1021600000, 0.1021600000, 0.1731400000, 0.1731400000,
+                                0.1942900000, 0.0058800000],
+                               [0.1513000000, 0.1513000000, 0.1220100000, 0.1220100000, 0.1164300000, 0.1164300000,
+                                0.2107700000, 0.0063900000],
+                               [0.1027000000, 0.1027000000, 0.1565200000, 0.1565200000, 0.1016100000, 0.1016100000,
+                                0.2798000000, 0.0059200000],
+                               [0.1231400000, 0.1231400000, 0.1193200000, 0.1193200000, 0.1072800000, 0.1072800000,
+                                0.3021900000, 0.0064000000],
+                               [0.1232400000, 0.1232400000, 0.1024900000, 0.1024900000, 0.1738200000, 0.1738200000,
+                                0.0000000000, 0.1997800000],
+                               [0.1517800000, 0.1517800000, 0.1224000000, 0.1224000000, 0.1168900000, 0.1168900000,
+                                0.0000000000, 0.2169300000],
+                               [0.1040300000, 0.1040300000, 0.1585600000, 0.1585600000, 0.1028200000, 0.1028200000,
+                                0.0000000000, 0.2784500000],
+                               [0.1217000000, 0.1217000000, 0.1179300000, 0.1179300000, 0.1059200000, 0.1059200000,
+                                0.0000000000, 0.2934000000]])
+    eig_VeraGrid, pfactors_VeraGrid = stability_kundur_no_shunt()
 
     order_rows = [0, 2, 4, 6, 1, 3, 5, 7]
     pfactors_VeraGrid_ord = pfactors_VeraGrid[order_rows, :]
 
     equal = False
-    if pfactors_Andes.shape == pfactors_VeraGrid_ord.shape :
-        equal = np.allclose(pfactors_Andes, pfactors_VeraGrid_ord.toarray(), atol=1e-2)
+    if pfactors_Andes.shape == pfactors_VeraGrid_ord.shape:
+        equal = np.allclose(pfactors_Andes, pfactors_VeraGrid_ord, atol=1e-2)
 
     assert equal
+
 
 if __name__ == '__main__':
     test_eigenvalues()

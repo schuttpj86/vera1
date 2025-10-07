@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from VeraGridEngine.Devices.Parents.editable_device import EditableDevice
-from VeraGridEngine.enumerations import DeviceType, SubstationTypes
+from VeraGridEngine.enumerations import DeviceType, VoltageLevelTypes
 
 
 class VoltageLevelTemplate(EditableDevice):
@@ -26,12 +26,12 @@ class VoltageLevelTemplate(EditableDevice):
                                 idtag=idtag,
                                 device_type=device_type)
 
-        self.vl_type: SubstationTypes = SubstationTypes.SingleBar
+        self.vl_type: VoltageLevelTypes = VoltageLevelTypes.SingleBar
         self.voltage: float = voltage
         self.n_bays: int = 1
         self.add_disconnectors: bool = False
 
-        self.register(key='vl_type', units='', tpe=SubstationTypes, definition='Voltage level type', editable=True)
+        self.register(key='vl_type', units='', tpe=VoltageLevelTypes, definition='Voltage level type', editable=True)
 
         self.register(key='voltage', units='KV', tpe=float, definition='Voltage.', editable=True)
 

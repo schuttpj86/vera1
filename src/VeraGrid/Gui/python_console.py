@@ -14,6 +14,9 @@ from VeraGrid.Gui.python_highlighter import PythonHighlighter
 
 
 class PythonConsole(QTextEdit):
+    """
+    PythonConsole
+    """
     def __init__(self, banner: str = ""):
         super().__init__()
 

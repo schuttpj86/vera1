@@ -56,15 +56,15 @@ class SeriesReactanceGraphicItem(LineGraphicTemplateItem):
             pe = menu.addAction('Enable/Disable')
             pe_icon = QIcon()
             if self.api_object.active:
-                pe_icon.addPixmap(QPixmap(":/Icons/icons/uncheck_all.svg"))
+                pe_icon.addPixmap(QPixmap(":/Icons/icons/uncheck_all.png"))
             else:
-                pe_icon.addPixmap(QPixmap(":/Icons/icons/check_all.svg"))
+                pe_icon.addPixmap(QPixmap(":/Icons/icons/check_all.png"))
             pe.setIcon(pe_icon)
             pe.triggered.connect(self.enable_disable_toggle)
 
             rabf = menu.addAction('Change bus')
             move_bus_icon = QIcon()
-            move_bus_icon.addPixmap(QPixmap(":/Icons/icons/move_bus.svg"))
+            move_bus_icon.addPixmap(QPixmap(":/Icons/icons/move_bus.png"))
             rabf.setIcon(move_bus_icon)
             rabf.triggered.connect(self.change_bus)
 
@@ -72,7 +72,7 @@ class SeriesReactanceGraphicItem(LineGraphicTemplateItem):
 
             ra2 = menu.addAction('Delete')
             del_icon = QIcon()
-            del_icon.addPixmap(QPixmap(":/Icons/icons/delete3.svg"))
+            del_icon.addPixmap(QPixmap(":/Icons/icons/delete3.png"))
             ra2.setIcon(del_icon)
             ra2.triggered.connect(self.delete)
 
@@ -80,19 +80,19 @@ class SeriesReactanceGraphicItem(LineGraphicTemplateItem):
 
             ra6 = menu.addAction('Plot profiles')
             plot_icon = QIcon()
-            plot_icon.addPixmap(QPixmap(":/Icons/icons/plot.svg"))
+            plot_icon.addPixmap(QPixmap(":/Icons/icons/plot.png"))
             ra6.setIcon(plot_icon)
             ra6.triggered.connect(self.plot_profiles)
 
             ra4 = menu.addAction('Assign rate to profile')
             ra4_icon = QIcon()
-            ra4_icon.addPixmap(QPixmap(":/Icons/icons/assign_to_profile.svg"))
+            ra4_icon.addPixmap(QPixmap(":/Icons/icons/assign_to_profile.png"))
             ra4.setIcon(ra4_icon)
             ra4.triggered.connect(self.assign_rate_to_profile)
 
             ra5 = menu.addAction('Assign active state to profile')
             ra5_icon = QIcon()
-            ra5_icon.addPixmap(QPixmap(":/Icons/icons/assign_to_profile.svg"))
+            ra5_icon.addPixmap(QPixmap(":/Icons/icons/assign_to_profile.png"))
             ra5.setIcon(ra5_icon)
             ra5.triggered.connect(self.assign_status_to_profile)
 

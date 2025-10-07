@@ -130,18 +130,18 @@ class FluidPathGraphicItem(LineGraphicTemplateItem):
 
             add_menu_entry(menu=menu,
                            text="Plot profiles",
-                           icon_path=":/Icons/icons/plot.svg",
+                           icon_path=":/Icons/icons/plot.png",
                            function_ptr=self.plot_profiles)
 
             add_menu_entry(menu=menu,
                            text="Delete",
-                           icon_path=":/Icons/icons/delete3.svg",
+                           icon_path=":/Icons/icons/delete3.png",
                            function_ptr=self.delete)
 
             menu.addSection('Convert to')
             add_menu_entry(menu=menu,
                            text="Convert to line",
-                           icon_path=":/Icons/icons/assign_to_profile.svg",
+                           icon_path=":/Icons/icons/assign_to_profile.png",
                            function_ptr=self.to_line)
 
             menu.exec_(event.screenPos())

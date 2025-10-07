@@ -6,7 +6,8 @@ from __future__ import annotations
 from typing import List, Union, Any, TYPE_CHECKING, Callable, Dict
 from PySide6.QtCore import Qt, QPointF, QRectF, QRect
 from PySide6.QtGui import QPen, QCursor
-from PySide6.QtWidgets import (QGraphicsRectItem, QGraphicsItem, QGraphicsEllipseItem, QGraphicsSceneMouseEvent)
+from PySide6.QtWidgets import (QGraphicsRectItem, QGraphicsItem, QGraphicsEllipseItem, QGraphicsSceneMouseEvent,
+                               QAbstractGraphicsShapeItem)
 from VeraGridEngine.enumerations import TerminalType
 
 from VeraGrid.Gui.Diagrams.generic_graphics import ACTIVE
@@ -20,7 +21,138 @@ if TYPE_CHECKING:  # Only imports the below statements during type checking
     from VeraGrid.Gui.Diagrams.SchematicWidget.Fluid.fluid_node_graphics import FluidNodeGraphicItem
 
 
-class BarTerminalItem(QGraphicsRectItem):
+class BaseTerminal:
+    """
+    Represents a connection point to a subsystem
+    """
+
+    def __init__(self,
+                 name: str,
+                 editor: SchematicWidget,
+                 parent: Union[None, BusGraphicItem, Transformer3WGraphicItem, FluidNodeGraphicItem] = None,
+                 terminal_type: TerminalType = TerminalType.OTHER):
+        """
+
+        :param name:
+        :param editor:
+        :param parent:
+        :param terminal_type:
+        """
+        self.terminal_type = terminal_type
+
+        # terminal parent object
+        self.parent: Union[BusGraphicItem, Transformer3WGraphicItem, FluidNodeGraphicItem] = parent
+
+        # object -> callback
+        self._hosting_connections: Dict[LineGraphicTemplateItem, Callable[[QPointF], None]] = dict()
+
+        # editor
+        self.editor: SchematicWidget = editor
+
+        # Name:
+        self.name = name
+
+    def get_parent(self) -> Union[None, BusGraphicItem, Transformer3WGraphicItem, VscGraphicItem3Term]:
+        """
+        Returns the parent object
+        :return: Union[None, BusGraphicItem, Transformer3WGraphicItem]
+        """
+        return self.parent
+
+    @property
+    def hosting_connections(self):
+        """
+        Getter for hosting connections
+        :return:
+        """
+        return self._hosting_connections
+
+    def get_callback(self, graphic_obj: LineGraphicTemplateItem) -> Callable[[QPointF], None] | None:
+        """
+        Get the callback function of a graphic object
+        :param graphic_obj: LineGraphicTemplateItem
+        :return: Callback function
+        """
+        return self._hosting_connections.get(graphic_obj, None)
+
+    def add_hosting_connection(self,
+                               graphic_obj: LineGraphicTemplateItem,
+                               callback: Callable[[QPointF], None]):
+        """
+        Add object graphically connected to the graphical bus
+        :param graphic_obj: LineGraphicTemplateItem (or child of this)
+        :param callback: callback function
+        """
+        self._hosting_connections[graphic_obj] = callback
+
+    def delete_hosting_connection(self, graphic_obj: LineGraphicTemplateItem):
+        """
+        Delete object graphically connected to the graphical bus
+        :param graphic_obj: LineGraphicTemplateItem (or child of this)
+        """
+        if graphic_obj in self._hosting_connections.keys():
+            del self._hosting_connections[graphic_obj]
+        else:
+            print(f'No such hosting connection {self.name} -> {graphic_obj}')
+
+    def reassign_terminal(self, graphic_obj: LineGraphicTemplateItem,
+                          another_terminal: "BarTerminalItem"):
+        """
+        Re-assign hosting connection from another terminal to this one
+        :param graphic_obj:
+        :param another_terminal:
+        :return:
+        """
+        self.add_hosting_connection(
+            graphic_obj=graphic_obj,
+            callback=another_terminal.get_callback(graphic_obj=graphic_obj)
+        )
+
+        another_terminal.delete_hosting_connection(graphic_obj)
+
+    def get_hosted_graphics(self) -> List[LineGraphicTemplateItem]:
+        """
+        Get hosted graphics
+        :return:
+        """
+        return [graphic_obj for graphic_obj in self._hosting_connections.keys()]
+
+    def mousePressEvent(self, event: QGraphicsSceneMouseEvent) -> None:
+        """
+        Start a connection
+        :param event: QGraphicsSceneMouseEvent
+        """
+        self.editor.start_connection(self)
+
+    def remove_all_connections(self, delete_from_db: bool) -> None:
+        """
+        Removes all the terminal connections
+        """
+        for graphic_item, _ in self._hosting_connections.items():
+            self.editor.remove_element(graphic_object=graphic_item,
+                                       device=graphic_item.api_object,
+                                       delete_from_db=delete_from_db)
+
+        self.clear()
+
+    def clear(self):
+        """
+        Clear the hosting connections
+        """
+        self._hosting_connections.clear()
+
+    def __str__(self):
+
+        if self.parent is None:
+            return f"Terminal [{hex(id(self))}]"
+        else:
+            return f"Terminal {self.parent} [{hex(id(self))}]"
+
+    def __repr__(self):
+        return str(self)
+
+
+class BarTerminalItem(BaseTerminal, QGraphicsRectItem):
     """
     Represents a connection point to a subsystem
     """
@@ -40,8 +172,9 @@ class BarTerminalItem(QGraphicsRectItem):
         :param h:
         :param w:
         """
-
+        BaseTerminal.__init__(self, name=name, editor=editor, parent=parent)
         QGraphicsRectItem.__init__(self, QRectF(-6.0, -6.0, h, w), parent)
+
         self.setCursor(QCursor(Qt.CursorShape.CrossCursor))
 
         # Properties:
@@ -51,24 +184,7 @@ class BarTerminalItem(QGraphicsRectItem):
         self.setBrush(Qt.GlobalColor.darkGray)
         self.setPen(QPen(self.color, self.pen_width, self.style))
 
-        # terminal parent object
-        self.parent: Union[BusGraphicItem, Transformer3WGraphicItem, FluidNodeGraphicItem] = parent
-
-        # object -> callback
-        self._hosting_connections: Dict[LineGraphicTemplateItem, Callable[[QPointF], None]] = dict()
-
-        self.editor = editor
-
-        # Name:
-        self.name = name
         self.setFlag(QGraphicsRectItem.GraphicsItemFlag.ItemSendsScenePositionChanges, True)
-
-    def get_parent(self) -> Union[None, BusGraphicItem, Transformer3WGraphicItem, VscGraphicItem3Term]:
-        """
-        Returns the parent object
-        :return: Union[None, BusGraphicItem, Transformer3WGraphicItem]
-        """
-        return self.parent
 
     @property
     def w(self) -> float:
@@ -114,41 +230,6 @@ class BarTerminalItem(QGraphicsRectItem):
         """
         return self.pos().y() - self.h / 2
 
-    @property
-    def hosting_connections(self):
-        """
-        Getter for hosting connections
-        :return:
-        """
-        return self._hosting_connections
-
-    def add_hosting_connection(self,
-                               graphic_obj: LineGraphicTemplateItem,
-                               callback: Callable[[QPointF], None]):
-        """
-        Add object graphically connected to the graphical bus
-        :param graphic_obj: LineGraphicTemplateItem (or child of this)
-        :param callback: callback function
-        """
-        self._hosting_connections[graphic_obj] = callback
-
-    def delete_hosting_connection(self, graphic_obj: LineGraphicTemplateItem):
-        """
-        Delete object graphically connected to the graphical bus
-        :param graphic_obj: LineGraphicTemplateItem (or child of this)
-        """
-        if graphic_obj in self._hosting_connections.keys():
-            del self._hosting_connections[graphic_obj]
-        else:
-            print(f'No such hosting connection {self.name} -> {graphic_obj}')
-
-    def get_hosted_graphics(self) -> List[LineGraphicTemplateItem]:
-        """
-        Get hosted graphics
-        :return:
-        """
-        return [graphic_obj for graphic_obj in self._hosting_connections.keys()]
-
     def update(self, rect: Union[QRectF, QRect] = ...):
         """
 
@@ -159,6 +240,11 @@ class BarTerminalItem(QGraphicsRectItem):
         self.process_callbacks(self.scenePos())
 
     def get_center_pos(self, value: QPointF):
+        """
+
+        :param value:
+        :return:
+        """
         h2 = self.h / 2.0
         w2 = self.w / 2.0
         center = QPointF(w2, h2)
@@ -177,7 +263,7 @@ class BarTerminalItem(QGraphicsRectItem):
         dx = w / (n + 1)
 
         for i, (connection, call_back) in enumerate(self._hosting_connections.items()):
-            call_back(value + QPointF((i + 1) * dx, h2))
+            call_back(value + QPointF(float(i + 1) * dx, h2))
 
     def itemChange(self, change: QGraphicsItem.GraphicsItemChange, value: Any) -> Any:
         """
@@ -199,32 +285,8 @@ class BarTerminalItem(QGraphicsRectItem):
         """
         self.editor.start_connection(self)
 
-    def remove_all_connections(self, delete_from_db: bool) -> None:
-        """
-        Removes all the terminal connections
-        """
-        for graphic_item, _ in self._hosting_connections.items():
-            self.editor.remove_element(graphic_object=graphic_item,
-                                       device=graphic_item.api_object,
-                                       delete_from_db=delete_from_db)
 
-        self.clear()
-
-    def clear(self):
-        self._hosting_connections.clear()
-
-    def __str__(self):
-
-        if self.parent is None:
-            return f"Terminal [{hex(id(self))}]"
-        else:
-            return f"Terminal {self.parent} [{hex(id(self))}]"
-
-    def __repr__(self):
-        return str(self)
-
-
-class RoundTerminalItem(QGraphicsEllipseItem):
+class RoundTerminalItem(BaseTerminal, QGraphicsEllipseItem):
     """
     Represents a connection point to a subsystem
     """
@@ -245,8 +307,9 @@ class RoundTerminalItem(QGraphicsEllipseItem):
         :param h:
         :param w:
         """
-
+        BaseTerminal.__init__(self, name=name, editor=editor, parent=parent, terminal_type=terminal_type)
         QGraphicsEllipseItem.__init__(self, QRectF(0, 0, h, w), parent)
+
         self.setCursor(QCursor(Qt.CursorShape.CrossCursor))
 
         # Properties:
@@ -256,30 +319,11 @@ class RoundTerminalItem(QGraphicsEllipseItem):
         self.setBrush(Qt.GlobalColor.darkGray)
         self.setPen(QPen(self.color, self.pen_width, self.style))
 
-        self.terminal_type = terminal_type
-
         h2 = self.h / 2.0
         w2 = self.w / 2.0
         self.center = QPointF(w2, h2)
 
-        # terminal parent object
-        self.parent: Union[BusGraphicItem, Transformer3WGraphicItem, FluidNodeGraphicItem] = parent
-
-        # object -> callback
-        self._hosting_connections: Dict[LineGraphicTemplateItem, Callable[[QPointF], None]] = dict()
-
-        self.editor = editor
-
-        # Name:
-        self.name = name
         self.setFlag(QGraphicsRectItem.GraphicsItemFlag.ItemSendsScenePositionChanges, True)
-
-    def get_parent(self) -> Union[None, BusGraphicItem, Transformer3WGraphicItem]:
-        """
-        Returns the parent object
-        :return: Union[None, BusGraphicItem, Transformer3WGraphicItem]
-        """
-        return self.parent
 
     @property
     def w(self) -> float:
@@ -325,41 +369,6 @@ class RoundTerminalItem(QGraphicsEllipseItem):
         """
         return self.pos().y() - self.h / 2.0
 
-    @property
-    def hosting_connections(self):
-        """
-        Getter for hosting connections
-        :return:
-        """
-        return self._hosting_connections
-
-    def add_hosting_connection(self,
-                               graphic_obj: LineGraphicTemplateItem,
-                               callback: Callable[[QPointF], None]):
-        """
-        Add object graphically connected to the graphical bus
-        :param graphic_obj: LineGraphicTemplateItem (or child of this)
-        :param callback: callback function
-        """
-        self._hosting_connections[graphic_obj] = callback
-
-    def delete_hosting_connection(self, graphic_obj: LineGraphicTemplateItem):
-        """
-        Delete object graphically connected to the graphical bus
-        :param graphic_obj: LineGraphicTemplateItem (or child of this)
-        """
-        if graphic_obj in self._hosting_connections.keys():
-            del self._hosting_connections[graphic_obj]
-        else:
-            print(f'No such hosting connection {self.name} -> {graphic_obj}')
-
-    def get_hosted_graphics(self) -> List[LineGraphicTemplateItem]:
-        """
-        Get hosted graphics
-        :return:
-        """
-        return [graphic_obj for graphic_obj in self._hosting_connections.keys()]
-
     def update(self, rect: Union[QRectF, QRect] = ...):
         """
 
@@ -370,6 +379,11 @@ class RoundTerminalItem(QGraphicsEllipseItem):
         self.process_callbacks(self.scenePos())
 
     def get_center_pos(self, value: QPointF):
+        """
+
+        :param value:
+        :return:
+        """
         return value + self.center
 
     def process_callbacks(self, value: QPointF):
@@ -400,30 +414,6 @@ class RoundTerminalItem(QGraphicsEllipseItem):
         :param event: QGraphicsSceneMouseEvent
         """
         self.editor.start_connection(self)
-
-    def remove_all_connections(self, delete_from_db: bool = True) -> None:
-        """
-        Removes all the terminal connections
-        """
-        for graphic_item, _ in self._hosting_connections.items():
-            self.editor.remove_element(graphic_object=graphic_item,
-                                       device=graphic_item.api_object,
-                                       delete_from_db=delete_from_db)
-
-        self.clear()
-
-    def clear(self):
-        self._hosting_connections.clear()
-
-    def __str__(self):
-
-        if self.parent is None:
-            return f"Round Terminal [{hex(id(self))}]"
-        else:
-            return f"Round Terminal {self.parent} [{hex(id(self))}]"
-
-    def __repr__(self):
-        return str(self)
 
 
 class HandleItem(QGraphicsEllipseItem):

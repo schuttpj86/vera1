@@ -209,7 +209,7 @@ class ScriptingMain(IoMain):
 
         gf.add_menu_entry(menu=context_menu,
                           text="Delete",
-                          icon_path=":/Icons/icons/delete_with_dialogue.svg",
+                          icon_path=":/Icons/icons/delete_with_dialogue.png",
                           function_ptr=self.delete_source_code)
 
         # Convert global position to local position of the list widget

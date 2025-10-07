@@ -1,8 +1,8 @@
 <RCC>
   <qresource prefix="Icons">
-    <file>icons/delete2.svg</file>
-    <file>icons/accept2.svg</file>
-    <file>icons/delete.svg</file>
-    <file>icons/accept.svg</file>
+    <file>icons/delete2.png</file>
+    <file>icons/accept2.png</file>
+    <file>icons/delete.png</file>
+    <file>icons/accept.png</file>
   </qresource>
 </RCC>

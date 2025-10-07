@@ -303,6 +303,4 @@ def initialize_rms(grid: MultiCircuit, power_flow_results, logger: Logger = Logg
                 mdl.algebraic_eqs.append(P[i])
                 mdl.algebraic_eqs.append(Q[i])
 
-
-
     return compose_system_block(grid, power_flow_results, vars2device)

@@ -37,7 +37,7 @@ if TYPE_CHECKING:  # Only imports the below statements during type checking
     from VeraGrid.Gui.Diagrams.SchematicWidget.Branches.transformer3w_graphics import Transformer3WGraphicItem
     from VeraGrid.Gui.Diagrams.SchematicWidget.Branches.vsc_graphics_3term import VscGraphicItem3Term
 
-NODE_GRAPHIC = BusGraphicItem | FluidNodeGraphicItem
+NODE_GRAPHIC = Union[BusGraphicItem, FluidNodeGraphicItem]
 
 
 class TransformerSymbol(QGraphicsRectItem):
@@ -137,7 +137,7 @@ class VscSymbol(QGraphicsRectItem):
     VscSymbol
     """
 
-    def __init__(self, parent, pen_width, h=48, w=48, icon_route=":/Icons/icons/vsc.svg"):
+    def __init__(self, parent, pen_width, h=48, w=48, icon_route=":/Icons/icons/vsc.png"):
         QGraphicsRectItem.__init__(self, parent=parent)
 
         self.parent = parent
@@ -208,7 +208,7 @@ class UpfcSymbol(VscSymbol):
     """
 
     def __init__(self, parent, pen_width, h=48, w=48):
-        VscSymbol.__init__(self, parent=parent, pen_width=pen_width, h=h, w=w, icon_route=":/Icons/icons/upfc.svg")
+        VscSymbol.__init__(self, parent=parent, pen_width=pen_width, h=h, w=w, icon_route=":/Icons/icons/upfc.png")
 
 
 class SeriesReactanceSymbol(VscSymbol):
@@ -218,7 +218,7 @@ class SeriesReactanceSymbol(VscSymbol):
 
     def __init__(self, parent, pen_width, h=30, w=30):
         VscSymbol.__init__(self, parent=parent, pen_width=pen_width, h=h, w=w,
-                           icon_route=":/Icons/icons/reactance.svg")
+                           icon_route=":/Icons/icons/reactance.png")
 
 
 class SwitchSymbol(VscSymbol):
@@ -228,7 +228,7 @@ class SwitchSymbol(VscSymbol):
 
     def __init__(self, parent, pen_width, h=30, w=30):
         VscSymbol.__init__(self, parent=parent, pen_width=pen_width, h=h, w=w,
-                           icon_route=":/Icons/icons/switch.svg")
+                           icon_route=":/Icons/icons/switch.png")
 
 
 class DisconnectorSymbol(VscSymbol):
@@ -238,7 +238,7 @@ class DisconnectorSymbol(VscSymbol):
 
     def __init__(self, parent, pen_width, h=30, w=30):
         VscSymbol.__init__(self, parent=parent, pen_width=pen_width, h=h, w=w,
-                           icon_route=":/Icons/icons/disconnector.svg")
+                           icon_route=":/Icons/icons/disconnector.png")
 
 
 class HvdcSymbol(QGraphicsRectItem):

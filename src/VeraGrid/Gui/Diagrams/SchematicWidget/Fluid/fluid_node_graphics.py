@@ -316,44 +316,44 @@ class FluidNodeGraphicItem(GenericDiagramWidget, QtWidgets.QGraphicsRectItem):
 
         add_menu_entry(menu=menu,
                        text="Plot electrical profiles",
-                       icon_path=":/Icons/icons/plot.svg",
+                       icon_path=":/Icons/icons/plot.png",
                        function_ptr=self.plot_electrical_profiles)
 
         add_menu_entry(menu=menu,
                        text="Plot fluid profiles",
-                       icon_path=":/Icons/icons/plot.svg",
+                       icon_path=":/Icons/icons/plot.png",
                        function_ptr=self.plot_fluid_profiles)
 
         add_menu_entry(menu=menu,
                        text="Arrange",
-                       icon_path=":/Icons/icons/automatic_layout.svg",
+                       icon_path=":/Icons/icons/automatic_layout.png",
                        function_ptr=self.arrange_children)
 
         add_menu_entry(menu=menu,
                        text="Delete all the connections",
-                       icon_path=":/Icons/icons/delete_conn.svg",
+                       icon_path=":/Icons/icons/delete_conn.png",
                        function_ptr=lambda: self.delete_all_connections(ask=True, delete_from_db=True))
 
         add_menu_entry(menu=menu,
                        text="Delete",
-                       icon_path=":/Icons/icons/delete3.svg",
+                       icon_path=":/Icons/icons/delete3.png",
                        function_ptr=self.remove)
 
         menu.addSection("Add")
 
         add_menu_entry(menu=menu,
                        text="Turbine",
-                       icon_path=":/Icons/icons/add_gen.svg",
+                       icon_path=":/Icons/icons/add_gen.png",
                        function_ptr=self.add_turbine)
 
         add_menu_entry(menu=menu,
                        text="Pump",
-                       icon_path=":/Icons/icons/add_gen.svg",
+                       icon_path=":/Icons/icons/add_gen.png",
                        function_ptr=self.add_pump)
 
         add_menu_entry(menu=menu,
                        text="P2X",
-                       icon_path=":/Icons/icons/add_gen.svg",
+                       icon_path=":/Icons/icons/add_gen.png",
                        function_ptr=self.add_p2x)
 
         menu.exec_(event.screenPos())

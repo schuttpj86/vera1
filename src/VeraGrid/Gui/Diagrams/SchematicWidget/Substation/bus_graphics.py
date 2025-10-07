@@ -31,8 +31,8 @@ from VeraGrid.Gui.Diagrams.SchematicWidget.Injections.current_injection_graphics
 from VeraGrid.Gui.Diagrams.SchematicWidget.Injections.controllable_shunt_graphics import (
     ControllableShuntGraphicItem,
     ControllableShunt)
+from VeraGrid.Gui.Diagrams.Editors.RmsModelEditor.rms_model_editor_dialogue import RmsChoiceDialog
 from VeraGrid.Gui.Diagrams.Editors.RmsModelEditor.rms_model_editor_engine import RmsModelEditorGUI
-
 
 from VeraGrid.Gui.SubstationDesigner.voltage_level_conversion import VoltageLevelConversionWizard
 from VeraGridEngine.enumerations import DeviceType, FaultType, BusGraphicType
@@ -242,6 +242,13 @@ class BusGraphicItem(GenericDiagramWidget, QtWidgets.QGraphicsRectItem):
         conn: List[GenericDiagramWidget | INJECTION_GRAPHICS] = self._terminal.get_hosted_graphics()
 
         return conn
+
+    def get_associated_shunt_graphics(self) -> List[INJECTION_GRAPHICS]:
+        """
+        List of associated shunt graphics
+        :return:
+        """
+        return self._child_graphics
 
     def get_associated_widgets(self) -> List[GenericDiagramWidget | INJECTION_GRAPHICS]:
         """
@@ -497,36 +504,36 @@ class BusGraphicItem(GenericDiagramWidget, QtWidgets.QGraphicsRectItem):
         add_menu_entry(menu=menu,
                        text="Rms Editor",
                        function_ptr=self.edit_rms,
-                       icon_path=":/Icons/icons/edit.svg")
+                       icon_path=":/Icons/icons/edit.png")
 
         sc = add_sub_menu(menu=menu,
                           text="Short circuit",
-                          icon_path=":/Icons/icons/short_circuit.svg")
+                          icon_path=":/Icons/icons/short_circuit.png")
 
         add_menu_entry(menu=sc,
                        text="3-phase (x)" if self.sc_enabled[0] else "3-phase",
-                       icon_path=":/Icons/icons/short_circuit.svg",
+                       icon_path=":/Icons/icons/short_circuit.png",
                        function_ptr=self.enable_disable_sc_3p,
                        checkeable=True,
                        checked_value=self.sc_enabled[0])
 
         add_menu_entry(menu=sc,
                        text="Line-Ground (x)" if self.sc_enabled[1] else "Line-Ground",
-                       icon_path=":/Icons/icons/short_circuit.svg",
+                       icon_path=":/Icons/icons/short_circuit.png",
                        function_ptr=self.enable_disable_sc_lg,
                        checkeable=True,
                        checked_value=self.sc_enabled[1])
 
         add_menu_entry(menu=sc,
                        text="Line-Line (x)" if self.sc_enabled[2] else "Line-Line",
-                       icon_path=":/Icons/icons/short_circuit.svg",
+                       icon_path=":/Icons/icons/short_circuit.png",
                        function_ptr=self.enable_disable_sc_ll,
                        checkeable=True,
                        checked_value=self.sc_enabled[2])
 
         add_menu_entry(menu=sc,
                        text="Line-Line-Ground (x)" if self.sc_enabled[3] else "Line-Line-Ground",
-                       icon_path=":/Icons/icons/short_circuit.svg",
+                       icon_path=":/Icons/icons/short_circuit.png",
                        function_ptr=self.enable_disable_sc_llg,
                        checkeable=True,
                        checked_value=self.sc_enabled[3])
@@ -543,99 +550,108 @@ class BusGraphicItem(GenericDiagramWidget, QtWidgets.QGraphicsRectItem):
 
         add_menu_entry(menu=menu,
                        text="Is a DC bus",
-                       icon_path=":/Icons/icons/dc.svg",
+                       icon_path=":/Icons/icons/dc.png",
                        function_ptr=self.enable_disable_dc,
                        checkeable=True,
                        checked_value=self.api_object.is_dc)
 
         add_menu_entry(menu=menu,
                        text="Plot profiles",
-                       icon_path=":/Icons/icons/plot.svg",
+                       icon_path=":/Icons/icons/plot.png",
                        function_ptr=self.plot_profiles)
 
         add_menu_entry(menu,
                        text='Arrange',
-                       icon_path=":/Icons/icons/automatic_layout.svg",
+                       icon_path=":/Icons/icons/automatic_layout.png",
                        function_ptr=self.arrange_children)
 
         # add_menu_entry(menu,
         #                text='Rotate',
-        #                # icon_path=":/Icons/icons/automatic_layout.svg",
+        #                # icon_path=":/Icons/icons/automatic_layout.png",
         #                function_ptr=self.rotate)
 
         add_menu_entry(menu,
                        text='Assign active state to profile',
-                       icon_path=":/Icons/icons/assign_to_profile.svg",
+                       icon_path=":/Icons/icons/assign_to_profile.png",
                        function_ptr=self.assign_status_to_profile)
 
         add_menu_entry(menu, text='Delete',
-                       icon_path=":/Icons/icons/delete_schematic.svg",
+                       icon_path=":/Icons/icons/delete_schematic.png",
                        function_ptr=self.delete)
 
         add_menu_entry(menu, text='Convert to voltage level',
-                       icon_path=":/Icons/icons/voltage_level.svg",
+                       icon_path=":/Icons/icons/voltage_level.png",
                        function_ptr=self.convert_to_voltage_level)
 
+        add_menu_entry(menu, text='Convert to impedances circuit',
+                       icon_path=":/Icons/icons/voltage_level.png",
+                       function_ptr=self.convert_to_connectivity_grid)
+
         add_menu_entry(menu, text='Expand schematic',
-                       icon_path=":/Icons/icons/grid_icon.svg",
+                       icon_path=":/Icons/icons/grid_icon.png",
                        function_ptr=self.expand_diagram_from_bus)
 
         add_menu_entry(menu, text='Vicinity diagram from here',
-                       icon_path=":/Icons/icons/grid_icon.svg",
+                       icon_path=":/Icons/icons/grid_icon.png",
                        function_ptr=self.new_vicinity_diagram_from_here)
 
         add_menu_entry(menu=menu,
                        text="Open in street view",
-                       icon_path=":/Icons/icons/map.svg",
+                       icon_path=":/Icons/icons/map.png",
                        function_ptr=self.open_street_view)
 
         menu.addSection("Add")
 
         # Actions under the "Add" section
         add_menu_entry(menu, text='Load',
-                       icon_path=":/Icons/icons/add_load.svg",
+                       icon_path=":/Icons/icons/add_load.png",
                        function_ptr=self.add_load)
 
         add_menu_entry(menu, text='Current injection',
-                       icon_path=":/Icons/icons/add_load.svg",
+                       icon_path=":/Icons/icons/add_load.png",
                        function_ptr=self.add_current_injection)
 
         add_menu_entry(menu, text='Shunt',
-                       icon_path=":/Icons/icons/add_shunt.svg",
+                       icon_path=":/Icons/icons/add_shunt.png",
                        function_ptr=self.add_shunt)
 
         add_menu_entry(menu,
                        text='Controllable shunt',
-                       icon_path=":/Icons/icons/add_shunt.svg",
+                       icon_path=":/Icons/icons/add_shunt.png",
                        function_ptr=self.add_controllable_shunt)
 
         add_menu_entry(menu, text='Generator',
-                       icon_path=":/Icons/icons/add_gen.svg",
+                       icon_path=":/Icons/icons/add_gen.png",
                        function_ptr=self.add_generator)
 
         add_menu_entry(menu, text='Static generator',
-                       icon_path=":/Icons/icons/add_stagen.svg",
+                       icon_path=":/Icons/icons/add_stagen.png",
                        function_ptr=self.add_static_generator)
 
         add_menu_entry(menu, text='Battery',
-                       icon_path=":/Icons/icons/add_batt.svg",
+                       icon_path=":/Icons/icons/add_batt.png",
                        function_ptr=self.add_battery)
 
         add_menu_entry(menu,
                        text='External grid',
-                       icon_path=":/Icons/icons/add_external_grid.svg",
+                       icon_path=":/Icons/icons/add_external_grid.png",
                        function_ptr=self.add_external_grid)
 
         menu.exec_(event.screenPos())
 
     def edit_rms(self):
-        """
-        Open the appropriate editor dialogue
-        :return:
-        """
-        dlg = RmsModelEditorGUI(self.api_object, parent=self.editor)
-        dlg.show()
+        templates = [t.name for t in
+                     self.editor.circuit.sequence_line_types]  # TODO: find where to build and save the templates
 
+        choice_dialog = RmsChoiceDialog(templates, parent=self.editor)
+        if choice_dialog.exec() == QtWidgets.QDialog.Accepted:
+            if choice_dialog.choice == "template":
+                template_name = choice_dialog.selected_template
+                print(f"User chose template: {template_name}")
+                # TODO: missing finding the template object and apply it to self.api_object
+            elif choice_dialog.choice == "editor":
+                dlg = RmsModelEditorGUI(self.api_object.rms_model, parent=self.editor)
+                dlg.show()
 
     def assign_status_to_profile(self):
         """
@@ -674,10 +690,15 @@ class BusGraphicItem(GenericDiagramWidget, QtWidgets.QGraphicsRectItem):
         """
         self.vl_wizard = VoltageLevelConversionWizard()
 
-
-
         # open
         self.vl_wizard.show()
+
+    def convert_to_connectivity_grid(self):
+        """
+        Transform this bus into a grid of buses to be able to compute the bus currents
+        and delete this bus afterwards
+        """
+        self.editor.transform_busbar_to_connectivity_grid(bus_graphics=self)
 
     def expand_diagram_from_bus(self) -> None:
         """

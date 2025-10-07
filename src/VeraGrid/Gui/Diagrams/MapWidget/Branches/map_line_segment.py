@@ -260,18 +260,18 @@ class MapLineSegment(QGraphicsLineItem):
         add_menu_entry(menu=menu,
                        text="Editor",
                        function_ptr=self.call_editor,
-                       icon_path=":/Icons/icons/edit.svg")
+                       icon_path=":/Icons/icons/edit.png")
 
         # We could create a new icon for this I guess
         add_menu_entry(menu=menu,
                        text="Calculate total length",
                        function_ptr=self.calculate_total_length,
-                       icon_path=":/Icons/icons/ruler.svg")
+                       icon_path=":/Icons/icons/ruler.png")
 
         add_menu_entry(menu=menu,
                        text="Consolidate selected objects coordinates",
                        function_ptr=self.editor.consolidate_object_coordinates,
-                       icon_path=":/Icons/icons/assign_to_profile.svg")
+                       icon_path=":/Icons/icons/assign_to_profile.png")
 
         menu.addSeparator()
 
@@ -294,7 +294,7 @@ class MapLineSegment(QGraphicsLineItem):
             add_menu_entry(menu=menu,
                            text="Merge selected lines",
                            function_ptr=self.editor.merge_selected_lines,
-                           icon_path=":/Icons/icons/fusion.svg")
+                           icon_path=":/Icons/icons/fusion.png")
 
         menu.addSeparator()
 
@@ -304,21 +304,21 @@ class MapLineSegment(QGraphicsLineItem):
                 add_menu_entry(menu=menu,
                                text="Split line to selected substation (In-Out)",
                                function_ptr=self.editor.split_line_to_substation,
-                               icon_path=":/Icons/icons/divide.svg")
+                               icon_path=":/Icons/icons/divide.png")
 
             elif substation_counter == 2:
 
                 add_menu_entry(menu=menu,
                                text="Change substation connection of the line",
                                function_ptr=self.editor.change_line_connection,
-                               icon_path=":/Icons/icons/move_bus.svg")
+                               icon_path=":/Icons/icons/move_bus.png")
             else:
                 pass
 
         add_menu_entry(menu=menu,
                        text="Plot profiles",
                        function_ptr=self.plot_profiles,
-                       icon_path=":/Icons/icons/plot.svg")
+                       icon_path=":/Icons/icons/plot.png")
 
         scene_pos = event.scenePos()  # Position in scene coordinates
         x, y = scene_pos.x(), scene_pos.y()
@@ -326,29 +326,29 @@ class MapLineSegment(QGraphicsLineItem):
         add_menu_entry(menu=menu,
                        text="Open in Street view",
                        function_ptr=lambda: open_street_view(lat, lon),
-                       icon_path=":/Icons/icons/map.svg")
+                       icon_path=":/Icons/icons/map.png")
 
         add_menu_entry(menu=menu,
                        text="Assign rate to profile",
                        function_ptr=self.assign_rate_to_profile,
-                       icon_path=":/Icons/icons/assign_to_profile.svg")
+                       icon_path=":/Icons/icons/assign_to_profile.png")
 
         add_menu_entry(menu=menu,
                        text="Assign active state to profile",
                        function_ptr=self.assign_status_to_profile,
-                       icon_path=":/Icons/icons/assign_to_profile.svg")
+                       icon_path=":/Icons/icons/assign_to_profile.png")
 
         add_menu_entry(menu=menu,
                        text="Add point",
                        function_ptr=self.add_node,
-                       icon_path=":/Icons/icons/cn_icon.svg")
+                       icon_path=":/Icons/icons/cn_icon.png")
 
         menu.addSeparator()
 
         add_menu_entry(menu=menu,
                        text="Delete",
                        function_ptr=self.delete,
-                       icon_path=":/Icons/icons/delete_schematic.svg")
+                       icon_path=":/Icons/icons/delete_schematic.png")
 
         menu.exec_(event.screenPos())
 

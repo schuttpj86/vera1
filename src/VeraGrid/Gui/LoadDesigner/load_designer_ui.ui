@@ -318,7 +318,7 @@
                    </property>
                    <property name="icon">
                     <iconset resource="icons.qrc">
-                     <normaloff>:/Icons/icons/gear.svg</normaloff>:/Icons/icons/gear.svg</iconset>
+                     <normaloff>:/Icons/icons/gear.png</normaloff>:/Icons/icons/gear.png</iconset>
                    </property>
                   </widget>
                  </item>
@@ -406,7 +406,7 @@
                 </property>
                 <property name="icon">
                  <iconset resource="icons.qrc">
-                  <normaloff>:/Icons/icons/gear.svg</normaloff>:/Icons/icons/gear.svg</iconset>
+                  <normaloff>:/Icons/icons/gear.png</normaloff>:/Icons/icons/gear.png</iconset>
                 </property>
                </widget>
               </item>

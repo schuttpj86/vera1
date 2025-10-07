@@ -19,18 +19,24 @@ class ReliabilityResults(ResultsTemplate):
         """
         ResultsTemplate.__init__(
             self,
-            name='Clustering Analysis',
+            name='Reliability Analysis',
             available_results=[
-                ResultTypes.ReliabilityLoleResults
+                ResultTypes.ReliabilityLoleResults,
+                ResultTypes.ReliabilityENSResults,
+                ResultTypes.ReliabilityLOLFResults,
             ],
             clustering_results=None,
             time_array=None,
             study_results_type=StudyResultsType.Clustering
         )
 
-        self.lole_evolution = np.zeros(nsim)
+        self.LOLE_evolution = np.zeros(nsim)
+        self.ENS_evolution = np.zeros(nsim)
+        self.LOLF_evolution = np.zeros(nsim)
 
-        self.register(name='lole_evolution', tpe=Vec)
+        self.register(name='LOLE_evolution', tpe=Vec)
+        self.register(name='ENS_evolution', tpe=Vec)
+        self.register(name='LOLF_evolution', tpe=Vec)
 
     def mdl(self, result_type: ResultTypes) -> ResultsTable:
         """
@@ -41,13 +47,34 @@ class ReliabilityResults(ResultsTemplate):
 
         if result_type == ResultTypes.ReliabilityLoleResults:
 
-            return ResultsTable(data=self.lole_evolution,
-                                index=np.arange(len(self.lole_evolution), dtype=int),
+            return ResultsTable(data=self.LOLE_evolution,
+                                index=np.arange(len(self.LOLE_evolution), dtype=int),
                                 columns=np.array(['LOLE']),
                                 title=result_type.value,
                                 units="MWh",
                                 idx_device_type=DeviceType.NoDevice,
-                                cols_device_type=DeviceType.NoDevice)
+                                cols_device_type=DeviceType.NoDevice,
+                                ylabel='hours/year')
+
+        elif result_type == ResultTypes.ReliabilityENSResults:
+            return ResultsTable(data=self.ENS_evolution,
+                                index=np.arange(len(self.ENS_evolution), dtype=int),
+                                columns=np.array(['ENS']),
+                                title=result_type.value,
+                                units="MWh",
+                                idx_device_type=DeviceType.NoDevice,
+                                cols_device_type=DeviceType.NoDevice,
+                                ylabel='MWh/year')
+
+        elif result_type == ResultTypes.ReliabilityLOLFResults:
+            return ResultsTable(data=self.LOLF_evolution,
+                                index=np.arange(len(self.LOLF_evolution), dtype=int),
+                                columns=np.array(['LOLF']),
+                                title=result_type.value,
+                                units="nº of incidences",
+                                idx_device_type=DeviceType.NoDevice,
+                                cols_device_type=DeviceType.NoDevice,
+                                ylabel='nº of incidences/year')
 
         else:
             raise Exception('Result type not understood:' + str(result_type))

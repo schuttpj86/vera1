@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="icons.qrc">
-    <normaloff>:/icons/icons/inputs_analysis 2.svg</normaloff>:/icons/icons/inputs_analysis 2.svg</iconset>
+    <normaloff>:/icons/icons/inputs_analysis 2.png</normaloff>:/icons/icons/inputs_analysis 2.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -39,7 +39,7 @@
       <widget class="QWidget" name="tab">
        <attribute name="icon">
         <iconset resource="icons.qrc">
-         <normaloff>:/icons/icons/inputs_analysis 2.svg</normaloff>:/icons/icons/inputs_analysis 2.svg</iconset>
+         <normaloff>:/icons/icons/inputs_analysis 2.png</normaloff>:/icons/icons/inputs_analysis 2.png</iconset>
        </attribute>
        <attribute name="title">
         <string>Analysis</string>
@@ -69,7 +69,7 @@
       <widget class="QWidget" name="tab_2">
        <attribute name="icon">
         <iconset resource="icons.qrc">
-         <normaloff>:/icons/icons/gear.svg</normaloff>:/icons/icons/gear.svg</iconset>
+         <normaloff>:/icons/icons/gear.png</normaloff>:/icons/icons/gear.png</iconset>
        </attribute>
        <attribute name="title">
         <string>Settings</string>
@@ -803,7 +803,7 @@
   <action name="actionSave_diagnostic">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/icons/icons/savec.svg</normaloff>:/icons/icons/savec.svg</iconset>
+     <normaloff>:/icons/icons/savec.png</normaloff>:/icons/icons/savec.png</iconset>
    </property>
    <property name="text">
     <string>Save diagnostic</string>
@@ -812,7 +812,7 @@
   <action name="actionFix_issues">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/icons/icons/fix.svg</normaloff>:/icons/icons/fix.svg</iconset>
+     <normaloff>:/icons/icons/fix.png</normaloff>:/icons/icons/fix.png</iconset>
    </property>
    <property name="text">
     <string>Fix issues</string>
@@ -821,7 +821,7 @@
   <action name="actionAnalyze">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/icons/icons/inputs_analysis 2.svg</normaloff>:/icons/icons/inputs_analysis 2.svg</iconset>
+     <normaloff>:/icons/icons/inputs_analysis 2.png</normaloff>:/icons/icons/inputs_analysis 2.png</iconset>
    </property>
    <property name="text">
     <string>Analyze</string>

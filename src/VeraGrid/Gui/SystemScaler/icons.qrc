@@ -1,14 +1,14 @@
 <RCC>
   <qresource prefix="Icons">
-    <file>icons/delete.svg</file>
-    <file>icons/link-to-selection.svg</file>
-    <file>icons/link-to-all.svg</file>
-    <file>icons/auto-link-rnd.svg</file>
-    <file>icons/auto-link.svg</file>
-    <file>icons/multiply.svg</file>
-    <file>icons/copy.svg</file>
-    <file>icons/copy2down.svg</file>
-    <file>icons/gear.svg</file>
-    <file>icons/import_profiles.svg</file>
+    <file>icons/delete.png</file>
+    <file>icons/link-to-selection.png</file>
+    <file>icons/link-to-all.png</file>
+    <file>icons/auto-link-rnd.png</file>
+    <file>icons/auto-link.png</file>
+    <file>icons/multiply.png</file>
+    <file>icons/copy.png</file>
+    <file>icons/copy2down.png</file>
+    <file>icons/gear.png</file>
+    <file>icons/import_profiles.png</file>
   </qresource>
 </RCC>

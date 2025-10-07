@@ -25,13 +25,13 @@ class DiagramsModel(QtCore.QAbstractListModel):
         self.items = list_of_diagrams
 
         self.bus_branch_editor_icon = QtGui.QIcon()
-        self.bus_branch_editor_icon.addPixmap(QtGui.QPixmap(":/Icons/icons/schematic.svg"))
+        self.bus_branch_editor_icon.addPixmap(QtGui.QPixmap(":/Icons/icons/schematic.png"))
 
         self.bus_branch_vicinity_icon = QtGui.QIcon()
-        self.bus_branch_vicinity_icon.addPixmap(QtGui.QPixmap(":/Icons/icons/grid_icon.svg"))
+        self.bus_branch_vicinity_icon.addPixmap(QtGui.QPixmap(":/Icons/icons/grid_icon.png"))
 
         self.map_editor_icon = QtGui.QIcon()
-        self.map_editor_icon.addPixmap(QtGui.QPixmap(":/Icons/icons/map.svg"))
+        self.map_editor_icon.addPixmap(QtGui.QPixmap(":/Icons/icons/map.png"))
 
     def flags(self, index: QtCore.QModelIndex):
         """

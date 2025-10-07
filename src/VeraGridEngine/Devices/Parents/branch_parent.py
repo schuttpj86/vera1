@@ -574,3 +574,17 @@ class BranchParent(PhysicalDevice):
             return self.bus_to_pos
         else:
             return 0
+
+    def reassign_bus(self, old_bus: Bus, new_bus: Bus):
+        """
+        Re-assign a bus
+        :param old_bus: bus where this branch is supposedly connected (either from or to)
+        :param new_bus: new bus to connect to
+        """
+        if self.bus_from == old_bus:
+            self.bus_from = new_bus
+
+        elif self.bus_to == old_bus:
+            self.bus_to = new_bus
+        else:
+            pass

@@ -1823,10 +1823,14 @@ class ResultTypes(Enum):
 
     RmsSimulationReport = 'Rms time series report'
 
-    # RMS Small Signal Stability
+    # Small Signal Stability
     ParticipationFactors = "Participation Factors"
     Modes = "Modes"
     SDomainPlot = "S-Domain Plot"
+    SDomainPlotHz = "S-Domain Plot in Hz"
+    AsymptoticallyStable = "Asymptotically stable"
+    MarginallyStable = "Marginally stable"
+    Unstable = "Unstable"
 
     # inputs analysis
     ZoneAnalysis = 'Zone analysis'
@@ -1959,6 +1963,8 @@ class ResultTypes(Enum):
 
     # reliability
     ReliabilityLoleResults = "LOLE"
+    ReliabilityENSResults = "ENS"
+    ReliabilityLOLFResults = "LOLF"
 
     def __str__(self):
         return self.value
@@ -2132,7 +2138,7 @@ class Colormaps(Enum):
             return s
 
 
-class SubstationTypes(Enum):
+class VoltageLevelTypes(Enum):
     """
     Types of substation types
     """
@@ -2160,7 +2166,7 @@ class SubstationTypes(Enum):
         :return:
         """
         try:
-            return SubstationTypes[s]
+            return VoltageLevelTypes[s]
         except KeyError:
             return s
 

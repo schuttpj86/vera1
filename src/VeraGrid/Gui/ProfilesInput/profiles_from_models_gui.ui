@@ -48,7 +48,7 @@
         </property>
         <property name="icon">
          <iconset resource="icons.qrc">
-          <normaloff>:/Icons/icons/plus.svg</normaloff>:/Icons/icons/plus.svg</iconset>
+          <normaloff>:/Icons/icons/plus.png</normaloff>:/Icons/icons/plus.png</iconset>
         </property>
        </widget>
       </item>
@@ -59,7 +59,7 @@
         </property>
         <property name="icon">
          <iconset resource="icons.qrc">
-          <normaloff>:/Icons/icons/delete3.svg</normaloff>:/Icons/icons/delete3.svg</iconset>
+          <normaloff>:/Icons/icons/delete3.png</normaloff>:/Icons/icons/delete3.png</iconset>
         </property>
        </widget>
       </item>
@@ -173,7 +173,7 @@
         </property>
         <property name="icon">
          <iconset resource="icons.qrc">
-          <normaloff>:/Icons/icons/gear.svg</normaloff>:/Icons/icons/gear.svg</iconset>
+          <normaloff>:/Icons/icons/gear.png</normaloff>:/Icons/icons/gear.png</iconset>
         </property>
        </widget>
       </item>

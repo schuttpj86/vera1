@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="icons.qrc">
-    <normaloff>:/Icons/icons/solar_power.svg</normaloff>:/Icons/icons/solar_power.svg</iconset>
+    <normaloff>:/Icons/icons/solar_power.png</normaloff>:/Icons/icons/solar_power.png</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="leftMargin">
@@ -174,7 +174,7 @@
          </property>
          <property name="icon">
           <iconset resource="icons.qrc">
-           <normaloff>:/Icons/icons/plot.svg</normaloff>:/Icons/icons/plot.svg</iconset>
+           <normaloff>:/Icons/icons/plot.png</normaloff>:/Icons/icons/plot.png</iconset>
          </property>
         </widget>
        </item>
@@ -209,7 +209,7 @@
   <action name="actionCopy_to_clipboard">
    <property name="icon">
     <iconset>
-     <normaloff>:/Icons/icons/copy.svg</normaloff>:/Icons/icons/copy.svg</iconset>
+     <normaloff>:/Icons/icons/copy.png</normaloff>:/Icons/icons/copy.png</iconset>
    </property>
    <property name="text">
     <string>Copy to clipboard</string>
@@ -218,7 +218,7 @@
   <action name="actionSave">
    <property name="icon">
     <iconset>
-     <normaloff>:/Icons/icons/import_profiles.svg</normaloff>:/Icons/icons/import_profiles.svg</iconset>
+     <normaloff>:/Icons/icons/import_profiles.png</normaloff>:/Icons/icons/import_profiles.png</iconset>
    </property>
    <property name="text">
     <string>Save</string>

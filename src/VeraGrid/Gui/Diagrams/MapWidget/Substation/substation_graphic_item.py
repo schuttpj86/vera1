@@ -353,48 +353,48 @@ class SubstationGraphicItem(NodeTemplate, QGraphicsRectItem):
 
         add_menu_entry(menu=menu,
                        text="Add voltage level",
-                       icon_path=":/Icons/icons/plus.svg",
+                       icon_path=":/Icons/icons/plus.png",
                        function_ptr=self.add_voltage_level)
 
         add_menu_entry(menu=menu,
                        text="Create line from here",
-                       icon_path=":/Icons/icons/plus.svg",
+                       icon_path=":/Icons/icons/plus.png",
                        function_ptr=self.create_new_line)
 
         add_menu_entry(menu=menu,
                        text="Merge selected substations here",
-                       icon_path=":/Icons/icons/fusion.svg",
+                       icon_path=":/Icons/icons/fusion.png",
                        function_ptr=self.merge_selected_substations)
 
         add_menu_entry(menu=menu,
                        text="Set coordinates to DB",
-                       icon_path=":/Icons/icons/down.svg",
+                       icon_path=":/Icons/icons/down.png",
                        function_ptr=self.move_to_api_coordinates)
 
         add_menu_entry(menu=menu,
                        text="Remove substation",
-                       icon_path=":/Icons/icons/delete_schematic.svg",
+                       icon_path=":/Icons/icons/delete_schematic.png",
                        function_ptr=self.delete)
 
         add_menu_entry(menu=menu,
                        text="Substation diagram",
-                       icon_path=":/Icons/icons/grid_icon.svg",
+                       icon_path=":/Icons/icons/grid_icon.png",
                        function_ptr=self.new_substation_diagram)
 
         add_menu_entry(menu=menu,
                        text="Plot",
-                       icon_path=":/Icons/icons/plot.svg",
+                       icon_path=":/Icons/icons/plot.png",
                        function_ptr=self.plot)
 
         add_menu_entry(menu=menu,
                        text="Open in street view",
-                       icon_path=":/Icons/icons/map.svg",
+                       icon_path=":/Icons/icons/map.png",
                        function_ptr=self.open_street_view)
 
         add_menu_entry(menu=menu,
                        text="Consolidate selected objects coordinates",
                        function_ptr=self.editor.consolidate_object_coordinates,
-                       icon_path=":/Icons/icons/assign_to_profile.svg")
+                       icon_path=":/Icons/icons/assign_to_profile.png")
 
         menu.exec_(event.screenPos())
 
