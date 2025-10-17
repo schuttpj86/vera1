@@ -54,21 +54,22 @@ def create_amethyst_model():
     bus_cp = Bus(name="Connection Point (Stedin)", Vnom=50.0, vmin=0.85, vmax=1.10, is_slack=True, xpos=0, ypos=0)
     circuit.add_bus(bus_cp)
     
-    # Internal 50 kV bus after cable - Going DOWN
-    bus_50kv = Bus(name="50kV Internal", Vnom=50.0, vmin=0.85, vmax=1.10, xpos=0, ypos=100)
+    # Internal 50 kV bus after cable - Going DOWN with more space
+    bus_50kv = Bus(name="50kV Internal", Vnom=50.0, vmin=0.85, vmax=1.10, xpos=0, ypos=300)
     circuit.add_bus(bus_50kv)
     
     # MV busbar - 20 kV - Further DOWN after main transformer
-    bus_20kv = Bus(name="20kV Busbar", Vnom=20.0, vmin=0.85, vmax=1.10, xpos=0, ypos=200)
+    bus_20kv = Bus(name="20kV Busbar", Vnom=20.0, vmin=0.85, vmax=1.10, xpos=0, ypos=600)
     circuit.add_bus(bus_20kv)
     
-    # Distribution busbars for converters - Spread HORIZONTALLY at same level
-    bus_rmu1 = Bus(name="RMU MV-CB1", Vnom=20.0, xpos=-500, ypos=300)
-    bus_rmu2 = Bus(name="RMU MV-CB2", Vnom=20.0, xpos=-300, ypos=300)
-    bus_rmu3 = Bus(name="RMU MV-CB3", Vnom=20.0, xpos=-100, ypos=300)
-    bus_rmu4 = Bus(name="RMU MV-CB4", Vnom=20.0, xpos=100, ypos=300)
-    bus_rmu5 = Bus(name="RMU MV-CB5", Vnom=20.0, xpos=300, ypos=300)
-    bus_rmu6 = Bus(name="RMU MV-CB6", Vnom=20.0, xpos=500, ypos=300)
+    # Distribution busbars for converters - Spread HORIZONTALLY at same level with large spacing
+    # These form a horizontal busbar at y=900
+    bus_rmu1 = Bus(name="RMU MV-CB1", Vnom=20.0, xpos=-1500, ypos=900)
+    bus_rmu2 = Bus(name="RMU MV-CB2", Vnom=20.0, xpos=-900, ypos=900)
+    bus_rmu3 = Bus(name="RMU MV-CB3", Vnom=20.0, xpos=-300, ypos=900)
+    bus_rmu4 = Bus(name="RMU MV-CB4", Vnom=20.0, xpos=300, ypos=900)
+    bus_rmu5 = Bus(name="RMU MV-CB5", Vnom=20.0, xpos=900, ypos=900)
+    bus_rmu6 = Bus(name="RMU MV-CB6", Vnom=20.0, xpos=1500, ypos=900)
     
     circuit.add_bus(bus_rmu1)
     circuit.add_bus(bus_rmu2)
@@ -78,23 +79,24 @@ def create_amethyst_model():
     circuit.add_bus(bus_rmu6)
     
     # Converter LV buses (0.69 kV) - Further DOWN, paired under each RMU
+    # Much larger spacing - 12 converters at bottom level
     converter_lv_buses = []
-    # Each RMU has 2 converters, positioned below it
-    x_positions = [-550, -450,  # Under RMU1
-                   -350, -250,  # Under RMU2
-                   -150, -50,   # Under RMU3
-                   50, 150,     # Under RMU4
-                   250, 350,    # Under RMU5
-                   450, 550]    # Under RMU6
+    # Each RMU has 2 converters, positioned vertically below it with good spacing
+    x_positions = [-1600, -1400,  # Under RMU1
+                   -1000, -800,   # Under RMU2
+                   -400, -200,    # Under RMU3
+                   200, 400,      # Under RMU4
+                   800, 1000,     # Under RMU5
+                   1400, 1600]    # Under RMU6
     
     for i in range(12):
-        bus = Bus(name=f"Converter {i+1} LV", Vnom=0.69, xpos=x_positions[i], ypos=400)
+        bus = Bus(name=f"Converter {i+1} LV", Vnom=0.69, xpos=x_positions[i], ypos=1200)
         circuit.add_bus(bus)
         converter_lv_buses.append(bus)
     
-    # Auxiliary load buses - On the side at MV level
-    bus_aux1 = Bus(name="Auxiliary Load 1", Vnom=0.4, xpos=700, ypos=200)
-    bus_aux2 = Bus(name="Auxiliary Load 2", Vnom=0.4, xpos=800, ypos=200)
+    # Auxiliary load buses - On the far right at MV level
+    bus_aux1 = Bus(name="Auxiliary Load 1", Vnom=0.4, xpos=2000, ypos=600)
+    bus_aux2 = Bus(name="Auxiliary Load 2", Vnom=0.4, xpos=2400, ypos=600)
     circuit.add_bus(bus_aux1)
     circuit.add_bus(bus_aux2)
     
