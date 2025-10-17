@@ -50,25 +50,25 @@ def create_amethyst_model():
     print("Creating buses...")
     
     # External grid connection point (Stedin Main Station) - 50 kV
-    # This will be the slack bus
+    # This will be the slack bus - TOP of the diagram
     bus_cp = Bus(name="Connection Point (Stedin)", Vnom=50.0, vmin=0.85, vmax=1.10, is_slack=True, xpos=0, ypos=0)
     circuit.add_bus(bus_cp)
     
-    # Internal 50 kV bus after cable
-    bus_50kv = Bus(name="50kV Internal", Vnom=50.0, vmin=0.85, vmax=1.10, xpos=200, ypos=0)
+    # Internal 50 kV bus after cable - Going DOWN
+    bus_50kv = Bus(name="50kV Internal", Vnom=50.0, vmin=0.85, vmax=1.10, xpos=0, ypos=100)
     circuit.add_bus(bus_50kv)
     
-    # MV busbar - 20 kV
-    bus_20kv = Bus(name="20kV Busbar", Vnom=20.0, vmin=0.85, vmax=1.10, xpos=400, ypos=0)
+    # MV busbar - 20 kV - Further DOWN after main transformer
+    bus_20kv = Bus(name="20kV Busbar", Vnom=20.0, vmin=0.85, vmax=1.10, xpos=0, ypos=200)
     circuit.add_bus(bus_20kv)
     
-    # Distribution busbars for converters
-    bus_rmu1 = Bus(name="RMU MV-CB1", Vnom=20.0, xpos=600, ypos=-100)
-    bus_rmu2 = Bus(name="RMU MV-CB2", Vnom=20.0, xpos=600, ypos=-50)
-    bus_rmu3 = Bus(name="RMU MV-CB3", Vnom=20.0, xpos=600, ypos=0)
-    bus_rmu4 = Bus(name="RMU MV-CB4", Vnom=20.0, xpos=600, ypos=50)
-    bus_rmu5 = Bus(name="RMU MV-CB5", Vnom=20.0, xpos=600, ypos=100)
-    bus_rmu6 = Bus(name="RMU MV-CB6", Vnom=20.0, xpos=600, ypos=150)
+    # Distribution busbars for converters - Spread HORIZONTALLY at same level
+    bus_rmu1 = Bus(name="RMU MV-CB1", Vnom=20.0, xpos=-500, ypos=300)
+    bus_rmu2 = Bus(name="RMU MV-CB2", Vnom=20.0, xpos=-300, ypos=300)
+    bus_rmu3 = Bus(name="RMU MV-CB3", Vnom=20.0, xpos=-100, ypos=300)
+    bus_rmu4 = Bus(name="RMU MV-CB4", Vnom=20.0, xpos=100, ypos=300)
+    bus_rmu5 = Bus(name="RMU MV-CB5", Vnom=20.0, xpos=300, ypos=300)
+    bus_rmu6 = Bus(name="RMU MV-CB6", Vnom=20.0, xpos=500, ypos=300)
     
     circuit.add_bus(bus_rmu1)
     circuit.add_bus(bus_rmu2)
@@ -77,17 +77,24 @@ def create_amethyst_model():
     circuit.add_bus(bus_rmu5)
     circuit.add_bus(bus_rmu6)
     
-    # Converter LV buses (0.69 kV)
+    # Converter LV buses (0.69 kV) - Further DOWN, paired under each RMU
     converter_lv_buses = []
-    y_positions = [-150, -100, -50, 0, 50, 100, 150, 200, 250, 300, 350, 400]  # 12 positions
+    # Each RMU has 2 converters, positioned below it
+    x_positions = [-550, -450,  # Under RMU1
+                   -350, -250,  # Under RMU2
+                   -150, -50,   # Under RMU3
+                   50, 150,     # Under RMU4
+                   250, 350,    # Under RMU5
+                   450, 550]    # Under RMU6
+    
     for i in range(12):
-        bus = Bus(name=f"Converter {i+1} LV", Vnom=0.69, xpos=800, ypos=y_positions[i])
+        bus = Bus(name=f"Converter {i+1} LV", Vnom=0.69, xpos=x_positions[i], ypos=400)
         circuit.add_bus(bus)
         converter_lv_buses.append(bus)
     
-    # Auxiliary load buses
-    bus_aux1 = Bus(name="Auxiliary Load 1", Vnom=0.4, xpos=1000, ypos=-50)
-    bus_aux2 = Bus(name="Auxiliary Load 2", Vnom=0.4, xpos=1000, ypos=50)
+    # Auxiliary load buses - On the side at MV level
+    bus_aux1 = Bus(name="Auxiliary Load 1", Vnom=0.4, xpos=700, ypos=200)
+    bus_aux2 = Bus(name="Auxiliary Load 2", Vnom=0.4, xpos=800, ypos=200)
     circuit.add_bus(bus_aux1)
     circuit.add_bus(bus_aux2)
     
