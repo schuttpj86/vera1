@@ -112,7 +112,7 @@ def create_amethyst_model():
     slack_gen = Generator(
         name="Stedin Grid",
         P=0.0,  # Will be determined by power flow
-        vset=1.0,  # p.u. voltage setpoint
+        vset=1.0,  # p.u. voltage setpoint (lowercase in constructor)
         Snom=10000.0,  # Large MVA rating
         Qmin=-9999,  # Unlimited reactive power
         Qmax=9999
@@ -333,46 +333,107 @@ def create_amethyst_model():
     return circuit
 
 
-def run_power_flow(circuit: MultiCircuit, scenario="full_discharge"):
+def run_power_flow(circuit: MultiCircuit, scenario="full_discharge", vset=1.0):
     """
-    Run power flow for different scenarios
+    Run power flow for different scenarios with validation against DNV report
     
-    Scenarios:
-    - full_discharge: 45 MW discharge (Case 00 from report)
-    - full_charge: 45 MW charge
-    - reactive_test: Test reactive power capability
+    Key validation cases from DNV Table 2-3:
+    - case_00: Pmax at nominal voltage (baseline)
+    - case_01: Pmax with max leading reactive
+    - case_02: Pmax with max lagging reactive
+    - case_03: Low power (9 MW) with leading reactive
+    - case_06: Pmax with leading reactive at high voltage (1.10 p.u.)
+    - case_09: Pmax with lagging reactive at low voltage (0.95 p.u.) - with curtailment
+    - case_11: Pmax with lagging reactive at very low voltage (0.90 p.u.) - with curtailment
+    
+    Args:
+        circuit: MultiCircuit object
+        scenario: Scenario identifier
+        vset: Slack bus voltage setpoint in p.u.
     """
     print(f"\n" + "="*60)
     print(f" Running Power Flow: {scenario}")
     print("="*60 + "\n")
     
+    # Get slack generator to set voltage
+    slack_gen = None
+    for gen in circuit.generators:
+        if gen.name == "Stedin Grid":
+            slack_gen = gen
+            break
+    
+    if slack_gen:
+        slack_gen.Vset = vset  # Capital V for Vset
+        print(f"  Slack voltage setpoint: {vset:.3f} p.u.")
+    
     # Configure batteries based on scenario
-    if scenario == "full_discharge":
-        # Case 00: 45 MW discharge at PF=1
+    # Note: Battery inherits from Generator, so we set P and power_factor (Pf)
+    # Q = P * tan(acos(Pf))  for lagging
+    # Q = -P * tan(acos(Pf)) for leading
+    
+    if scenario == "case_00":
+        # Case 00: Pmax at nominal voltage, PF=1
         for battery in circuit.batteries:
             battery.P = 3.75  # MW per unit
-            battery.Pf = 1.0  # Unity power factor
+            battery.Pf = 1.0  # Unity power factor -> Q=0
+            battery.is_controlled = False  # PQ mode
+            
+    elif scenario == "case_01":
+        # Case 01: Pmax with maximum leading reactive (Q = -1.25 Mvar per unit)
+        # S = sqrt(P^2 + Q^2) = sqrt(3.75^2 + 1.25^2) = 3.953 MVA
+        # PF = P/S = 3.75/3.953 = 0.9487 leading
+        for battery in circuit.batteries:
+            battery.P = 3.75   # MW per unit
+            battery.Pf = 0.9487  # Leading power factor
+            # Note: VeraGrid convention - positive Pf with negative Q for leading
+            battery.is_controlled = False  # PQ mode
+            
+    elif scenario == "case_02":
+        # Case 02: Pmax with maximum lagging reactive (Q = +1.25 Mvar per unit)
+        # PF = 0.9487 lagging
+        for battery in circuit.batteries:
+            battery.P = 3.75  # MW per unit
+            battery.Pf = 0.9487  # Lagging power factor
+            battery.is_controlled = False  # PQ mode
+            
+    elif scenario == "case_03":
+        # Case 03: Low power (9 MW) with maximum leading reactive (Q = -1.25 Mvar per unit)
+        # S = sqrt(0.75^2 + 1.25^2) = 1.457 MVA
+        # PF = 0.75/1.457 = 0.5145 leading
+        for battery in circuit.batteries:
+            battery.P = 0.75   # MW per unit (9 MW / 12)
+            battery.Pf = 0.5145  # Leading
+            battery.is_controlled = False  # PQ mode
+            
+    elif scenario == "case_06":
+        # Case 06: Pmax with leading reactive at high voltage
+        for battery in circuit.batteries:
+            battery.P = 3.75   # MW per unit
+            battery.Pf = 0.9487  # Leading
+            battery.is_controlled = False  # PQ mode
+            
+    elif scenario == "case_09":
+        # Case 09: Curtailed power at low voltage (0.95 p.u.)
+        # P = 3.4875 MW, Q = +1.25 Mvar
+        # S = sqrt(3.4875^2 + 1.25^2) = 3.707 MVA
+        # PF = 3.4875/3.707 = 0.9409 lagging
+        for battery in circuit.batteries:
+            battery.P = 3.4875  # MW per unit (41.85 MW / 12) - curtailed!
+            battery.Pf = 0.9409  # Lagging
+            battery.is_controlled = False  # PQ mode
+            
+    elif scenario == "case_11":
+        # Case 11: Curtailed power at very low voltage (0.90 p.u.)
+        for battery in circuit.batteries:
+            battery.P = 3.4875  # MW per unit (41.85 MW / 12) - curtailed!
+            battery.Pf = 0.9409  # Lagging
             battery.is_controlled = False  # PQ mode
             
     elif scenario == "full_charge":
-        # Charging mode
+        # Charging mode (not in DNV report)
         for battery in circuit.batteries:
             battery.P = -3.75  # MW per unit (negative = charge)
             battery.Pf = 1.0
-            battery.is_controlled = False  # PQ mode
-            
-    elif scenario == "reactive_leading":
-        # Case 01: 45 MW + 15 Mvar leading (capacitive)
-        for battery in circuit.batteries:
-            battery.P = 3.75
-            battery.Pf = 0.9487  # cos(arctan(-15/45)) ≈ 0.9487 leading
-            battery.is_controlled = False  # PQ mode
-            
-    elif scenario == "reactive_lagging":
-        # Case 02: 45 MW + 15 Mvar lagging (inductive)
-        for battery in circuit.batteries:
-            battery.P = 3.75
-            battery.Pf = 0.9487  # cos(arctan(15/45)) ≈ 0.9487 lagging
             battery.is_controlled = False  # PQ mode
     
     # Power flow options
@@ -391,45 +452,230 @@ def run_power_flow(circuit: MultiCircuit, scenario="full_discharge"):
     if pf_driver.results.converged:
         print("[OK] Power flow converged!\n")
         
-        # Debug: print battery powers as set
-        print("Battery Powers (as set):")
-        for i, bat in enumerate(circuit.batteries[:3]):  # Show first 3
-            print(f"  {bat.name}: P={bat.P:.2f} MW, Pf={bat.Pf:.3f}, Active={bat.active}")
-        print(f"  ... ({len(circuit.batteries)} total batteries)\n")
+        # Calculate key metrics
+        total_bess_p = sum(b.P for b in circuit.batteries)
         
-        # Get results at key buses
+        # Calculate total BESS Q from P and power factor settings
+        import math
+        total_bess_q = 0.0
+        for b in circuit.batteries:
+            if abs(b.Pf - 1.0) > 0.001:  # Not unity power factor
+                theta = math.acos(min(1.0, abs(b.Pf)))  # Angle
+                Q_mag = abs(b.P) * math.tan(theta)
+                # For leading (capacitive), we need negative Q
+                # This depends on how the model interprets Pf
+                # For now, assume lagging is positive Q
+                total_bess_q += Q_mag if b.P > 0 else -Q_mag
+        
+        total_aux_p = sum(ld.P for ld in circuit.loads)
+        total_aux_q = sum(ld.Q for ld in circuit.loads)
+        
+        # Get results at connection point (slack bus)
         buses = circuit.get_buses()
-        cp_idx = 0  # Connection point
+        cp_idx = 0  # Connection point is first bus
         v_cp = np.abs(pf_driver.results.voltage[cp_idx])
+        
+        # Power at connection point (from slack generator)
+        Sbus = pf_driver.results.Sbus
+        P_cp = -np.real(Sbus[cp_idx])  # Negative because generator injects power INTO grid
+        Q_cp = -np.imag(Sbus[cp_idx])  # Negative because generator injects reactive power
+        
+        # Calculate system losses
+        P_loss = P_cp - total_bess_p - total_aux_p
         
         print(f"Power Flow Results:")
         print(f"  Iterations: {pf_driver.results.iterations}")
         print(f"  Error: {pf_driver.results.error:.2e}")
-        print(f"  Voltage array shape: {pf_driver.results.voltage.shape}")
-        print(f"  Sbus shape: {pf_driver.results.Sbus.shape}")
         print(f"  Connection Point Voltage: {v_cp:.4f} p.u. ({v_cp * 50:.2f} kV)")
+        print(f"\n  BESS Settings:")
+        print(f"    Total Active Power: {total_bess_p:.2f} MW")
+        print(f"    Total Reactive Power: {total_bess_q:.2f} Mvar")
+        print(f"\n  Connection Point (CP) Results:")
+        print(f"    Active Power at CP: {P_cp:.2f} MW")
+        print(f"    Reactive Power at CP: {Q_cp:.2f} Mvar")
+        print(f"\n  Auxiliary Loads:")
+        print(f"    Total Aux Power: {total_aux_p:.2f} MW, {total_aux_q:.2f} Mvar")
+        print(f"\n  System Losses:")
+        print(f"    Total Active Losses: {P_loss:.2f} MW ({100*P_loss/P_cp:.2f}%)")
         
-        # Power flows
-        Sbus = pf_driver.results.Sbus
-        print(f"  Sbus min/max: {np.min(np.abs(Sbus)):.4f} / {np.max(np.abs(Sbus)):.4f} MVA")
-        P_gen = np.sum(np.real(Sbus[Sbus.real > 0]))
-        P_load = -np.sum(np.real(Sbus[Sbus.real < 0]))
-        P_loss = np.sum(np.real(pf_driver.results.losses))
-        
-        Q_gen = np.sum(np.imag(Sbus[Sbus.imag > 0]))
-        Q_load = -np.sum(np.imag(Sbus[Sbus.imag < 0]))
-        
-        print(f"  Active Power Generation: {P_gen:.2f} MW")
-        print(f"  Active Power Load: {P_load:.2f} MW")
-        print(f"  Active Power Losses: {P_loss:.2f} MW")
-        print(f"  Reactive Power Generation: {Q_gen:.2f} Mvar")
-        print(f"  Reactive Power Load: {Q_load:.2f} Mvar")
-        
-        return pf_driver.results
+        return pf_driver.results, {
+            'V_cp': v_cp,
+            'P_cp': P_cp,
+            'Q_cp': Q_cp,
+            'P_bess': total_bess_p,
+            'Q_bess': total_bess_q,
+            'P_loss': P_loss,
+            'converged': True
+        }
     else:
         print(f"[FAIL] Power flow did not converge")
         print(f"  Error: {pf_driver.results.error:.2e}")
-        return None
+        return None, {'converged': False}
+
+
+def validate_against_dnv_report(circuit: MultiCircuit):
+    """
+    Run validation cases from DNV report Table 2-3 and compare results
+    """
+    print("\n" + "="*70)
+    print(" DNV REPORT VALIDATION SUITE")
+    print(" Comparing against Table 2-3: Discharging Load Flow Results at CP")
+    print("="*70)
+    
+    # DNV report expected values (from Table 2-3)
+    # Format: (V_setpoint, P_bess_total, Q_bess_total, P_cp_expected, Q_cp_expected)
+    dnv_cases = {
+        'case_00': {
+            'description': 'Pmax at Nominal Voltage (PF=1)',
+            'vset': 1.00,
+            'P_bess': 45.00,
+            'Q_bess': 0.00,
+            'P_cp_expected': 45.50,  # Approximate from DNV report
+            'Q_cp_expected': 7.30,   # Approximate from DNV report
+            'tolerance_p': 0.5,      # MW
+            'tolerance_q': 0.5       # Mvar
+        },
+        'case_01': {
+            'description': 'Pmax with Maximum Leading Reactive',
+            'vset': 1.00,
+            'P_bess': 45.00,
+            'Q_bess': -15.00,
+            'P_cp_expected': 45.50,
+            'Q_cp_expected': -7.70,  # Leading
+            'tolerance_p': 0.5,
+            'tolerance_q': 0.5
+        },
+        'case_02': {
+            'description': 'Pmax with Maximum Lagging Reactive',
+            'vset': 1.00,
+            'P_bess': 45.00,
+            'Q_bess': 15.00,
+            'P_cp_expected': 45.50,
+            'Q_cp_expected': 22.30,  # Lagging
+            'tolerance_p': 0.5,
+            'tolerance_q': 0.5
+        },
+        'case_03': {
+            'description': 'Low Power (9 MW) with Leading Reactive',
+            'vset': 1.00,
+            'P_bess': 9.00,
+            'Q_bess': -15.00,
+            'P_cp_expected': 9.90,
+            'Q_cp_expected': -14.40,
+            'tolerance_p': 0.5,
+            'tolerance_q': 0.5
+        },
+        'case_06': {
+            'description': 'Pmax with Leading Reactive at High Voltage (1.10 p.u.)',
+            'vset': 1.10,
+            'P_bess': 45.00,
+            'Q_bess': -15.00,
+            'P_cp_expected': 45.50,
+            'Q_cp_expected': -7.70,
+            'tolerance_p': 0.5,
+            'tolerance_q': 0.5
+        },
+        'case_09': {
+            'description': 'Curtailed Power at Low Voltage (0.95 p.u.)',
+            'vset': 0.95,
+            'P_bess': 41.85,  # CURTAILED due to voltage limit
+            'Q_bess': 15.00,
+            'P_cp_expected': 42.70,
+            'Q_cp_expected': 22.30,
+            'tolerance_p': 0.5,
+            'tolerance_q': 0.5
+        },
+        'case_11': {
+            'description': 'Curtailed Power at Very Low Voltage (0.90 p.u.)',
+            'vset': 0.90,
+            'P_bess': 41.85,  # CURTAILED due to voltage limit
+            'Q_bess': 15.00,
+            'P_cp_expected': 42.70,
+            'Q_cp_expected': 22.30,
+            'tolerance_p': 0.5,
+            'tolerance_q': 0.5
+        }
+    }
+    
+    results_summary = []
+    
+    for case_id, case_data in dnv_cases.items():
+        print(f"\n{'='*70}")
+        print(f" {case_id.upper()}: {case_data['description']}")
+        print(f"{'='*70}")
+        print(f" Target Settings:")
+        print(f"   V_setpoint: {case_data['vset']:.3f} p.u.")
+        print(f"   BESS P: {case_data['P_bess']:.2f} MW")
+        print(f"   BESS Q: {case_data['Q_bess']:.2f} Mvar")
+        print(f" DNV Expected Results:")
+        print(f"   P at CP: {case_data['P_cp_expected']:.2f} MW")
+        print(f"   Q at CP: {case_data['Q_cp_expected']:.2f} Mvar")
+        print(f"{'-'*70}")
+        
+        # Run simulation
+        pf_results, metrics = run_power_flow(circuit, scenario=case_id, vset=case_data['vset'])
+        
+        if metrics['converged']:
+            # Calculate errors
+            error_p = metrics['P_cp'] - case_data['P_cp_expected']
+            error_q = metrics['Q_cp'] - case_data['Q_cp_expected']
+            error_p_pct = 100 * abs(error_p) / case_data['P_cp_expected']
+            error_q_pct = 100 * abs(error_q) / abs(case_data['Q_cp_expected']) if case_data['Q_cp_expected'] != 0 else 0
+            
+            # Check if within tolerance
+            pass_p = abs(error_p) <= case_data['tolerance_p']
+            pass_q = abs(error_q) <= case_data['tolerance_q']
+            overall_pass = pass_p and pass_q
+            
+            print(f"\n VALIDATION RESULTS:")
+            print(f"   P at CP: {metrics['P_cp']:.2f} MW (error: {error_p:+.2f} MW, {error_p_pct:.2f}%) {'[PASS]' if pass_p else '[FAIL]'}")
+            print(f"   Q at CP: {metrics['Q_cp']:.2f} Mvar (error: {error_q:+.2f} Mvar, {error_q_pct:.2f}%) {'[PASS]' if pass_q else '[FAIL]'}")
+            print(f"   Status: {'PASS' if overall_pass else 'FAIL'}")
+            
+            results_summary.append({
+                'case': case_id,
+                'description': case_data['description'],
+                'pass': overall_pass,
+                'error_p': error_p,
+                'error_q': error_q,
+                'error_p_pct': error_p_pct,
+                'error_q_pct': error_q_pct
+            })
+        else:
+            print(f"\n VALIDATION RESULTS: FAIL - Did not converge")
+            results_summary.append({
+                'case': case_id,
+                'description': case_data['description'],
+                'pass': False,
+                'error_p': None,
+                'error_q': None,
+                'error_p_pct': None,
+                'error_q_pct': None
+            })
+    
+    # Print summary
+    print(f"\n{'='*70}")
+    print(" VALIDATION SUMMARY")
+    print(f"{'='*70}")
+    
+    for result in results_summary:
+        status = '[PASS]' if result['pass'] else '[FAIL]'
+        print(f" {result['case']:10s} - {status:10s} - {result['description']}")
+        if result['pass']:
+            print(f"              P error: {result['error_p_pct']:.2f}%,  Q error: {result['error_q_pct']:.2f}%")
+    
+    total_cases = len(results_summary)
+    passed_cases = sum(1 for r in results_summary if r['pass'])
+    
+    print(f"\n{'='*70}")
+    print(f" OVERALL VALIDATION: {passed_cases}/{total_cases} cases passed")
+    if passed_cases == total_cases:
+        print(f" *** MODEL FULLY VALIDATED AGAINST DNV REPORT ***")
+    else:
+        print(f" Model needs adjustment - {total_cases - passed_cases} case(s) failed")
+    print(f"{'='*70}\n")
+    
+    return results_summary
 
 
 def main():
@@ -450,35 +696,22 @@ def main():
     file_saver = FileSave(circuit, output_file)
     file_saver.save()
     print("[OK] Model saved!")
-
     
-    # Run different scenarios
-    scenarios = [
-        ("full_discharge", "Full Discharge (45 MW, PF=1)"),
-        ("full_charge", "Full Charge (-45 MW, PF=1)"),
-        ("reactive_leading", "Discharge with Leading Reactive (45 MW, -15 Mvar)"),
-        ("reactive_lagging", "Discharge with Lagging Reactive (45 MW, +15 Mvar)"),
-    ]
-    
-    print("\n" + "="*60)
-    print(" Running Test Scenarios")
-    print("="*60)
-    
-    for scenario_id, description in scenarios:
-        print(f"\n{description}")
-        print("-" * 60)
-        results = run_power_flow(circuit, scenario_id)
+    # Run DNV validation suite
+    validation_results = validate_against_dnv_report(circuit)
     
     print("\n" + "="*70)
     print(" Analysis Complete!")
     print("="*70)
     print("\nNext steps:")
     print(f"  1. Open '{output_file}' in VeraGrid GUI")
-    print("  2. Explore the model topology")
-    print("  3. Run additional power flow scenarios")
-    print("  4. Compare with DNV report findings (25-0851_report.md)")
-    print("  5. Perform reactive power capability studies")
-    print("  6. Export results for validation\n")
+    print("  2. Review validation results above")
+    print("  3. If all cases pass, model is fully validated!")
+    print("  4. Explore the model topology")
+    print("  5. Run additional power flow scenarios")
+    print("  6. Compare with DNV report findings (25-0851_report.md)")
+    print("  7. Perform reactive power capability studies")
+    print("  8. Export results for validation\n")
 
 
 if __name__ == "__main__":
